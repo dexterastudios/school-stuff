@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meridian Model United Nations</title>
+<meta name="description" content="Meridian Model United Nations — an independent MUN conference for secondary school delegates. Committees, secretariat, and delegate portal." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- Local runtime config: copy config.example.js to config.js and fill in your Supabase project values. -->
+<script src="config.js"></script>
+
+<style>
+  :root{
+    --paper:#F7F5F0;
+    --paper-deep:#EFEAE0;
+    --ink:#1B1A17;
+    --ink-soft:#5B5750;
+    --ink-faint:#8C877D;
+    --line:#DAD3C4;
+    --line-strong:#C7BEA9;
+    --navy:#16213D;
+    --orange:#C1571E;
+    --orange-deep:#9C4415;
+    --orange-soft:#E7A26B;
+    --white:#FFFDF9;
+    --radius-sm:2px;
+    --maxw:1180px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
+
+  /* subtle grain overlay */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:2000;
+    opacity:.035;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  h1,h2,h3,h4{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:500;
+    margin:0;
+    color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  p{margin:0;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  button{font-family:inherit; cursor:pointer;}
+  input,textarea,select{font-family:inherit; font-size:1rem;}
+
+  .label{
+    font-size:.72rem;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--orange-deep);
+    font-weight:500;
+  }
+  .label--muted{color:var(--ink-faint);}
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 28px;
+  }
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  .hairline{border:none; border-top:1px solid var(--line); margin:0;}
+
+  /* ---------- Nav ---------- */
+  .nav{
+    position:sticky; top:0; z-index:500;
+    background:rgba(247,245,240,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav .wrap{
+    height:68px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:"Fraunces", serif;
+    font-size:1.08rem;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  .brand-mark{
+    width:26px; height:26px;
+    border:1px solid var(--ink);
+    position:relative;
+    flex:none;
+  }
+  .brand-mark::after{
+    content:"";
+    position:absolute; inset:5px;
+    border:1px solid var(--orange);
+  }
+  .nav-links{display:flex; align-items:center; gap:34px;}
+  .nav-links a{
+    font-size:.86rem;
+    color:var(--ink-soft);
+    transition:color .18s ease;
+    position:relative;
+  }
+  .nav-links a::after{
+    content:"";
+    position:absolute; left:0; right:0; bottom:-6px;
+    height:1px; background:var(--orange);
+    transform:scaleX(0); transform-origin:left;
+    transition:transform .22s ease;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a:hover::after{transform:scaleX(1);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    gap:8px;
+    padding:10px 20px;
+    font-size:.82rem;
+    letter-spacing:.03em;
+    border:1px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    transition:background .18s ease, color .18s ease, border-color .18s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--ink); color:var(--white);}
+  .btn-primary{
+    background:var(--orange);
+    border-color:var(--orange);
+    color:var(--white);
+  }
+  .btn-primary:hover{background:var(--orange-deep); border-color:var(--orange-deep);}
+  .btn-ghost{border-color:var(--line-strong); color:var(--ink-soft);}
+  .btn-ghost:hover{background:var(--ink); border-color:var(--ink); color:var(--white);}
+  .btn-sm{padding:7px 14px; font-size:.75rem;}
+  .btn[disabled]{opacity:.5; cursor:default; pointer-events:none;}
+
+  .menu-toggle{display:none; background:none; border:none; padding:6px;}
+  .menu-toggle span{display:block; width:22px; height:1px; background:var(--ink); margin:5px 0;}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:88px 0 64px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.5fr 1fr;
+    gap:64px;
+    align-items:end;
+  }
+  .hero-eyebrow{margin-bottom:22px;}
+  .hero h1{
+    font-size:clamp(2.4rem, 5vw, 4.1rem);
+    line-height:1.02;
+    max-width:14ch;
+  }
+  .hero-sub{
+    margin-top:26px;
+    max-width:46ch;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+  .hero-cta{margin-top:38px; display:flex; gap:14px; flex-wrap:wrap;}
+
+  .brief-card{
+    border:1px solid var(--ink);
+    padding:26px 24px;
+    background:var(--white);
+  }
+  .brief-card .label{display:block; margin-bottom:16px;}
+  .brief-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:12px 0;
+    border-top:1px solid var(--line);
+  }
+  .brief-row:first-of-type{border-top:none;}
+  .brief-row dt{font-size:.82rem; color:var(--ink-soft);}
+  .brief-row dd{
+    margin:0;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.95rem;
+    font-weight:500;
+  }
+
+  /* ---------- Section shell ---------- */
+  .section{padding:84px 0;}
+  .section-head{
+    display:grid;
+    grid-template-columns:1fr 1.4fr;
+    gap:48px;
+    margin-bottom:52px;
+    align-items:end;
+  }
+  .section-head h2{font-size:clamp(1.7rem,3vw,2.3rem);}
+  .section-head .label{margin-bottom:14px; display:block;}
+  .section-head p{color:var(--ink-soft); max-width:52ch;}
+  @media (max-width:760px){
+    .section-head{grid-template-columns:1fr;}
+  }
+
+  /* ---------- About ---------- */
+  .about{background:var(--paper-deep); border-bottom:1px solid var(--line);}
+  .about-grid{
+    display:grid;
+    grid-template-columns:.9fr 1.1fr;
+    gap:64px;
+  }
+  .about-stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    margin-top:36px;
+  }
+  .stat{background:var(--paper-deep); padding:20px;}
+  .stat b{
+    display:block;
+    font-family:"Fraunces", serif;
+    font-size:1.9rem;
+    font-weight:500;
+    color:var(--orange-deep);
+  }
+  .stat span{font-size:.78rem; color:var(--ink-soft);}
+  @media (max-width:760px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* ---------- Committees ---------- */
+  .committee-list{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    border-top:1px solid var(--line);
+    border-left:1px solid var(--line);
+  }
+  .committee{
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:28px 26px;
+    min-height:190px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:background .2s ease;
+  }
+  .committee:hover{background:var(--white);}
+  .committee h3{font-size:1.18rem; font-weight:500; margin-top:14px;}
+  .committee p{font-size:.86rem; color:var(--ink-soft); margin-top:10px;}
+  .committee .label{font-size:.68rem;}
+  @media (max-width:900px){ .committee-list{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:600px){ .committee-list{grid-template-columns:1fr;} }
+
+  /* ---------- Secretariat / members ---------- */
+  .members{border-bottom:1px solid var(--line);}
+  .member-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .member-card{
+    background:var(--paper);
+    padding:22px 20px 24px;
+  }
+  .avatar{
+    width:100%;
+    aspect-ratio:1/1;
+    border:1px solid var(--line-strong);
+    overflow:hidden;
+    position:relative;
+    background:var(--paper-deep);
+  }
+  .avatar img{width:100%; height:100%; object-fit:cover;}
+  .avatar-fallback{
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(155deg, var(--orange) 0%, var(--orange-deep) 100%);
+    color:var(--white);
+    font-family:"Fraunces", serif;
+    font-size:1.6rem;
+    font-weight:500;
+    letter-spacing:.02em;
+  }
+  .member-card h4{font-size:1rem; margin-top:16px; font-weight:500;}
+  .member-card .label{margin-top:4px; font-size:.68rem;}
+  .member-card .m-committee{font-size:.8rem; color:var(--ink-faint); margin-top:8px;}
+  .members-empty, .members-loading{
+    padding:60px 20px; text-align:center; color:var(--ink-faint); font-size:.9rem;
+    border:1px dashed var(--line-strong);
+  }
+  @media (max-width:900px){ .member-grid{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:520px){ .member-grid{grid-template-columns:1fr;} }
+
+  /* ---------- Footer ---------- */
+  footer{padding:56px 0 32px;}
+  .footer-top{
+    display:grid;
+    grid-template-columns:1.3fr 1fr 1fr 1fr;
+    gap:40px;
+    padding-bottom:44px;
+  }
+  .footer-brand p{color:var(--ink-soft); font-size:.88rem; margin-top:14px; max-width:32ch;}
+  .footer-col .label{display:block; margin-bottom:16px;}
+  .footer-col a{
+    display:block;
+    font-size:.87rem;
+    color:var(--ink-soft);
+    padding:6px 0;
+    transition:color .16s ease;
+  }
+  .footer-col a:hover{color:var(--orange-deep);}
+  .footer-bottom{
+    display:flex; justify-content:space-between; align-items:center;
+    padding-top:24px; border-top:1px solid var(--line);
+    font-size:.76rem; color:var(--ink-faint);
+    flex-wrap:wrap; gap:10px;
+  }
+  .footer-bottom .accent-dot{
+    display:inline-block; width:5px; height:5px; background:var(--orange); border-radius:50%; margin-right:8px;
+  }
+  @media (max-width:760px){ .footer-top{grid-template-columns:1fr 1fr;} }
+
+  /* ---------- Auth views ---------- */
+  .auth-shell{
+    min-height:calc(100vh - 69px);
+    display:flex; align-items:center; justify-content:center;
+    padding:60px 20px;
+  }
+  .auth-card{
+    width:100%; max-width:400px;
+    border:1px solid var(--ink);
+    background:var(--white);
+    padding:38px 34px 32px;
+  }
+  .auth-card h2{font-size:1.5rem; margin-bottom:6px;}
+  .auth-card .sub{color:var(--ink-soft); font-size:.86rem; margin-bottom:28px;}
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block; font-size:.74rem; letter-spacing:.06em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:7px;
+  }
+  .field input{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .16s ease;
+  }
+  .field input:focus{border-color:var(--orange);}
+  .auth-submit{width:100%; margin-top:6px; padding:12px;}
+  .auth-toggle{
+    margin-top:20px; text-align:center; font-size:.84rem; color:var(--ink-soft);
+  }
+  .auth-toggle button{
+    background:none; border:none; color:var(--orange-deep); font-size:inherit;
+    text-decoration:underline; padding:0;
+  }
+  .auth-msg{
+    margin-top:16px; padding:10px 12px; font-size:.82rem;
+    border:1px solid var(--line-strong); display:none;
+  }
+  .auth-msg.show{display:block;}
+  .auth-msg.error{border-color:#B2402A; color:#8C2E1B; background:#FBEEEA;}
+  .auth-msg.ok{border-color:#3E6B4A; color:#2E5138; background:#EEF4EF;}
+
+  /* ---------- Dashboard / admin ---------- */
+  .dash{padding:56px 0 90px; min-height:calc(100vh - 69px);}
+  .dash-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    padding-bottom:28px; border-bottom:1px solid var(--line); margin-bottom:36px;
+    gap:20px; flex-wrap:wrap;
+  }
+  .dash-head h1{font-size:2rem;}
+  .dash-head .sub{color:var(--ink-soft); margin-top:8px; font-size:.9rem;}
+  .panel{border:1px solid var(--line); background:var(--white); padding:28px;}
+  .panel + .panel{margin-top:24px;}
+  .panel h3{font-size:1.05rem; margin-bottom:18px;}
+  .kv{display:grid; grid-template-columns:160px 1fr; gap:12px 20px; font-size:.9rem;}
+  .kv dt{color:var(--ink-faint);}
+  .kv dd{margin:0;}
+
+  .table-wrap{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; font-size:.86rem;}
+  thead th{
+    text-align:left; font-size:.7rem; letter-spacing:.07em; text-transform:uppercase;
+    color:var(--ink-faint); padding:10px 12px; border-bottom:1px solid var(--ink);
+    font-weight:500;
+  }
+  tbody td{padding:12px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  tbody tr:hover{background:var(--paper-deep);}
+  .row-actions{display:flex; gap:8px;}
+  .mini-avatar{
+    width:34px; height:34px; border:1px solid var(--line-strong); position:relative; overflow:hidden; flex:none;
+  }
+  .mini-avatar img{width:100%; height:100%; object-fit:cover;}
+  .mini-avatar .avatar-fallback{font-size:.85rem;}
+
+  .admin-form{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    margin-bottom:22px; padding-bottom:22px; border-bottom:1px solid var(--line);
+  }
+  .admin-form .field{margin-bottom:0;}
+  .admin-form .span-2{grid-column:1/-1;}
+  @media (max-width:640px){ .admin-form{grid-template-columns:1fr;} }
+
+  .badge{
+    display:inline-block; padding:2px 8px; font-size:.68rem; letter-spacing:.05em; text-transform:uppercase;
+    border:1px solid var(--line-strong); color:var(--ink-soft);
+  }
+  .badge.admin{border-color:var(--orange); color:var(--orange-deep);}
+
+  .hidden{display:none !important;}
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible{
+    outline:2px solid var(--orange); outline-offset:2px;
+  }
+
+  .loader{
+    width:16px; height:16px; border:2px solid var(--line-strong); border-top-color:var(--orange);
+    border-radius:50%; display:inline-block; animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .brief-card{max-width:420px;}
+  }
+  @media (max-width:760px){
+    .nav-links{
+      position:fixed; top:69px; left:0; right:0; bottom:0;
+      background:var(--paper);
+      flex-direction:column; align-items:flex-start; gap:0;
+      padding:10px 28px 30px;
+      transform:translateY(-8px);
+      opacity:0; pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+    }
+    .nav-links.open{opacity:1; pointer-events:auto; transform:translateY(0);}
+    .nav-links a{width:100%; padding:14px 0; border-bottom:1px solid var(--line);}
+    .nav-links a::after{display:none;}
+    .menu-toggle{display:block;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="#/" class="brand"><span class="brand-mark"></span> Meridian MUN</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#/about">About</a>
+      <a href="#/committees">Committees</a>
+      <a href="#/secretariat">Secretariat</a>
+      <span id="navAuthArea" style="display:flex; gap:14px; align-items:center;"></span>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<main id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <hr class="hairline" style="margin-bottom:44px;">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand"><span class="brand-mark"></span> Meridian MUN</div>
+        <p>An independent Model United Nations conference convened annually for secondary school delegates, run by students, for students.</p>
+      </div>
+      <div class="footer-col">
+        <span class="label">Conference</span>
+        <a href="#/about">About</a>
+        <a href="#/committees">Committees</a>
+        <a href="#/secretariat">Secretariat</a>
+      </div>
+      <div class="footer-col">
+        <span class="label">Delegates</span>
+        <a href="#/login">Delegate login</a>
+        <a href="#/login">Register a school</a>
+        <a href="#/committees">Background guides</a>
+      </div>
+      <div class="footer-col">
+        <span class="label">Contact</span>
+        <a href="mailto:secretariat@meridianmun.org">secretariat@meridianmun.org</a>
+        <a href="#/about">Press inquiries</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span><span class="accent-dot"></span>© <span id="year"></span> Meridian Model United Nations. All rights reserved.</span>
+      <span>Session XIV &middot; March 2027</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+const cfg = window.__SUPABASE_CONFIG__ || {};
+if (!cfg.url || !cfg.anonKey) {
+  document.getElementById('app').innerHTML = `
+    <div class="wrap" style="padding:80px 0;">
+      <div class="panel" style="border-color:#B2402A;">
+        <h3>Configuration missing</h3>
+        <p style="color:var(--ink-soft); font-size:.9rem; margin-top:10px;">
+          This site needs Supabase credentials. Copy <code>config.example.js</code> to
+          <code>config.js</code> and fill in your project URL and publishable (anon) key,
+          then reload the page. See README.md for details.
+        </p>
+      </div>
+    </div>`;
+  throw new Error('Missing Supabase config');
+}
+
+const supabase = createClient(cfg.url, cfg.anonKey);
+
+/* =========================================================
+   STATIC CONTENT
+   ========================================================= */
+const COMMITTEES = [
+  { code: 'UNSC', name: 'Security Council', topic: 'Maritime security and territorial disputes in the South China Sea', level: 'Advanced' },
+  { code: 'GA1', name: 'General Assembly — Disarmament', topic: 'Autonomous weapons systems and the laws of armed conflict', level: 'Intermediate' },
+  { code: 'ECOFIN', name: 'Economic & Financial', topic: 'Sovereign debt restructuring in the Global South', level: 'Intermediate' },
+  { code: 'WHO', name: 'World Health Organization', topic: 'Equitable access to pandemic countermeasures', level: 'Beginner' },
+  { code: 'HCC', name: 'Historical Crisis — Vienna 1815', topic: 'Redrawing Europe after the Napoleonic Wars', level: 'Advanced' },
+  { code: 'PRESS', name: 'International Press Corps', topic: 'Covering the conference floor in real time', level: 'All levels' },
+];
+
+const HERO_STATS = [
+  { dt: 'Session', dd: 'XIV' },
+  { dt: 'Dates', dd: 'Mar 12–14, 2027' },
+  { dt: 'Delegates', dd: '340+' },
+  { dt: 'Delegations', dd: '52 schools' },
+];
+
+const ABOUT_STATS = [
+  { n: '14', label: 'Annual sessions' },
+  { n: '52', label: 'Schools represented' },
+  { n: '9', label: 'Committees this year' },
+  { n: '2013', label: 'Founded' },
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+const state = {
+  session: null,
+  profile: null,
+};
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+function initials(name){
+  return (name || '?').trim().split(/\s+/).slice(0,2).map(w => w[0]?.toUpperCase() || '').join('');
+}
+
+function avatarHTML(name, photoIndex, size){
+  const cls = size === 'mini' ? 'mini-avatar' : 'avatar';
+  const src = photoIndex ? `/member${photoIndex}.png` : null;
+  const fallback = `<div class="avatar-fallback">${initials(name)}</div>`;
+  if (!src) return `<div class="${cls}">${fallback}</div>`;
+  return `<div class="${cls}">
+    <img src="${src}" alt="${name}" loading="lazy"
+      onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'avatar-fallback',innerHTML:'${initials(name)}'}))">
+  </div>`;
+}
+
+function escapeHtml(str){
+  return (str ?? '').toString().replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+}
+
+function setMsg(el, text, type){
+  el.textContent = text;
+  el.className = 'auth-msg show ' + (type || '');
+}
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+const routes = {
+  '/':            { render: renderHome,        protected: false },
+  '/about':       { render: renderAbout,       protected: false },
+  '/committees':  { render: renderCommittees,  protected: false },
+  '/secretariat': { render: renderSecretariat, protected: false },
+  '/login':       { render: renderLogin,       protected: false },
+  '/dashboard':   { render: renderDashboard,   protected: true, adminOnly: false },
+  '/admin':       { render: renderAdmin,       protected: true, adminOnly: true },
+};
+
+function currentPath(){
+  const h = location.hash.replace(/^#/, '');
+  return h || '/';
+}
+
+async function router(){
+  const path = currentPath();
+  const route = routes[path] || routes['/'];
+  const app = document.getElementById('app');
+
+  if (route.protected && !state.session){
+    location.hash = '#/login';
+    return;
+  }
+  if (route.adminOnly && state.profile?.role !== 'admin'){
+    location.hash = '#/dashboard';
+    return;
+  }
+  // signed-in users visiting /login get redirected to their home
+  if (path === '/login' && state.session){
+    location.hash = state.profile?.role === 'admin' ? '#/admin' : '#/dashboard';
+    return;
+  }
+
+  window.scrollTo(0,0);
+  app.innerHTML = '<div class="wrap" style="padding:120px 0; text-align:center; color:var(--ink-faint);"><span class="loader"></span></div>';
+  await route.render(app);
+  renderNavAuthArea();
+  closeMobileMenu();
+}
+
+window.addEventListener('hashchange', router);
+
+/* =========================================================
+   NAV AUTH AREA
+   ========================================================= */
+function renderNavAuthArea(){
+  const el = document.getElementById('navAuthArea');
+  if (state.session){
+    const dest = state.profile?.role === 'admin' ? '#/admin' : '#/dashboard';
+    el.innerHTML = `
+      <a href="${dest}">Dashboard</a>
+      <button class="btn btn-sm" id="signOutBtn">Sign out</button>
+    `;
+    document.getElementById('signOutBtn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+    });
+  } else {
+    el.innerHTML = `<a href="#/login" class="btn btn-primary btn-sm">Delegate login</a>`;
+  }
+}
+
+/* =========================================================
+   PAGE: HOME
+   ========================================================= */
+function renderHome(app){
+  app.innerHTML = `
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="label hero-eyebrow">Session XIV &middot; March 12–14, 2027</span>
+          <h1>Diplomacy, argued properly.</h1>
+          <p class="hero-sub">Meridian MUN gathers delegates from across the region for three days
+            of committee work, crisis response, and considered debate — run entirely by students,
+            for students who take the process seriously.</p>
+          <div class="hero-cta">
+            <a href="#/login" class="btn btn-primary">Register a delegation</a>
+            <a href="#/committees" class="btn btn-ghost">View committees</a>
+          </div>
+        </div>
+        <div class="brief-card">
+          <span class="label">Conference brief</span>
+          <dl style="margin:0;">
+            ${HERO_STATS.map(s => `
+              <div class="brief-row"><dt>${s.dt}</dt><dd>${s.dd}</dd></div>
+            `).join('')}
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="about">
+      <div class="wrap about-grid">
+        <div>
+          <span class="label">About the conference</span>
+          <h2 style="margin-top:14px; font-size:1.9rem;">Built by a secretariat that still remembers being a first-time delegate.</h2>
+        </div>
+        <div>
+          <p style="color:var(--ink-soft);">Meridian MUN was founded in 2013 by a small group of delegates who
+            wanted a conference with tighter procedure and better research support than what they'd
+            experienced elsewhere. Fourteen sessions later, it's grown into a three-day event with
+            crisis committees, a historical joint cabinet, and a press corps — but the founding brief
+            hasn't changed: substantive debate, fair chairing, and no filler.</p>
+          <div class="about-stats">
+            ${ABOUT_STATS.map(s => `<div class="stat"><b>${s.n}</b><span>${s.label}</span></div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="committees-preview">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="label">This year's floor</span>
+            <h2>Committees</h2>
+          </div>
+          <p>Six committees spanning current-affairs councils, a historical crisis, and a live
+            press corps covering the room as it happens.</p>
+        </div>
+      </div>
+      <div class="wrap" style="padding:0;">
+        <div class="committee-list">
+          ${COMMITTEES.map(renderCommitteeCard).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section class="section members" style="padding-top:0;">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="label">Who runs it</span>
+            <h2>Secretariat</h2>
+          </div>
+          <p>Loaded live from the delegate roster — this list updates automatically as the
+            secretariat is confirmed each year.</p>
+        </div>
+      </div>
+      <div class="wrap" style="padding:0;">
+        <div id="memberGridHome"></div>
+      </div>
+    </section>
+  `;
+  loadMembers(document.getElementById('memberGridHome'));
+}
+
+function renderCommitteeCard(c){
+  return `
+    <article class="committee">
+      <div>
+        <span class="label">${c.code} &middot; ${c.level}</span>
+        <h3>${c.name}</h3>
+      </div>
+      <p>${c.topic}</p>
+    </article>
+  `;
+}
+
+/* =========================================================
+   PAGE: ABOUT
+   ========================================================= */
+function renderAbout(app){
+  app.innerHTML = `
+    <section class="section">
+      <div class="wrap">
+        <span class="label">About</span>
+        <h1 style="margin-top:14px; max-width:20ch; font-size:clamp(1.9rem,4vw,2.8rem);">
+          A conference run on procedure, not spectacle.
+        </h1>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:44px;">
+          <p style="color:var(--ink-soft); max-width:60ch;">
+            Meridian MUN began as a single Saturday committee session hosted in a school library
+            in 2013. The founders — then delegates themselves — were frustrated by conferences
+            that prioritized theatrics over research. Meridian was built around a simple promise:
+            reward delegates who come prepared, chair with consistency, and keep committee time
+            focused on argument rather than procedure for its own sake.
+          </p>
+          <p style="color:var(--ink-soft); max-width:60ch;">
+            Today the conference runs across three days with committees ranging from a live
+            Security Council to a historical joint crisis set in 1815 Vienna. Every committee is
+            chaired by a returning delegate trained by the outgoing secretariat, and every
+            background guide is reviewed by a faculty advisor before release.
+          </p>
+        </div>
+        <div class="about-stats" style="margin-top:56px; max-width:640px;">
+          ${ABOUT_STATS.map(s => `<div class="stat"><b>${s.n}</b><span>${s.label}</span></div>`).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/* =========================================================
+   PAGE: COMMITTEES
+   ========================================================= */
+function renderCommittees(app){
+  app.innerHTML = `
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="label">Session XIV</span>
+            <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);">Committees</h1>
+          </div>
+          <p>Background guides are released to registered delegations six weeks before the
+            conference. Level indicates the expected prior MUN experience.</p>
+        </div>
+      </div>
+      <div class="wrap" style="padding:0;">
+        <div class="committee-list">
+          ${COMMITTEES.map(renderCommitteeCard).join('')}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+/* =========================================================
+   PAGE: SECRETARIAT (full member directory)
+   ========================================================= */
+function renderSecretariat(app){
+  app.innerHTML = `
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="label">Session XIV</span>
+            <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);">Secretariat</h1>
+          </div>
+          <p>The team chairing and running this year's conference, pulled live from the delegate
+            roster.</p>
+        </div>
+      </div>
+      <div class="wrap" style="padding:0;">
+        <div id="memberGridFull"></div>
+      </div>
+    </section>
+  `;
+  loadMembers(document.getElementById('memberGridFull'));
+}
+
+/* =========================================================
+   DYNAMIC MEMBER LOADING (shared)
+   ========================================================= */
+async function loadMembers(container){
+  container.innerHTML = `<div class="members-loading"><span class="loader"></span> Loading secretariat…</div>`;
+  const { data, error } = await supabase
+    .from('members')
+    .select('id, name, role_title, committee, photo_index, sort_order')
+    .order('sort_order', { ascending: true });
+
+  if (error){
+    container.innerHTML = `<div class="members-empty">Couldn't load the secretariat roster right now.</div>`;
+    return;
+  }
+  if (!data || data.length === 0){
+    container.innerHTML = `<div class="members-empty">No secretariat members have been added yet.</div>`;
+    return;
+  }
+
+  container.innerHTML = `<div class="member-grid">
+    ${data.map(m => `
+      <div class="member-card">
+        ${avatarHTML(m.name, m.photo_index)}
+        <h4>${escapeHtml(m.name)}</h4>
+        <span class="label">${escapeHtml(m.role_title || '')}</span>
+        ${m.committee ? `<p class="m-committee">${escapeHtml(m.committee)}</p>` : ''}
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+/* =========================================================
+   PAGE: LOGIN
+   ========================================================= */
+function renderLogin(app){
+  app.innerHTML = `
+    <div class="auth-shell">
+      <div class="auth-card">
+        <span class="label" id="authMode">Sign in</span>
+        <h2 style="margin-top:8px;">Delegate portal</h2>
+        <p class="sub">Sign in with the email your delegation registered with.</p>
+
+        <form id="authForm">
+          <div class="field" id="nameField" style="display:none;">
+            <label for="fullName">Full name</label>
+            <input id="fullName" type="text" autocomplete="name" placeholder="Jordan Ellis">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" type="email" required autocomplete="email" placeholder="you@school.edu">
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" required autocomplete="current-password" minlength="6" placeholder="••••••••">
+          </div>
+          <button class="btn btn-primary auth-submit" type="submit" id="authSubmit">Sign in</button>
+        </form>
+
+        <div class="auth-msg" id="authMsg"></div>
+
+        <div class="auth-toggle">
+          <span id="toggleLabel">New delegate?</span>
+          <button type="button" id="toggleAuthMode">Create an account</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  let mode = 'signin';
+  const form = document.getElementById('authForm');
+  const msg = document.getElementById('authMsg');
+  const submitBtn = document.getElementById('authSubmit');
+  const nameField = document.getElementById('nameField');
+  const authMode = document.getElementById('authMode');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const toggleBtn = document.getElementById('toggleAuthMode');
+
+  toggleBtn.addEventListener('click', () => {
+    mode = mode === 'signin' ? 'signup' : 'signin';
+    const isSignup = mode === 'signup';
+    authMode.textContent = isSignup ? 'Create account' : 'Sign in';
+    submitBtn.textContent = isSignup ? 'Create account' : 'Sign in';
+    toggleLabel.textContent = isSignup ? 'Already registered?' : 'New delegate?';
+    toggleBtn.textContent = isSignup ? 'Sign in instead' : 'Create an account';
+    nameField.style.display = isSignup ? 'block' : 'none';
+    msg.className = 'auth-msg';
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.className = 'auth-msg';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="loader"></span>';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const fullName = document.getElementById('fullName').value.trim();
+
+    try{
+      if (mode === 'signup'){
+        const { error } = await supabase.auth.signUp({
+          email, password,
+          options: { data: { full_name: fullName } }
+        });
+        if (error) throw error;
+        setMsg(msg, 'Account created. Check your email to confirm, then sign in.', 'ok');
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        // redirect handled by onAuthStateChange -> refreshSession -> router
+      }
+    } catch(err){
+      setMsg(msg, err.message || 'Something went wrong. Please try again.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = mode === 'signup' ? 'Create account' : 'Sign in';
+    }
+  });
+}
+
+/* =========================================================
+   PAGE: DASHBOARD (protected, any signed-in delegate)
+   ========================================================= */
+function renderDashboard(app){
+  const p = state.profile;
+  app.innerHTML = `
+    <div class="wrap dash">
+      <div class="dash-head">
+        <div>
+          <h1>Welcome, ${escapeHtml(p?.full_name || p?.email || 'delegate')}</h1>
+          <p class="sub">Delegate dashboard &middot; Session XIV</p>
+        </div>
+        <span class="badge ${p?.role === 'admin' ? 'admin' : ''}">${escapeHtml(p?.role || 'member')}</span>
+      </div>
+
+      <div class="panel">
+        <h3>Your profile</h3>
+        <dl class="kv">
+          <dt>Full name</dt><dd>${escapeHtml(p?.full_name || '—')}</dd>
+          <dt>Email</dt><dd>${escapeHtml(p?.email || '—')}</dd>
+          <dt>Committee</dt><dd>${escapeHtml(p?.committee || 'Not yet assigned')}</dd>
+          <dt>Country</dt><dd>${escapeHtml(p?.country || 'Not yet assigned')}</dd>
+          <dt>Role</dt><dd>${escapeHtml(p?.role || 'member')}</dd>
+        </dl>
+      </div>
+
+      <div class="panel">
+        <h3>Next steps</h3>
+        <p style="color:var(--ink-soft); font-size:.9rem;">
+          Committee and country assignments are published by the secretariat closer to the
+          conference date. You'll see them reflected in your profile above once confirmed.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================================================
+   PAGE: ADMIN (protected, role = admin)
+   ========================================================= */
+async function renderAdmin(app){
+  app.innerHTML = `
+    <div class="wrap dash">
+      <div class="dash-head">
+        <div>
+          <h1>Secretariat admin</h1>
+          <p class="sub">Manage the public secretariat roster</p>
+        </div>
+        <span class="badge admin">admin</span>
+      </div>
+
+      <div class="panel">
+        <h3 id="formTitle">Add a secretariat member</h3>
+        <form id="memberForm" class="admin-form">
+          <input type="hidden" id="mId">
+          <div class="field">
+            <label for="mName">Name</label>
+            <input id="mName" required placeholder="Jordan Ellis">
+          </div>
+          <div class="field">
+            <label for="mRole">Title</label>
+            <input id="mRole" required placeholder="Secretary-General">
+          </div>
+          <div class="field">
+            <label for="mCommittee">Committee (optional)</label>
+            <input id="mCommittee" placeholder="e.g. UNSC">
+          </div>
+          <div class="field">
+            <label for="mPhoto">Photo index (optional)</label>
+            <input id="mPhoto" type="number" min="1" placeholder="e.g. 1 → /member1.png">
+          </div>
+          <div class="field">
+            <label for="mSort">Sort order</label>
+            <input id="mSort" type="number" value="0">
+          </div>
+          <div class="field span-2" style="display:flex; gap:10px; align-items:flex-end;">
+            <button class="btn btn-primary btn-sm" type="submit" id="mSubmit">Add member</button>
+            <button class="btn btn-ghost btn-sm hidden" type="button" id="mCancel">Cancel edit</button>
+          </div>
+        </form>
+        <div class="auth-msg" id="adminMsg"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Roster</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Photo</th><th>Name</th><th>Title</th><th>Committee</th><th>Order</th><th></th></tr>
+            </thead>
+            <tbody id="rosterBody">
+              <tr><td colspan="6" style="text-align:center; color:var(--ink-faint); padding:24px;"><span class="loader"></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const form = document.getElementById('memberForm');
+  const msg = document.getElementById('adminMsg');
+  const cancelBtn = document.getElementById('mCancel');
+  const submitBtn = document.getElementById('mSubmit');
+  const formTitle = document.getElementById('formTitle');
+
+  function resetForm(){
+    form.reset();
+    document.getElementById('mId').value = '';
+    submitBtn.textContent = 'Add member';
+    formTitle.textContent = 'Add a secretariat member';
+    cancelBtn.classList.add('hidden');
+  }
+
+  cancelBtn.addEventListener('click', resetForm);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.className = 'auth-msg';
+    const id = document.getElementById('mId').value;
+    const payload = {
+      name: document.getElementById('mName').value.trim(),
+      role_title: document.getElementById('mRole').value.trim(),
+      committee: document.getElementById('mCommittee').value.trim() || null,
+      photo_index: document.getElementById('mPhoto').value ? Number(document.getElementById('mPhoto').value) : null,
+      sort_order: Number(document.getElementById('mSort').value || 0),
+    };
+    let error;
+    if (id){
+      ({ error } = await supabase.from('members').update(payload).eq('id', id));
+    } else {
+      ({ error } = await supabase.from('members').insert(payload));
+    }
+    if (error){
+      setMsg(msg, error.message, 'error');
+      return;
+    }
+    setMsg(msg, id ? 'Member updated.' : 'Member added.', 'ok');
+    resetForm();
+    loadRoster();
+  });
+
+  async function loadRoster(){
+    const body = document.getElementById('rosterBody');
+    const { data, error } = await supabase
+      .from('members')
+      .select('id, name, role_title, committee, photo_index, sort_order')
+      .order('sort_order', { ascending: true });
+
+    if (error){
+      body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--ink-faint); padding:24px;">Couldn't load roster.</td></tr>`;
+      return;
+    }
+    if (!data || data.length === 0){
+      body.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--ink-faint); padding:24px;">No members yet — add one above.</td></tr>`;
+      return;
+    }
+    body.innerHTML = data.map(m => `
+      <tr>
+        <td>${avatarHTML(m.name, m.photo_index, 'mini')}</td>
+        <td>${escapeHtml(m.name)}</td>
+        <td>${escapeHtml(m.role_title || '')}</td>
+        <td>${escapeHtml(m.committee || '—')}</td>
+        <td>${m.sort_order}</td>
+        <td class="row-actions">
+          <button class="btn btn-sm btn-ghost" data-edit="${m.id}">Edit</button>
+          <button class="btn btn-sm" data-del="${m.id}" style="border-color:#B2402A; color:#8C2E1B;">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+
+    body.querySelectorAll('[data-edit]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const m = data.find(x => x.id === btn.dataset.edit);
+        document.getElementById('mId').value = m.id;
+        document.getElementById('mName').value = m.name || '';
+        document.getElementById('mRole').value = m.role_title || '';
+        document.getElementById('mCommittee').value = m.committee || '';
+        document.getElementById('mPhoto').value = m.photo_index || '';
+        document.getElementById('mSort').value = m.sort_order || 0;
+        formTitle.textContent = 'Edit secretariat member';
+        submitBtn.textContent = 'Save changes';
+        cancelBtn.classList.remove('hidden');
+        window.scrollTo({ top: document.getElementById('memberForm').offsetTop - 100, behavior: 'smooth' });
+      });
+    });
+    body.querySelectorAll('[data-del]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Remove this member from the roster?')) return;
+        const { error } = await supabase.from('members').delete().eq('id', btn.dataset.del);
+        if (error){ setMsg(msg, error.message, 'error'); return; }
+        loadRoster();
+      });
+    });
+  }
+
+  loadRoster();
+}
+
+/* =========================================================
+   AUTH SESSION HANDLING
+   ========================================================= */
+async function loadProfile(userId){
+  const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
+  if (error){ return null; }
+  return data;
+}
+
+async function refreshSession(){
+  const { data: { session } } = await supabase.auth.getSession();
+  state.session = session;
+  state.profile = session ? await loadProfile(session.user.id) : null;
+}
+
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  state.session = session;
+  state.profile = session ? await loadProfile(session.user.id) : null;
+
+  if (session && currentPath() === '/login'){
+    location.hash = state.profile?.role === 'admin' ? '#/admin' : '#/dashboard';
+    return;
+  }
+  if (!session && routes[currentPath()]?.protected){
+    location.hash = '#/login';
+    return;
+  }
+  renderNavAuthArea();
+  if (routes[currentPath()]) router();
+});
+
+/* =========================================================
+   MOBILE NAV
+   ========================================================= */
+const navLinks = document.getElementById('navLinks');
+document.getElementById('menuToggle').addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+function closeMobileMenu(){ navLinks.classList.remove('open'); }
+
+/* =========================================================
+   INIT
+   ========================================================= */
+document.getElementById('year').textContent = new Date().getFullYear();
+(async () => {
+  await refreshSession();
+  await router();
+})();
+</script>
+</body>
+</html>
