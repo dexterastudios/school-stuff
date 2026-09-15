@@ -1,10 +1,297 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="#03050b">
-    <meta name="color-scheme" content="dark[...]">
-    [...]
+    <meta name="color-scheme" content="dark">
+    <title>PACE International MUN</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background-color: #03050b;
+        color: #e0e0e0;
+        line-height: 1.6;
+      }
+      
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background-color: rgba(3, 5, 11, 0.95);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+      
+      .brand-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #00d9ff, #0099cc);
+        border-radius: 50%;
+        font-weight: 900;
+        color: #03050b;
+        font-size: 1rem;
+      }
+      
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+      
+      .nav-link {
+        text-decoration: none;
+        color: #e0e0e0;
+        transition: color 0.3s ease;
+      }
+      
+      .nav-link:hover {
+        color: #00d9ff;
+      }
+      
+      .nav-actions {
+        display: flex;
+        gap: 1rem;
+      }
+      
+      .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-sm {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.875rem;
+      }
+      
+      .btn-primary {
+        background: linear-gradient(135deg, #00d9ff, #0099cc);
+        color: #03050b;
+      }
+      
+      .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+      }
+      
+      .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+      }
+      
+      .mobile-toggle svg {
+        width: 24px;
+        height: 24px;
+        stroke: #e0e0e0;
+        stroke-width: 2;
+        fill: none;
+      }
+      
+      main {
+        min-height: 100vh;
+      }
+      
+      .hero {
+        position: relative;
+        padding: 6rem 2rem;
+        background: radial-gradient(ellipse at center, rgba(0, 217, 255, 0.05) 0%, transparent 70%);
+        overflow: hidden;
+      }
+      
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+          linear-gradient(90deg, rgba(0, 217, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(rgba(0, 217, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+      }
+      
+      .hero-glow,
+      .hero-glow-2 {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.2;
+      }
+      
+      .hero-glow {
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, #00d9ff, transparent);
+        top: -100px;
+        right: -100px;
+      }
+      
+      .hero-glow-2 {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, #0099cc, transparent);
+        bottom: -50px;
+        left: 10%;
+      }
+      
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 1;
+      }
+      
+      .hero-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+      
+      .hero-card {
+        background: rgba(0, 217, 255, 0.05);
+        border: 1px solid rgba(0, 217, 255, 0.2);
+        border-radius: 1rem;
+        padding: 2rem;
+        backdrop-filter: blur(10px);
+      }
+      
+      .hero-card strong {
+        display: block;
+        font-size: 2rem;
+        margin: 1rem 0;
+        background: linear-gradient(135deg, #00d9ff, #00a3ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      
+      .tiny {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #00d9ff;
+        font-weight: 700;
+      }
+      
+      .divider {
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, #00d9ff, transparent);
+        margin: 1rem 0;
+      }
+      
+      footer {
+        background-color: rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(0, 217, 255, 0.2);
+        padding: 3rem 2rem 1rem;
+      }
+      
+      .footer-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+      
+      .footer-brand p {
+        margin-top: 1rem;
+        color: #999;
+        font-size: 0.875rem;
+      }
+      
+      .footer-title {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #00d9ff;
+      }
+      
+      .footer-links {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .footer-links a {
+        color: #999;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.3s ease;
+      }
+      
+      .footer-links a:hover {
+        color: #00d9ff;
+      }
+      
+      .footer-bottom {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 217, 255, 0.1);
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.875rem;
+        color: #666;
+      }
+      
+      @media (max-width: 768px) {
+        .mobile-toggle {
+          display: flex;
+        }
+        
+        .nav-menu {
+          display: none;
+        }
+        
+        .hero-layout {
+          grid-template-columns: 1fr;
+        }
+        
+        .footer-grid {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        
+        .footer-bottom {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -37,16 +324,26 @@
         <div class="hero-glow-2"></div>
 
         <div class="container hero-layout">
-          <div class="[...]">
-            [...]
-            <div style="width: 180px; height: 180px; object-fit: contain;">&gt;</div>
+          <div>
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; background: linear-gradient(135deg, #00d9ff, #00a3ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+              Global Diplomacy Redefined
+            </h1>
+            <p style="font-size: 1.125rem; color: #aaa; margin-bottom: 2rem; line-height: 1.8;">
+              PACE International MUN is a premier student-led diplomatic conference where young leaders gather to address global challenges through meaningful debate and collaborative problem-solving.
+            </p>
+            <div style="display: flex; gap: 1rem;">
+              <a href="#/register" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">Register Now</a>
+              <a href="#/about" class="btn" style="padding: 0.75rem 2rem; font-size: 1rem; border: 1px solid rgba(0, 217, 255, 0.5); color: #00d9ff;">Learn More</a>
+            </div>
           </div>
 
           <div class="hero-card">
             <div class="tiny">Conference focus</div>
             <strong>Where global diplomacy meets innovative discourse</strong>
             <div class="divider"></div>
-            <div class="he[...]"></div>
+            <p style="color: #aaa; line-height: 1.8;">
+              Our conference brings together delegates from around the world to engage in authentic diplomatic simulations, develop leadership skills, and foster lasting international connections.
+            </p>
           </div>
         </div>
       </section>
@@ -100,11 +397,27 @@
       </footer>
     </main>
 
-    <script type="module">
-      import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-      const cfg = window.__SUPABASE_CONFIG__ || {};
-      const supabase = createClient(cfg.url, cfg.[...])
-      [...]
+    <script>
+      // Update year automatically
+      document.getElementById('year').textContent = new Date().getFullYear();
+      
+      // Mobile menu toggle
+      const mobileToggle = document.getElementById('mobileToggle');
+      const navMenu = document.getElementById('navMenu');
+      
+      mobileToggle?.addEventListener('click', () => {
+        const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+        mobileToggle.setAttribute('aria-expanded', !isExpanded);
+        navMenu.style.display = isExpanded ? 'none' : 'flex';
+      });
+      
+      // Close menu when a link is clicked
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileToggle.setAttribute('aria-expanded', 'false');
+          navMenu.style.display = 'none';
+        });
+      });
     </script>
   </body>
 </html>
