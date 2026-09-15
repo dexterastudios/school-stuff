@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model United Nations</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          colors: {
+            zinc: { 50: '#fafafa', 100: '#f4f4f5', 300: '#d4d4d8', 400: '#a1a1aa', 500: '#71717a', 800: '#27272a', 900: '#18181b', 950: '#09090b' },
+            orange: { 500: '#f97316', 600: '#ea580c', 700: '#c2410c' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom CSS for SPA, Fallbacks, and Effects -->
+  <style>
+    body { background-color: #09090b; color: #fafafa; overflow-x: hidden; }
+    
+    /* SPA Routing */
+    .view { display: none; opacity: 0; transition: opacity 0.4s ease; }
+    .view.active { display: block; opacity: 1; }
+    
+    /* Image Fallback System */
+    .image-container .fallback { display: none; }
+    .image-container.img-error .real-image { display: none; }
+    .image-container.img-error .fallback {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      background-color: #ea580c;
+      color: #fafafa;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Cinematic Scroll Elements */
+    .flow-item {
+      will-change: transform, opacity;
+      transform-origin: center center;
+    }
+
+    /* Subtle background grid */
+    .bg-grid {
+      background-image: linear-gradient(to right, #80808012 1px, transparent 1px), linear-gradient(to bottom, #80808012 1px, transparent 1px);
+      background-size: 64px 64px;
+      mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%);
+    }
+  </style>
+</head>
+<body class="font-sans antialiased selection:bg-orange-600 selection:text-white">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 w-full bg-zinc-950/80 backdrop-blur-md border-b border-zinc-900 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#home" class="flex items-center gap-3 text-zinc-50 group">
+        <svg class="w-6 h-6 text-orange-600 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="font-serif text-xl tracking-wide font-semibold">MUN Society</span>
+      </a>
+      <div class="flex items-center gap-8 text-sm font-medium tracking-wide text-zinc-400">
+        <a href="#home" class="hover:text-orange-500 transition-colors uppercase tracking-widest text-xs">Home</a>
+        <a href="#members" class="hover:text-orange-500 transition-colors uppercase tracking-widest text-xs">Members</a>
+        
+        <div id="auth-buttons">
+          <a href="#login" class="px-5 py-2.5 bg-zinc-100 text-zinc-950 hover:bg-orange-600 hover:text-white transition-all uppercase tracking-widest text-xs" id="login-btn">Portal Login</a>
+          <button onclick="handleLogout()" class="hidden hover:text-zinc-50 transition-colors uppercase tracking-widest text-xs" id="logout-btn">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HOME VIEW -->
+  <main id="home" class="view active min-h-screen">
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex flex-col justify-center items-center px-6 pt-24 pb-16 overflow-hidden">
+      <div class="absolute inset-0 bg-grid z-0"></div>
+      
+      <div class="relative z-10 text-center max-w-4xl mx-auto my-auto">
+        <span class="inline-block py-1 px-3 border border-zinc-800 text-orange-500 text-xs tracking-widest uppercase mb-6 bg-zinc-900/50 backdrop-blur-sm">
+          Est. 2026 • Official Organization
+        </span>
+        <h1 class="font-serif text-6xl md:text-8xl leading-tight mb-6">
+          Diplomacy.<br />
+          <span class="text-zinc-500">Leadership.</span><br />
+          Impact.
+        </h1>
+        <p class="text-zinc-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed mb-10">
+          We are dedicated to fostering critical thinking, international awareness, and elite public speaking through rigorous debate and academic excellence.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-12">
+          <a href="#members" class="px-8 py-4 bg-orange-600 text-zinc-50 text-sm tracking-widest uppercase hover:bg-orange-700 transition-colors w-full sm:w-auto">
+            Meet the Delegates
+          </a>
+          <a href="#login" class="px-8 py-4 bg-transparent border border-zinc-800 text-zinc-300 text-sm tracking-widest uppercase hover:border-zinc-500 hover:text-zinc-50 transition-colors w-full sm:w-auto">
+            Member Portal
+          </a>
+        </div>
+
+        <!-- 16-Day Conference Countdown Timer -->
+        <div class="pt-8 border-t border-zinc-900/80 max-w-xl mx-auto">
+          <p class="text-[10px] tracking-[0.3em] uppercase text-zinc-500 mb-4">Annual Session Starts In</p>
+          <div class="grid grid-cols-4 gap-3 md:gap-4 text-center">
+            <div class="p-3 md:p-4 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-sm">
+              <span id="timer-days" class="font-serif text-2xl md:text-4xl font-semibold text-zinc-100 block">16</span>
+              <span class="text-[10px] tracking-widest uppercase text-orange-500 mt-1 block">Days</span>
+            </div>
+            <div class="p-3 md:p-4 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-sm">
+              <span id="timer-hours" class="font-serif text-2xl md:text-4xl font-semibold text-zinc-100 block">00</span>
+              <span class="text-[10px] tracking-widest uppercase text-orange-500 mt-1 block">Hours</span>
+            </div>
+            <div class="p-3 md:p-4 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-sm">
+              <span id="timer-minutes" class="font-serif text-2xl md:text-4xl font-semibold text-zinc-100 block">00</span>
+              <span class="text-[10px] tracking-widest uppercase text-orange-500 mt-1 block">Mins</span>
+            </div>
+            <div class="p-3 md:p-4 bg-zinc-900/40 border border-zinc-800/80 backdrop-blur-sm">
+              <span id="timer-seconds" class="font-serif text-2xl md:text-4xl font-semibold text-zinc-100 block">00</span>
+              <span class="text-[10px] tracking-widest uppercase text-orange-500 mt-1 block">Secs</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cinematic Roster Scroll -->
+    <section class="bg-zinc-950 py-32 relative">
+      <div class="max-w-2xl mx-auto px-6 text-center mb-24">
+        <h2 class="text-sm tracking-[0.3em] text-zinc-500 uppercase mb-4">The Delegation</h2>
+        <p class="font-serif text-4xl text-zinc-100">Meet the individuals leading global discourse.</p>
+      </div>
+      
+      <div id="cinematic-flow" class="flex flex-col items-center">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- MEMBERS DIRECTORY VIEW -->
+  <main id="members" class="view min-h-screen pt-32 pb-24 px-6">
+    <div class="max-w-7xl mx-auto">
+      <header class="mb-20 border-b border-zinc-900 pb-12">
+        <h1 class="font-serif text-5xl mb-6">Official Roster</h1>
+        <p class="text-zinc-400 max-w-xl text-lg">The distinguished members comprising our current executive board and standard delegation.</p>
+      </header>
+
+      <div id="members-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- LOGIN VIEW -->
+  <main id="login" class="view min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md">
+      <h2 class="mt-6 text-center text-3xl font-serif tracking-tight text-zinc-50">Member Portal</h2>
+      <p class="mt-2 text-center text-sm text-zinc-400 uppercase tracking-widest">Secure Authentication</p>
+    </div>
+
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+      <div class="bg-zinc-900/50 backdrop-blur-xl py-8 px-4 border border-zinc-800 shadow-2xl sm:px-10">
+        <form id="login-form" class="space-y-6">
+          <div>
+            <label for="email" class="block text-xs uppercase tracking-widest text-zinc-300">Email address</label>
+            <input id="email" type="email" required class="mt-2 block w-full appearance-none bg-zinc-950 border border-zinc-800 px-3 py-3 text-zinc-100 placeholder-zinc-600 focus:border-orange-500 focus:outline-none transition-colors" />
+          </div>
+          <div>
+            <label for="password" class="block text-xs uppercase tracking-widest text-zinc-300">Password</label>
+            <input id="password" type="password" required class="mt-2 block w-full appearance-none bg-zinc-950 border border-zinc-800 px-3 py-3 text-zinc-100 placeholder-zinc-600 focus:border-orange-500 focus:outline-none transition-colors" />
+          </div>
+
+          <div id="login-error" class="hidden text-orange-500 text-sm p-3 border border-orange-500/30 bg-orange-500/10"></div>
+
+          <button type="submit" id="submit-btn" class="flex w-full justify-center items-center bg-orange-600 py-3 px-4 text-sm tracking-widest uppercase text-white hover:bg-orange-700 transition-colors">
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* =========================================
+       1. DATA & SETUP
+    ========================================= */
+    const membersData = [
+      { id: 1, src: '/member1.png', name: 'Alexander Sterling', role: 'Secretary General', committee: 'Security Council' },
+      { id: 2, src: '/member2.png', name: 'Sophia Chen', role: 'Under-Secretary General', committee: 'ECOSOC' },
+      { id: 3, src: '/member3.png', name: 'Marcus Vance', role: 'Chair', committee: 'Security Council' },
+      { id: 4, src: '/member4.png', name: 'Elena Rostova', role: 'Director of Debate', committee: 'DISEC' },
+      { id: 5, src: '/member5.png', name: 'Julian Wright', role: 'Head of Logistics', committee: 'UNICEF' }
+    ];
+
+    /* =========================================
+       2. SPA ROUTING
+    ========================================= */
+    function handleRoute() {
+      let hash = window.location.hash || '#home';
+      document.querySelectorAll('.view').forEach(view => {
+        view.classList.remove('active');
+      });
+      
+      const targetView = document.querySelector(hash);
+      if (targetView) {
+        targetView.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        document.querySelector('#home').classList.add('active');
+      }
+    }
+
+    window.addEventListener('hashchange', handleRoute);
+    window.addEventListener('load', handleRoute);
+
+    /* =========================================
+       3. COUNTDOWN TIMER (16 DAYS)
+    ========================================= */
+    function initTimer() {
+      // Store dynamic end timestamp 16 days from initial launch in localStorage
+      let targetTime = localStorage.getItem('mun_timer_target');
+      if (!targetTime) {
+        targetTime = Date.now() + (16 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('mun_timer_target', targetTime);
+      } else {
+        targetTime = parseInt(targetTime, 10);
+      }
+
+      function updateTimer() {
+        const now = Date.now();
+        const diff = Math.max(0, targetTime - now);
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+
+        const dEl = document.getElementById('timer-days');
+        const hEl = document.getElementById('timer-hours');
+        const mEl = document.getElementById('timer-minutes');
+        const sEl = document.getElementById('timer-seconds');
+
+        if (dEl) dEl.innerText = String(days).padStart(2, '0');
+        if (hEl) hEl.innerText = String(hours).padStart(2, '0');
+        if (mEl) mEl.innerText = String(minutes).padStart(2, '0');
+        if (sEl) sEl.innerText = String(seconds).padStart(2, '0');
+      }
+
+      updateTimer();
+      setInterval(updateTimer, 1000);
+    }
+    initTimer();
+
+    /* =========================================
+       4. RENDER CONTENT & FALLBACKS
+    ========================================= */
+    function renderMembers() {
+      const flowContainer = document.getElementById('cinematic-flow');
+      const gridContainer = document.getElementById('members-grid');
+
+      membersData.forEach(member => {
+        // Build Flow Items (Home Page)
+        const flowItem = document.createElement('div');
+        flowItem.className = 'flow-item flex flex-col items-center justify-center h-[70vh] my-12 w-full';
+        flowItem.innerHTML = `
+          <div class="image-container w-[300px] h-[400px] md:w-[400px] md:h-[550px] relative overflow-hidden border border-zinc-800 shadow-2xl">
+            <div class="fallback">ID: 00${member.id}</div>
+            <img src="${member.src}" alt="${member.name}" class="real-image w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-700" onerror="this.parentElement.classList.add('img-error')">
+            <div class="absolute bottom-0 w-full p-8 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent z-10 pointer-events-none">
+              <h3 class="font-serif text-2xl text-zinc-50">${member.name}</h3>
+              <p class="text-orange-500 text-sm uppercase tracking-widest mt-2">${member.role}</p>
+            </div>
+          </div>
+        `;
+        flowContainer.appendChild(flowItem);
+
+        // Build Grid Items (Members Page)
+        const gridItem = document.createElement('article');
+        gridItem.className = 'group cursor-pointer';
+        gridItem.innerHTML = `
+          <div class="image-container aspect-[3/4] overflow-hidden bg-zinc-900 border border-zinc-800 relative mb-6">
+            <div class="fallback">${member.name.charAt(0)}</div>
+            <img src="${member.src}" alt="${member.name}" class="real-image w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-100 group-hover:scale-105" onerror="this.parentElement.classList.add('img-error')">
+          </div>
+          <div>
+            <p class="text-orange-500 text-xs tracking-widest uppercase mb-2">${member.committee}</p>
+            <h2 class="font-serif text-2xl mb-1 text-zinc-100 group-hover:text-white transition-colors">${member.name}</h2>
+            <p class="text-zinc-500 text-sm">${member.role}</p>
+          </div>
+        `;
+        gridContainer.appendChild(gridItem);
+      });
+    }
+    renderMembers();
+
+    /* =========================================
+       5. CINEMATIC SCROLL ANIMATION
+    ========================================= */
+    function updateCinematicScroll() {
+      if (!document.querySelector('#home').classList.contains('active')) return;
+
+      const items = document.querySelectorAll('.flow-item');
+      const centerY = window.innerHeight / 2;
+
+      items.forEach(item => {
+        const rect = item.getBoundingClientRect();
+        const itemCenterY = rect.top + (rect.height / 2);
+        
+        const dist = Math.abs(centerY - itemCenterY);
+        const maxDist = window.innerHeight;
+        
+        let scale = 1 - (dist / maxDist) * 0.4;
+        let opacity = 1 - (dist / maxDist) * 1.5;
+        
+        scale = Math.max(0.6, Math.min(1, scale));
+        opacity = Math.max(0.2, Math.min(1, opacity));
+        
+        item.style.transform = `scale(${scale})`;
+        item.style.opacity = opacity;
+      });
+    }
+    
+    window.addEventListener('scroll', () => {
+      window.requestAnimationFrame(updateCinematicScroll);
+    });
+    updateCinematicScroll();
+
+    /* =========================================
+       6. SUPABASE AUTHENTICATION
+    ========================================= */
+    const SUPABASE_URL = 'https://whwilpuynwudlddbxmwk.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_PUBLISHABLE_ANON_KEY_HERE';
+    
+    let supabaseClient = null;
+    
+    if (SUPABASE_ANON_KEY !== 'YOUR_PUBLISHABLE_ANON_KEY_HERE') {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        updateAuthUI(session);
+      });
+    }
+
+    function updateAuthUI(session) {
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      
+      if (session) {
+        loginBtn.classList.add('hidden');
+        logoutBtn.classList.remove('hidden');
+      } else {
+        loginBtn.classList.remove('hidden');
+        logoutBtn.classList.add('hidden');
+      }
+    }
+
+    async function handleLogout() {
+      if(supabaseClient) {
+        await supabaseClient.auth.signOut();
+      } else {
+        localStorage.removeItem('mun_auth');
+        updateAuthUI(null);
+      }
+      window.location.hash = '#home';
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('login-error');
+      const submitBtn = document.getElementById('submit-btn');
+      
+      errorDiv.classList.add('hidden');
+      submitBtn.innerText = 'Authenticating...';
+      submitBtn.disabled = true;
+
+      try {
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          
+          const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('redirect_url')
+            .eq('id', data.user.id)
+            .single();
+            
+          window.location.hash = profile?.redirect_url || '#members';
+        } else {
+          setTimeout(() => {
+            localStorage.setItem('mun_auth', 'true');
+            updateAuthUI({ user: { email } });
+            window.location.hash = '#members';
+            submitBtn.innerText = 'Sign In';
+            submitBtn.disabled = false;
+          }, 1000);
+        }
+      } catch (err) {
+        errorDiv.innerText = err.message || 'Authentication failed.';
+        errorDiv.classList.remove('hidden');
+        submitBtn.innerText = 'Sign In';
+        submitBtn.disabled = false;
+      }
+    });
+
+    if (!supabaseClient && localStorage.getItem('mun_auth')) {
+      updateAuthUI({ user: { mocked: true } });
+    }
+  </script>
+</body>
+</html>
