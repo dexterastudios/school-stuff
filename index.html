@@ -1911,7 +1911,90 @@ tbody tr:hover{
           <span class="brand-mark"><span>PI</span></span>
           <span>PACE International MUN</span>
         </a>
+<div class="countdown-container">
+  <div class="time-box">
+    <span id="days">00</span>
+    <p>DAYS</p>
+  </div>
+  <div class="time-box">
+    <span id="hours">00</span>
+    <p>HOURS</p>
+  </div>
+  <div class="time-box">
+    <span id="minutes">00</span>
+    <p>MINUTES</p>
+  </div>
+  <div class="time-box">
+    <span id="seconds">00</span>
+    <p>SECONDS</p>
+  </div>
+</div>
+<style>
+/* Container styling /
+.countdown-container {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
 
+.time-box span {
+  display: inline-block;
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+/ Pulse animation on tick /
+.tick {
+  animation: pulse 0.3s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); color: #eab308; } / Optional accent color pop */
+  100% { transform: scale(1); }
+}
+</style>
+<script>
+// Target date: Saturday, October 31, 2026
+const targetDate = new Date("October 31, 2026 00:00:00").getTime();
+
+function updateCountdown() {
+  const now = new Date().getTime();
+  const difference = targetDate - now;
+
+  if (difference <= 0) {
+    document.querySelector(".countdown-container").innerHTML = "<h2>The Event Has Begun!</h2>";
+    return;
+  }
+
+  // Time calculations
+  const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+  // Helper to apply values and trigger pulse animation on change
+  function setElementValue(id, value) {
+    const el = document.getElementById(id);
+    const formattedValue = String(value).padStart(2, '0');
+
+    if (el.innerText !== formattedValue) {
+      el.innerText = formattedValue;
+      el.classList.remove('tick');
+      void el.offsetWidth; // Trigger CSS reflow
+      el.classList.add('tick');
+    }
+  }
+
+  setElementValue('days', days);
+  setElementValue('hours', hours);
+  setElementValue('minutes', minutes);
+  setElementValue('seconds', seconds);
+}
+
+// Initial call and interval loop
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
         <p>
           A student-led diplomatic conference built around preparation,
           procedure, leadership and meaningful debate.
