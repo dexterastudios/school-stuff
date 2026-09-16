@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaceMUN II — Chair Applications</title>
+<style>
+:root{
+  --orange:#f28c28;
+  --orange2:#ffad4d;
+  --bg:#0d0f12;
+  --card:#15181d;
+  --card2:#101318;
+  --text:#f4f5f7;
+  --muted:#9da3ad;
+  --line:#292e36;
+  --danger:#ff6b6b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:
+  radial-gradient(circle at 85% 0%,rgba(242,140,40,.13),transparent 30%),
+  radial-gradient(circle at 10% 100%,rgba(242,140,40,.06),transparent 25%),
+  var(--bg);color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  min-height:100vh;
+}
+.container{width:min(900px,calc(100% - 32px));margin:48px auto 80px}
+.hero{padding:12px 4px 34px}
+.eyebrow{color:var(--orange2);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+h1{font-size:clamp(34px,6vw,58px);line-height:1;margin:10px 0 14px;letter-spacing:-.04em}
+.subtitle{font-size:18px;color:var(--muted);margin:0 0 20px}
+.dates{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(242,140,40,.3);background:rgba(242,140,40,.08);padding:9px 13px;border-radius:999px;font-size:13px;font-weight:700}
+.card{background:rgba(21,24,29,.92);border:1px solid var(--line);border-radius:20px;padding:28px;margin-bottom:16px;box-shadow:0 20px 60px rgba(0,0,0,.18)}
+.section-title{font-size:20px;font-weight:800;margin:0 0 22px}
+.question{margin-bottom:25px}
+.question:last-child{margin-bottom:0}
+label,.label{display:block;font-size:14px;font-weight:700;margin-bottom:9px}
+.required{color:var(--orange2)}
+input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],textarea,select{
+  width:100%;border:1px solid var(--line);background:var(--card2);color:var(--text);
+  border-radius:11px;padding:13px 14px;font:inherit;outline:none;transition:.2s;
+}
+textarea{min-height:120px;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(242,140,40,.1)}
+input::placeholder,textarea::placeholder{color:#676e79}
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice{
+  position:relative;display:flex;align-items:center;gap:10px;padding:13px;
+  border:1px solid var(--line);border-radius:11px;background:var(--card2);cursor:pointer;
+  transition:.2s;font-size:14px
+}
+.choice:hover{border-color:#454b55}
+.choice:has(input:checked){border-color:var(--orange);background:rgba(242,140,40,.08)}
+.choice input{accent-color:var(--orange)}
+.upload{
+  border:1px dashed #424954;background:var(--card2);padding:18px;border-radius:12px
+}
+.upload small{display:block;color:var(--muted);margin-top:7px;line-height:1.5}
+input[type=file]{width:100%;font:inherit;color:var(--muted)}
+.preference{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.preference .rank{color:var(--orange2);font-size:12px;font-weight:800;letter-spacing:.08em}
+.confirm{display:flex;align-items:flex-start;gap:12px}
+.confirm input{margin-top:4px;accent-color:var(--orange);width:18px;height:18px;flex:none}
+.actions{display:flex;justify-content:flex-end;gap:12px}
+button{
+  border:0;border-radius:12px;padding:14px 24px;font:inherit;font-weight:800;cursor:pointer
+}
+.submit{background:var(--orange);color:#111;box-shadow:0 10px 25px rgba(242,140,40,.2)}
+.submit:hover{background:var(--orange2);transform:translateY(-1px)}
+.reset{background:#242931;color:#fff}
+.note{color:var(--muted);font-size:12px;line-height:1.6;margin-top:16px}
+.error{color:var(--danger);font-size:12px;margin-top:6px;display:none}
+.success{display:none;margin-top:18px;border:1px solid #315d43;background:rgba(47,125,73,.12);padding:15px;border-radius:12px;color:#b8e9c9}
+.footer{text-align:center;color:#666d78;font-size:12px;margin-top:25px}
+@media(max-width:650px){.container{margin-top:25px}.card{padding:20px}.choice-grid{grid-template-columns:1fr}.preference{grid-template-columns:1fr}.actions{flex-direction:column}.actions button{width:100%}}
+</style>
+</head>
+<body>
+<main class="container">
+  <header class="hero">
+    <div class="eyebrow">Pace International • MUN</div>
+    <h1>PaceMUN II<br>Chair Applications</h1>
+    <p class="subtitle">May the best Chair win.</p>
+    <div class="dates">31st October &nbsp;·&nbsp; 1st November</div>
+  </header>
+
+  <form id="chairForm" novalidate>
+    <section class="card">
+      <h2 class="section-title">Personal Information</h2>
+
+      <div class="question">
+        <label for="name">1. Full Name <span class="required">*</span></label>
+        <input id="name" name="fullName" type="text" required placeholder="Enter your full name">
+      </div>
+
+      <div class="question">
+        <label for="school">2. School/University Name <span class="required">*</span></label>
+        <input id="school" name="school" type="text" required>
+      </div>
+
+      <div class="question">
+        <label for="dob">3. Date of Birth <span class="required">*</span></label>
+        <input id="dob" name="dateOfBirth" type="date" required>
+      </div>
+
+      <div class="question">
+        <label for="munCount">4. How many MUNs have you attended so far? <span class="required">*</span></label>
+        <input id="munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">MUN Experience</h2>
+
+      <div class="question">
+        <label for="munCertificates">5. MUN participation certificates/awards received from prior conferences <span class="required">*</span></label>
+        <div class="upload">
+          <input id="munCertificates" name="munCertificates" type="file" multiple required>
+          <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
+          <div class="error" id="munCertificatesError"></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label for="chairCount">6. How many Chairing Experiences do you have so far? <span class="required">*</span></label>
+        <input id="chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
+      </div>
+
+      <div class="question">
+        <label for="chairCertificates">7. MUN chair certificates/awards received from prior conferences <span class="required">*</span></label>
+        <div class="upload">
+          <input id="chairCertificates" name="chairCertificates" type="file" multiple required>
+          <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
+          <div class="error" id="chairCertificatesError"></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label for="resume">8. Attach Your Resume <span class="required">*</span></label>
+        <div class="upload">
+          <input id="resume" name="resume" type="file" required>
+          <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
+          <div class="error" id="resumeError"></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label for="lor">9. LOR <span class="required">*</span></label>
+        <div class="upload">
+          <input id="lor" name="lor" type="file" required>
+          <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
+          <div class="error" id="lorError"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Committee Preferences</h2>
+
+      <div class="question">
+        <label>10. Preferred Committee — First Preference <span class="required">*</span></label>
+        <div class="choice-grid">
+          <label class="choice"><input type="radio" name="firstPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <span>— Junior</span></label>
+          <label class="choice"><input type="radio" name="firstPreference" value="UNHRC (Intermediate)"> UNHRC <span>— Intermediate</span></label>
+          <label class="choice"><input type="radio" name="firstPreference" value="UNODC (Intermediate)"> UNODC <span>— Intermediate</span></label>
+          <label class="choice"><input type="radio" name="firstPreference" value="UNCTAD (Advanced)"> UNCTAD <span>— Advanced</span></label>
+          <label class="choice"><input type="radio" name="firstPreference" value="INTERPOL (Advanced)"> INTERPOL <span>— Advanced</span></label>
+          <label class="choice"><input type="radio" name="firstPreference" value="DISEC (Beginner)"> DISEC <span>— Beginner</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>11. Preferred Committee — Second Preference <span class="required">*</span></label>
+        <div class="choice-grid">
+          <label class="choice"><input type="radio" name="secondPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <span>— Junior</span></label>
+          <label class="choice"><input type="radio" name="secondPreference" value="UNHRC (Intermediate)"> UNHRC <span>— Intermediate</span></label>
+          <label class="choice"><input type="radio" name="secondPreference" value="UNODC (Intermediate)"> UNODC <span>— Intermediate</span></label>
+          <label class="choice"><input type="radio" name="secondPreference" value="UNCTAD (Advanced)"> UNCTAD <span>— Advanced</span></label>
+          <label class="choice"><input type="radio" name="secondPreference" value="INTERPOL (Advanced)"> INTERPOL <span>— Advanced</span></label>
+          <label class="choice"><input type="radio" name="secondPreference" value="DISEC (Beginner)"> DISEC <span>— Beginner</span></label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label for="whyFirst">12. Why did you pick your first preference as your first preference? <span class="required">*</span></label>
+        <textarea id="whyFirst" name="whyFirst" required placeholder="Tell us why this committee suits you..."></textarea>
+      </div>
+
+      <div class="question">
+        <label for="gavel">13. If your gavel could speak, what would your gavel tell about you after a conference? <span class="required">*</span></label>
+        <textarea id="gavel" name="gavel" required></textarea>
+      </div>
+
+      <div class="question">
+        <label for="whyPace">14. Why would you like to attend PaceMUN II? <span class="required">*</span></label>
+        <textarea id="whyPace" name="whyPace" required></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Contact & Preferences</h2>
+
+      <div class="question">
+        <label for="email">15. Email Address — for selection results <span class="required">*</span></label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com">
+      </div>
+
+      <div class="question">
+        <label for="phone">16. Contact No. — for WhatsApp <span class="required">*</span></label>
+        <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX">
+      </div>
+
+      <div class="question">
+        <label for="coordinatorPhone">17. MUN Coordinator's Contact No. — for WhatsApp <span class="required">*</span></label>
+        <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required>
+      </div>
+
+      <div class="question">
+        <label>18. Food Preference <span class="required">*</span></label>
+        <div class="choice-grid">
+          <label class="choice"><input type="radio" name="food" value="Veg" required> Veg</label>
+          <label class="choice"><input type="radio" name="food" value="Non Veg"> Non Veg</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label for="allergies">19. Any food allergy/allergies?</label>
+        <textarea id="allergies" name="allergies" placeholder="Write 'None' if you have no allergies."></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Declaration</h2>
+      <div class="question">
+        <label class="confirm">
+          <input type="checkbox" id="confirmation" name="confirmation" required>
+          <span>20. I confirm that all information provided is accurate and that I am willing to fulfill the responsibilities associated with this position, such as attending training and any other required sessions/meetings. <span class="required">*</span></span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button type="reset" class="reset">Clear Form</button>
+        <button type="submit" class="submit">Submit Application →</button>
+      </div>
+      <div class="success" id="success">Application validated successfully. To actually receive submissions and uploaded files, connect this form to a backend/database or form service.</div>
+      <p class="note">Your information and uploaded documents are not automatically sent anywhere by this standalone HTML file. A backend connection is required for real submissions.</p>
+    </section>
+  </form>
+
+  <footer class="footer">PaceMUN II · Chair Applications · 31st Oct & 1st Nov</footer>
+</main>
+
+<script>
+const MAX = 100 * 1024 * 1024;
+const allowed = new Set([
+  "application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  "application/pdf","image/*","video/*","audio/*"
+]);
+
+function validFile(file){
+  if(file.size > MAX) return "Each file must be 100 MB or smaller.";
+  if(allowed.has(file.type) || [...allowed].some(x => x.endsWith("/*") && file.type.startsWith(x.slice(0,-1)))) return "";
+  return "This file type is not supported.";
+}
+
+function validateUpload(id, maxFiles){
+  const input=document.getElementById(id), error=document.getElementById(id+"Error");
+  error.style.display="none"; error.textContent="";
+  if(input.required && input.files.length===0){
+    error.textContent="Please upload at least one file."; error.style.display="block"; return false;
+  }
+  if(input.files.length>maxFiles){
+    error.textContent=`You can upload a maximum of ${maxFiles} file${maxFiles>1?"s":""}.`; error.style.display="block"; return false;
+  }
+  for(const file of input.files){
+    const msg=validFile(file);
+    if(msg){error.textContent=msg;error.style.display="block";return false;}
+  }
+  return true;
+}
+
+document.getElementById("chairForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  const f=e.target;
+  const uploads=[
+    validateUpload("munCertificates",5),
+    validateUpload("chairCertificates",5),
+    validateUpload("resume",1),
+    validateUpload("lor",1)
+  ];
+  if(!f.checkValidity() || uploads.some(x=>!x)){
+    f.reportValidity();
+    return;
+  }
+  document.getElementById("success").style.display="block";
+  document.getElementById("success").scrollIntoView({behavior:"smooth",block:"center"});
+});
+
+["munCertificates","chairCertificates","resume","lor"].forEach(id=>{
+  document.getElementById(id).addEventListener("change",()=>{
+    validateUpload(id, id.includes("Certificates") ? 5 : 1);
+  });
+});
+
+document.getElementById("chairForm").addEventListener("reset",()=>{
+  setTimeout(()=>document.getElementById("success").style.display="none",0);
+});
+</script>
+</body>
+</html>
