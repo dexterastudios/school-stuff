@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -196,7 +198,15 @@ button{
       </div>
 
       <div class="question">
-        <label>3. Date of Birth <span class="required">*</span></label>
+        <label>3. Gender <span class="required">*</span></label>
+        <div class="choice-grid">
+          <label class="choice"><input type="radio" name="gender" value="Male" required> Male</label>
+          <label class="choice"><input type="radio" name="gender" value="Female"> Female</label>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>4. Date of Birth <span class="required">*</span></label>
         <div class="dob-scroll">
           <select id="dobDay" aria-label="Day" required>
             <option value="">Day</option>
@@ -224,7 +234,7 @@ button{
       </div>
 
       <div class="question">
-        <label for="munCount">4. How many MUNs have you attended so far? <span class="required">*</span></label>
+        <label for="munCount">5. How many MUNs have you attended so far? <span class="required">*</span></label>
         <input id="munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
       </div>
     </section>
@@ -233,7 +243,7 @@ button{
       <div class="eyebrow" style="margin-bottom:7px">02 · Experience</div><h2 class="section-title">MUN Experience</h2>
 
       <div class="question">
-        <label for="munCertificates">5. MUN participation certificates/awards received from prior conferences <span class="required">*</span></label>
+        <label for="munCertificates">6. MUN participation certificates/awards received from prior conferences <span class="required">*</span></label>
         <div class="upload">
           <input id="munCertificates" name="munCertificates" type="file" multiple required>
           <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
@@ -242,12 +252,12 @@ button{
       </div>
 
       <div class="question">
-        <label for="chairCount">6. How many Chairing Experiences do you have so far? <span class="required">*</span></label>
+        <label for="chairCount">7. How many Chairing Experiences do you have so far? <span class="required">*</span></label>
         <input id="chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
       </div>
 
       <div class="question">
-        <label for="chairCertificates">7. MUN chair certificates/awards received from prior conferences <span class="required">*</span></label>
+        <label for="chairCertificates">8. MUN chair certificates/awards received from prior conferences <span class="required">*</span></label>
         <div class="upload">
           <input id="chairCertificates" name="chairCertificates" type="file" multiple required>
           <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
@@ -256,7 +266,7 @@ button{
       </div>
 
       <div class="question">
-        <label for="resume">8. Attach Your Resume <span class="required">*</span></label>
+        <label for="resume">9. Attach Your Resume <span class="required">*</span></label>
         <div class="upload">
           <input id="resume" name="resume" type="file" required>
           <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
@@ -265,7 +275,7 @@ button{
       </div>
 
       <div class="question">
-        <label for="lor">9. LOR <span class="required">*</span></label>
+        <label for="lor">10. LOR <span class="required">*</span></label>
         <div class="upload">
           <input id="lor" name="lor" type="file" required>
           <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
@@ -278,7 +288,7 @@ button{
       <div class="eyebrow" style="margin-bottom:7px">03 · The floor</div><h2 class="section-title">Committee Preferences</h2>
 
       <div class="question">
-        <label>10. Preferred Committee — First Preference <span class="required">*</span></label>
+        <label>12. Preferred Committee — First Preference <span class="required">*</span></label>
         <div class="choice-grid">
           <label class="choice"><input type="radio" name="firstPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <span>— Junior</span></label>
           <label class="choice"><input type="radio" name="firstPreference" value="UNHRC (Intermediate)"> UNHRC <span>— Intermediate</span></label>
@@ -302,17 +312,17 @@ button{
       </div>
 
       <div class="question">
-        <label for="whyFirst">12. Why did you pick your first preference as your first preference? <span class="required">*</span></label>
+        <label for="whyFirst">13. Why did you pick your first preference as your first preference? <span class="required">*</span></label>
         <textarea id="whyFirst" name="whyFirst" required placeholder="Tell us why this committee suits you..."></textarea>
       </div>
 
       <div class="question">
-        <label for="gavel">13. If your gavel could speak, what would your gavel tell about you after a conference? <span class="required">*</span></label>
+        <label for="gavel">14. If your gavel could speak, what would your gavel tell about you after a conference? <span class="required">*</span></label>
         <textarea id="gavel" name="gavel" required></textarea>
       </div>
 
       <div class="question">
-        <label for="whyPace">14. Why would you like to attend PaceMUN II? <span class="required">*</span></label>
+        <label for="whyPace">15. Why would you like to attend PaceMUN II? <span class="required">*</span></label>
         <textarea id="whyPace" name="whyPace" required></textarea>
       </div>
     </section>
@@ -321,22 +331,22 @@ button{
       <div class="eyebrow" style="margin-bottom:7px">04 · Details</div><h2 class="section-title">Contact & Preferences</h2>
 
       <div class="question">
-        <label for="email">15. Email Address — for selection results <span class="required">*</span></label>
+        <label for="email">16. Email Address — for selection results <span class="required">*</span></label>
         <input id="email" name="email" type="email" required placeholder="you@example.com">
       </div>
 
       <div class="question">
-        <label for="phone">16. Contact No. — for WhatsApp <span class="required">*</span></label>
+        <label for="phone">17. Contact No. — for WhatsApp <span class="required">*</span></label>
         <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX">
       </div>
 
       <div class="question">
-        <label for="coordinatorPhone">17. MUN Coordinator's Contact No. — for WhatsApp <span class="required">*</span></label>
+        <label for="coordinatorPhone">18. MUN Coordinator's Contact No. — for WhatsApp <span class="required">*</span></label>
         <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required>
       </div>
 
       <div class="question">
-        <label>18. Food Preference <span class="required">*</span></label>
+        <label>19. Food Preference <span class="required">*</span></label>
         <div class="choice-grid">
           <label class="choice"><input type="radio" name="food" value="Veg" required> Veg</label>
           <label class="choice"><input type="radio" name="food" value="Non Veg"> Non Veg</label>
@@ -344,7 +354,7 @@ button{
       </div>
 
       <div class="question">
-        <label for="allergies">19. Any food allergy/allergies?</label>
+        <label for="allergies">20. Any food allergy/allergies?</label>
         <textarea id="allergies" name="allergies" placeholder="Write 'None' if you have no allergies."></textarea>
       </div>
     </section>
@@ -354,7 +364,7 @@ button{
       <div class="question">
         <label class="confirm">
           <input type="checkbox" id="confirmation" name="confirmation" required>
-          <span>20. I confirm that all information provided is accurate and that I am willing to fulfill the responsibilities associated with this position, such as attending training and any other required sessions/meetings. <span class="required">*</span></span>
+          <span>21. I confirm that all information provided is accurate and that I am willing to fulfill the responsibilities associated with this position, such as attending training and any other required sessions/meetings. <span class="required">*</span></span>
         </label>
       </div>
 
@@ -499,6 +509,7 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
       applicationId
     );
 
+    const gender = f.querySelector('input[name="gender"]:checked')?.value || "";
     const firstPreference = f.querySelector('input[name="firstPreference"]:checked')?.value || "";
     const secondPreference = f.querySelector('input[name="secondPreference"]:checked')?.value || "";
     const food = f.querySelector('input[name="food"]:checked')?.value || "";
@@ -509,6 +520,7 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
         id: applicationId,
         full_name: f.fullName.value.trim(),
         school: f.school.value.trim(),
+        gender: gender,
         date_of_birth: f.dateOfBirth.value,
         mun_count: Number(f.munCount.value),
         mun_certificates: munCertificates,
@@ -557,5 +569,6 @@ document.getElementById("chairForm").addEventListener("reset",()=>{
   setTimeout(()=>document.getElementById("success").style.display="none",0);
 });
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"6beff27781ee4f178e97521268a2620f","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
