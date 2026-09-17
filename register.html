@@ -1,383 +1,483 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#03050b">
+<meta name="theme-color" content="#050a16">
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 <title>PaceMUN II — Chair Applications</title>
 <style>
 :root{
-  --bg:#03050b;
-  --bg2:#070a12;
-  --bg3:#0b0f19;
-  --panel:rgba(12,16,26,.82);
-  --panel2:rgba(255,255,255,.025);
-  --gold:#e6a52c;
-  --gold2:#ffca4b;
-  --gold3:#9e6c19;
-  --text:#f3f4f7;
-  --muted:#8c94a5;
-  --muted2:#616a7a;
-  --line:rgba(255,255,255,.09);
-  --line2:rgba(255,255,255,.14);
-  --success:#5cdea6;
-  --danger:#ff7777;
-  --max:1240px;
-  --ease:cubic-bezier(.2,.75,.2,1);
+  --bg:#050a16;
+  --bg-deep:#03060f;
+  --panel:#0a1229;
+  --panel-soft:#0d1730;
+  --line:rgba(207,216,236,.12);
+  --line-soft:rgba(207,216,236,.07);
+  --ink:#eef1f8;
+  --muted:#8d97b3;
+  --muted-dim:#5b6584;
+  --brass:#c8a24a;
+  --brass-bright:#e7c374;
+  --brass-dim:rgba(200,162,74,.14);
+  --success:#5fcf9e;
+  --danger:#e2685f;
+  --radius:14px;
+  --ease:cubic-bezier(.22,.8,.26,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:hidden;width:100%}
+html{scroll-behavior:smooth}
 body{
-  margin:0;min-height:100vh;width:100%;color:var(--text);
+  margin:0;min-height:100vh;color:var(--ink);
   background:
-    radial-gradient(circle at 12% -4%,rgba(230,165,44,.09),transparent 28%),
-    radial-gradient(circle at 95% 5%,rgba(95,108,255,.06),transparent 22%),
-    linear-gradient(180deg,#020409 0%,#03050b 52%,#020409 100%);
+    radial-gradient(ellipse 900px 500px at 15% -10%,rgba(200,162,74,.07),transparent 60%),
+    radial-gradient(ellipse 700px 500px at 100% 10%,rgba(72,98,168,.10),transparent 55%),
+    linear-gradient(180deg,var(--bg-deep) 0%,var(--bg) 40%,var(--bg-deep) 100%);
   font-family:"DM Sans",system-ui,sans-serif;
   overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6;
 }
-main.container{overflow-x:hidden}
 body::before{
-  content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;
-  opacity:.035;mix-blend-mode:soft-light;
+  content:"";position:fixed;inset:0;z-index:2000;pointer-events:none;
+  opacity:.03;mix-blend-mode:soft-light;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-::selection{background:rgba(230,165,44,.28);color:#fff}
-.container{width:min(940px,calc(100% - 34px));margin:0 auto}
-.hero{
-  position:relative;min-height:48vh;display:flex;align-items:center;
-  padding:105px 0 65px;overflow:hidden;
+::selection{background:rgba(200,162,74,.3);color:#0a0f1c}
+:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px}
+
+/* ---------- shell ---------- */
+.wrap{width:min(680px,calc(100% - 40px));margin:0 auto}
+
+/* ---------- progress rail ---------- */
+.rail{
+  position:fixed;top:0;left:0;right:0;height:3px;background:var(--line-soft);z-index:500;
 }
-.hero::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.024) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.024) 1px,transparent 1px);
-  background-size:48px 48px;
-  mask-image:linear-gradient(to bottom,black,transparent 90%);
+.rail-fill{
+  height:100%;width:0%;background:linear-gradient(90deg,var(--brass),var(--brass-bright));
+  transition:width .5s var(--ease);
 }
-.hero::after{
-  content:"";position:absolute;width:620px;height:620px;right:-250px;top:-300px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(230,165,44,.11),transparent 70%);
-  filter:blur(20px);pointer-events:none;
+.topbar{
+  position:fixed;top:3px;left:0;right:0;z-index:400;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 0;background:linear-gradient(180deg,var(--bg-deep) 60%,transparent);
 }
-.hero-content{position:relative;z-index:1}
-.eyebrow{
-  display:inline-block;color:var(--gold2);font-size:.67rem;font-weight:800;
-  letter-spacing:.17em;text-transform:uppercase;
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:"Manrope",sans-serif;font-weight:800;font-size:.82rem;letter-spacing:-.01em;color:#dfe4f0}
+.brand em{font-style:normal;color:var(--brass-bright)}
+.step-count{font-family:"Manrope",sans-serif;font-size:.72rem;font-weight:700;color:var(--muted)}
+
+/* ---------- steps ---------- */
+.stage{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 140px;position:relative}
+.step{display:none}
+.step.active{display:block;animation:rise .5s var(--ease)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.step.active{animation:none}}
+
+.step-kicker{
+  font-family:"Manrope",sans-serif;font-size:.72rem;font-weight:700;color:var(--brass-bright);
+  margin:0 0 14px;
 }
-h1{
-  margin:18px 0 14px;font-family:"Manrope",sans-serif;font-weight:800;
-  font-size:clamp(3rem,7vw,5.7rem);line-height:.94;letter-spacing:-.065em;
-  max-width:800px;
+.step-kicker span{color:var(--muted-dim)}
+
+h1.intro-title{
+  font-family:"Playfair Display",serif;font-weight:600;font-style:normal;
+  font-size:clamp(2.6rem,6.4vw,3.9rem);line-height:1.04;letter-spacing:-.01em;
+  margin:0 0 20px;max-width:11ch;
 }
-.subtitle{font-size:1rem;color:var(--muted);margin:0 0 22px}
-.dates{
-  display:inline-flex;align-items:center;padding:9px 14px;
-  border:1px solid rgba(230,165,44,.22);border-radius:999px;
-  background:rgba(230,165,44,.055);color:#d8dce4;
-  font-size:.7rem;font-weight:700;letter-spacing:.04em;
+.intro-title .ampersand{font-style:italic;color:var(--brass-bright)}
+.intro-copy{color:var(--muted);font-size:1rem;max-width:52ch;margin:0 0 10px}
+.intro-meta{
+  display:flex;gap:22px;flex-wrap:wrap;margin:30px 0 38px;
+  font-family:"Manrope",sans-serif;font-size:.74rem;color:#c4cae0;
 }
-.card{
-  position:relative;background:rgba(255,255,255,.017);
-  border:1px solid var(--line);border-radius:18px;padding:29px;
-  margin-bottom:14px;overflow:hidden;
-  box-shadow:0 25px 70px rgba(0,0,0,.18);
+.intro-meta div{display:flex;flex-direction:column;gap:4px;padding-left:14px;border-left:2px solid var(--brass-dim)}
+.intro-meta b{font-weight:700;color:var(--ink);font-size:.86rem}
+.intro-meta small{color:var(--muted-dim);font-weight:500}
+
+.q-label{
+  font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(1.5rem,3.6vw,2.05rem);
+  line-height:1.28;letter-spacing:-.005em;margin:0 0 22px;max-width:26ch;color:#f4f6fb;
 }
-.card::before{
-  content:"";position:absolute;left:0;top:0;width:100%;height:1px;
-  background:linear-gradient(90deg,rgba(230,165,44,.4),transparent 45%);
+.q-label .req{font-family:"DM Sans",sans-serif;font-size:.62em;color:var(--brass-bright);vertical-align:top}
+.q-help{color:var(--muted);font-size:.84rem;margin:-14px 0 22px;max-width:48ch}
+
+input[type=text],input[type=email],input[type=tel],input[type=number],textarea,select{
+  width:100%;border:1px solid var(--line);background:var(--panel-soft);
+  color:var(--ink);border-radius:10px;padding:15px 16px;
+  font:inherit;font-size:.94rem;outline:none;transition:border .2s,box-shadow .2s,background .2s;
 }
-.section-title{
-  margin:0 0 25px;font-family:"Manrope",sans-serif;font-size:1rem;
-  font-weight:800;letter-spacing:-.02em;
-}
-.question{margin-bottom:27px}
-.question:last-child{margin-bottom:0}
-label,.label{
-  display:block;color:#dce0e7;font-size:.72rem;font-weight:700;
-  margin-bottom:9px;line-height:1.55;
-}
-.required{color:var(--gold2)}
-input[type=text],input[type=email],input[type=tel],input[type=number],input[type=date],textarea,select{
-  width:100%;border:1px solid var(--line);background:rgba(255,255,255,.022);
-  color:var(--text);border-radius:10px;padding:13px 14px;
-  font:inherit;font-size:.78rem;outline:none;transition:border .2s,box-shadow .2s,background .2s;
-}
-input::placeholder,textarea::placeholder{color:#555d6c}
+input::placeholder,textarea::placeholder{color:var(--muted-dim)}
 input:focus,textarea:focus,select:focus{
-  border-color:rgba(230,165,44,.55);
-  box-shadow:0 0 0 3px rgba(230,165,44,.08);
-  background:rgba(255,255,255,.028);
+  border-color:rgba(200,162,74,.55);
+  box-shadow:0 0 0 4px rgba(200,162,74,.10);
 }
-textarea{min-height:128px;resize:vertical;line-height:1.7}
+textarea{min-height:150px;resize:vertical;line-height:1.7;font-size:.92rem}
 select{appearance:auto;cursor:pointer}
-.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+
+.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.choice-grid.single-col{grid-template-columns:1fr}
 .choice{
-  display:flex;align-items:center;gap:9px;padding:13px 14px!important;
-  border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.018);
-  cursor:pointer;transition:.2s;color:#aeb5c3!important;font-size:.72rem!important;
+  display:flex;align-items:flex-start;gap:11px;padding:15px 16px;
+  border:1px solid var(--line);border-radius:10px;background:var(--panel-soft);
+  cursor:pointer;transition:.18s;color:var(--muted);font-size:.86rem;
 }
-.choice:hover{border-color:var(--line2);background:rgba(255,255,255,.03)}
+.choice small{display:block;color:var(--muted-dim);font-size:.75rem;margin-top:2px}
+.choice:hover{border-color:rgba(207,216,236,.24);background:#0f1a38}
 .choice:has(input:checked){
-  border-color:rgba(230,165,44,.48);background:rgba(230,165,44,.055);
-  color:#f0f2f5!important;
+  border-color:rgba(200,162,74,.55);background:var(--brass-dim);color:var(--ink);
 }
-.choice input{accent-color:var(--gold);flex:none}
-.upload{
-  border:1px dashed rgba(255,255,255,.14);background:rgba(255,255,255,.018);
-  padding:17px;border-radius:11px;
-}
-.upload input[type=file]{width:100%;font:inherit;color:#8c94a5;font-size:.72rem}
-.upload small{display:block;color:#616a7a;margin-top:8px;font-size:.63rem;line-height:1.65}
-.dob-scroll{display:grid;grid-template-columns:.75fr 1.45fr 1fr;gap:9px}
-.dob-scroll select{min-height:46px}
-.confirm{display:flex;align-items:flex-start;gap:12px;color:#9da5b3!important}
-.confirm input{margin-top:3px;accent-color:var(--gold);width:17px;height:17px;flex:none}
-.actions{display:flex;justify-content:flex-end;gap:9px;padding-top:5px}
+.choice input{accent-color:var(--brass);flex:none;margin-top:2px}
+
+.upload{border:1px dashed var(--line);background:var(--panel-soft);padding:20px;border-radius:12px}
+.upload input[type=file]{width:100%;font:inherit;color:var(--muted);font-size:.82rem}
+.upload small{display:block;color:var(--muted-dim);margin-top:10px;font-size:.72rem;line-height:1.65}
+
+.dob-scroll{display:grid;grid-template-columns:.75fr 1.45fr 1fr;gap:10px}
+
+.confirm{display:flex;align-items:flex-start;gap:14px;color:var(--muted);cursor:pointer}
+.confirm input{margin-top:4px;accent-color:var(--brass);width:18px;height:18px;flex:none}
+
+.error{color:var(--danger);font-size:.76rem;margin-top:9px;display:none}
+
+/* ---------- nav ---------- */
+.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
 button{
-  border:1px solid transparent;border-radius:10px;padding:12px 20px;
-  font:inherit;font-size:.72rem;font-weight:800;cursor:pointer;transition:.2s;
+  border:1px solid transparent;border-radius:10px;padding:14px 24px;
+  font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;transition:.18s;
+  font-family:"Manrope",sans-serif;
 }
-.submit{
-  background:var(--gold);color:#111;
-  box-shadow:0 10px 30px rgba(230,165,44,.13);
-}
-.submit:hover{background:var(--gold2);transform:translateY(-1px)}
-.submit:disabled{opacity:.6;cursor:wait;transform:none}
-.reset{background:rgba(255,255,255,.035);border-color:var(--line);color:#b8bec9}
-.reset:hover{background:rgba(255,255,255,.06);color:#fff}
-.note{color:#616a7a;font-size:.62rem;line-height:1.7;margin:17px 0 0}
-.error{color:var(--danger);font-size:.62rem;margin-top:7px;display:none}
+.btn-primary{background:var(--brass);color:#191204}
+.btn-primary:hover{background:var(--brass-bright)}
+.btn-primary:disabled{opacity:.55;cursor:wait}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--muted)}
+.btn-ghost:hover{border-color:rgba(207,216,236,.3);color:var(--ink)}
+.btn-start{background:var(--brass);color:#191204;padding:15px 28px}
+.btn-start:hover{background:var(--brass-bright)}
+
 .success{
-  display:none;margin-top:18px;border:1px solid rgba(92,222,166,.25);
-  background:rgba(92,222,166,.07);padding:14px;border-radius:10px;
-  color:#bcebd4;font-size:.72rem;line-height:1.6;
+  display:none;margin-top:22px;border:1px solid rgba(95,207,158,.28);
+  background:rgba(95,207,158,.08);padding:16px 18px;border-radius:11px;
+  color:#c4ecdb;font-size:.86rem;line-height:1.6;
 }
-.footer{text-align:center;color:#4f5765;font-size:.61rem;padding:14px 0 55px;letter-spacing:.04em}
-@media(max-width:650px){
-  .container{width:min(100% - 28px,940px)}
-  .hero{padding:90px 0 50px;min-height:42vh}
-  h1{font-size:clamp(3rem,15vw,5rem)}
-  .card{padding:21px}
+.footer-note{color:var(--muted-dim);font-size:.72rem;line-height:1.7;margin:20px 0 0}
+
+.footer{text-align:center;color:var(--muted-dim);font-size:.68rem;padding:0 0 40px;letter-spacing:.02em}
+
+@media(max-width:640px){
+  .wrap{width:min(100% - 32px,680px)}
+  .stage{padding:96px 0 120px}
   .choice-grid{grid-template-columns:1fr}
-  .actions{flex-direction:column-reverse}
-  .actions button{width:100%}
+  .dob-scroll{grid-template-columns:1fr}
+  .step-nav{flex-direction:column-reverse}
+  .step-nav button{width:100%}
+  .intro-meta{gap:16px}
 }
 </style>
 </head>
 <body>
-<main class="container">
-  <header class="hero">
-    <div class="container hero-content">
-      <div class="eyebrow">PACE International · Model United Nations</div>
-      <h1>PaceMUN II<br><span style="color:var(--gold2)">Chair Applications</span></h1>
-      <p class="subtitle">May the best Chair win.</p>
-      <div class="dates">31st October &nbsp;·&nbsp; 1st November</div>
+
+<div class="rail"><div class="rail-fill" id="railFill"></div></div>
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">PaceMUN <em>II</em></div>
+    <div class="step-count" id="stepCount"></div>
+  </div>
+</div>
+
+<main class="stage">
+<form id="chairForm" novalidate>
+  <div class="wrap">
+
+    <!-- Step 0: intro -->
+    <div class="step active" data-step="0">
+      <h1 class="intro-title">Chair applications<span class="ampersand">.</span></h1>
+      <p class="intro-copy">PACE International Model United Nations is looking for its next panel of committee chairs. Answer one question at a time — it takes about ten minutes.</p>
+      <div class="intro-meta">
+        <div><b>31 Oct – 1 Nov</b><small>Conference dates</small></div>
+        <div><b>21 questions</b><small>Roughly 10 minutes</small></div>
+        <div><b>4 documents</b><small>Certificates, resume, LOR</small></div>
+      </div>
+      <div class="step-nav" style="justify-content:flex-start">
+        <button type="button" class="btn-start" data-next>Begin application</button>
+      </div>
     </div>
-  </header>
 
-  <form id="chairForm" novalidate>
-    <section class="card">
-      <div class="eyebrow" style="margin-bottom:7px">01 · Candidate</div><h2 class="section-title">Personal Information</h2>
-
-      <div class="question">
-        <label for="name">1. Full Name <span class="required">*</span></label>
-        <input id="name" name="fullName" type="text" required placeholder="Enter your full name">
+    <!-- Step 1 -->
+    <div class="step" data-step="1" data-section="Candidate details">
+      <p class="q-label">What's your full name?<span class="req"> *</span></p>
+      <input id="name" name="fullName" type="text" required placeholder="Full name" autocomplete="name">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="school">2. School/University Name <span class="required">*</span></label>
-        <input id="school" name="school" type="text" required>
+    <!-- Step 2 -->
+    <div class="step" data-step="2" data-section="Candidate details">
+      <p class="q-label">Which school or university do you attend?<span class="req"> *</span></p>
+      <input id="school" name="school" type="text" required placeholder="School or university name">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label>3. Gender <span class="required">*</span></label>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="gender" value="Male" required> Male</label>
-          <label class="choice"><input type="radio" name="gender" value="Female"> Female</label>
-        </div>
+    <!-- Step 3 -->
+    <div class="step" data-step="3" data-section="Candidate details">
+      <p class="q-label">What's your gender?<span class="req"> *</span></p>
+      <div class="choice-grid">
+        <label class="choice"><input type="radio" name="gender" value="Male" required> Male</label>
+        <label class="choice"><input type="radio" name="gender" value="Female"> Female</label>
       </div>
-
-      <div class="question">
-        <label>4. Date of Birth <span class="required">*</span></label>
-        <div class="dob-scroll">
-          <select id="dobDay" aria-label="Day" required>
-            <option value="">Day</option>
-          </select>
-          <select id="dobMonth" aria-label="Month" required>
-            <option value="">Month</option>
-            <option value="01">January</option>
-            <option value="02">February</option>
-            <option value="03">March</option>
-            <option value="04">April</option>
-            <option value="05">May</option>
-            <option value="06">June</option>
-            <option value="07">July</option>
-            <option value="08">August</option>
-            <option value="09">September</option>
-            <option value="10">October</option>
-            <option value="11">November</option>
-            <option value="12">December</option>
-          </select>
-          <select id="dobYear" aria-label="Year" required>
-            <option value="">Year</option>
-          </select>
-        </div>
-        <input id="dob" name="dateOfBirth" type="hidden" required>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="munCount">5. How many MUNs have you attended so far? <span class="required">*</span></label>
-        <input id="munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
+    <!-- Step 4 -->
+    <div class="step" data-step="4" data-section="Candidate details">
+      <p class="q-label">When were you born?<span class="req"> *</span></p>
+      <div class="dob-scroll">
+        <select id="dobDay" aria-label="Day" required><option value="">Day</option></select>
+        <select id="dobMonth" aria-label="Month" required>
+          <option value="">Month</option>
+          <option value="01">January</option><option value="02">February</option>
+          <option value="03">March</option><option value="04">April</option>
+          <option value="05">May</option><option value="06">June</option>
+          <option value="07">July</option><option value="08">August</option>
+          <option value="09">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+        <select id="dobYear" aria-label="Year" required><option value="">Year</option></select>
       </div>
-    </section>
-
-    <section class="card">
-      <div class="eyebrow" style="margin-bottom:7px">02 · Experience</div><h2 class="section-title">MUN Experience</h2>
-
-      <div class="question">
-        <label for="munCertificates">6. MUN participation certificates/awards received from prior conferences <span class="required">*</span></label>
-        <div class="upload">
-          <input id="munCertificates" name="munCertificates" type="file" multiple required>
-          <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
-          <div class="error" id="munCertificatesError"></div>
-        </div>
+      <input id="dob" name="dateOfBirth" type="hidden" required>
+      <div class="error" id="dobError">Please select a complete, valid date of birth.</div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="chairCount">7. How many Chairing Experiences do you have so far? <span class="required">*</span></label>
-        <input id="chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
+    <!-- Step 5 -->
+    <div class="step" data-step="5" data-section="Candidate details">
+      <p class="q-label">How many MUN conferences have you attended so far?<span class="req"> *</span></p>
+      <input id="munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="chairCertificates">8. MUN chair certificates/awards received from prior conferences <span class="required">*</span></label>
-        <div class="upload">
-          <input id="chairCertificates" name="chairCertificates" type="file" multiple required>
-          <small>Maximum 5 files · Maximum 100 MB per file · Word, Excel, PowerPoint, PDF, images, video or audio.</small>
-          <div class="error" id="chairCertificatesError"></div>
-        </div>
+    <!-- Step 6 -->
+    <div class="step" data-step="6" data-section="MUN experience">
+      <p class="q-label">Upload your delegate certificates or awards.<span class="req"> *</span></p>
+      <p class="q-help">From any prior conferences you've attended as a delegate.</p>
+      <div class="upload">
+        <input id="munCertificates" name="munCertificates" type="file" multiple required>
+        <small>Up to 5 files, 100 MB each · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
-
-      <div class="question">
-        <label for="resume">9. Attach Your Resume <span class="required">*</span></label>
-        <div class="upload">
-          <input id="resume" name="resume" type="file" required>
-          <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
-          <div class="error" id="resumeError"></div>
-        </div>
+      <div class="error" id="munCertificatesError"></div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="lor">10. LOR <span class="required">*</span></label>
-        <div class="upload">
-          <input id="lor" name="lor" type="file" required>
-          <small>Maximum 1 file · Maximum 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
-          <div class="error" id="lorError"></div>
-        </div>
+    <!-- Step 7 -->
+    <div class="step" data-step="7" data-section="MUN experience">
+      <p class="q-label">How many times have you chaired a committee?<span class="req"> *</span></p>
+      <input id="chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
-    </section>
+    </div>
 
-    <section class="card">
-      <div class="eyebrow" style="margin-bottom:7px">03 · The floor</div><h2 class="section-title">Committee Preferences</h2>
-
-      <div class="question">
-        <label>12. Preferred Committee — First Preference <span class="required">*</span></label>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="firstPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <span>— Junior</span></label>
-          <label class="choice"><input type="radio" name="firstPreference" value="UNHRC (Intermediate)"> UNHRC <span>— Intermediate</span></label>
-          <label class="choice"><input type="radio" name="firstPreference" value="UNODC (Intermediate)"> UNODC <span>— Intermediate</span></label>
-          <label class="choice"><input type="radio" name="firstPreference" value="UNCTAD (Advanced)"> UNCTAD <span>— Advanced</span></label>
-          <label class="choice"><input type="radio" name="firstPreference" value="INTERPOL (Advanced)"> INTERPOL <span>— Advanced</span></label>
-          <label class="choice"><input type="radio" name="firstPreference" value="DISEC (Beginner)"> DISEC <span>— Beginner</span></label>
-        </div>
+    <!-- Step 8 -->
+    <div class="step" data-step="8" data-section="MUN experience">
+      <p class="q-label">Upload your chairing certificates or awards.<span class="req"> *</span></p>
+      <p class="q-help">From any prior conferences you've chaired.</p>
+      <div class="upload">
+        <input id="chairCertificates" name="chairCertificates" type="file" multiple required>
+        <small>Up to 5 files, 100 MB each · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
-
-      <div class="question">
-        <label>11. Preferred Committee — Second Preference <span class="required">*</span></label>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="secondPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <span>— Junior</span></label>
-          <label class="choice"><input type="radio" name="secondPreference" value="UNHRC (Intermediate)"> UNHRC <span>— Intermediate</span></label>
-          <label class="choice"><input type="radio" name="secondPreference" value="UNODC (Intermediate)"> UNODC <span>— Intermediate</span></label>
-          <label class="choice"><input type="radio" name="secondPreference" value="UNCTAD (Advanced)"> UNCTAD <span>— Advanced</span></label>
-          <label class="choice"><input type="radio" name="secondPreference" value="INTERPOL (Advanced)"> INTERPOL <span>— Advanced</span></label>
-          <label class="choice"><input type="radio" name="secondPreference" value="DISEC (Beginner)"> DISEC <span>— Beginner</span></label>
-        </div>
+      <div class="error" id="chairCertificatesError"></div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="whyFirst">13. Why did you pick your first preference as your first preference? <span class="required">*</span></label>
-        <textarea id="whyFirst" name="whyFirst" required placeholder="Tell us why this committee suits you..."></textarea>
+    <!-- Step 9 -->
+    <div class="step" data-step="9" data-section="MUN experience">
+      <p class="q-label">Attach your resume.<span class="req"> *</span></p>
+      <div class="upload">
+        <input id="resume" name="resume" type="file" required>
+        <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
-
-      <div class="question">
-        <label for="gavel">14. If your gavel could speak, what would your gavel tell about you after a conference? <span class="required">*</span></label>
-        <textarea id="gavel" name="gavel" required></textarea>
+      <div class="error" id="resumeError"></div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="whyPace">15. Why would you like to attend PaceMUN II? <span class="required">*</span></label>
-        <textarea id="whyPace" name="whyPace" required></textarea>
+    <!-- Step 10 -->
+    <div class="step" data-step="10" data-section="MUN experience">
+      <p class="q-label">Attach a letter of recommendation.<span class="req"> *</span></p>
+      <div class="upload">
+        <input id="lor" name="lor" type="file" required>
+        <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
-    </section>
-
-    <section class="card">
-      <div class="eyebrow" style="margin-bottom:7px">04 · Details</div><h2 class="section-title">Contact & Preferences</h2>
-
-      <div class="question">
-        <label for="email">16. Email Address — for selection results <span class="required">*</span></label>
-        <input id="email" name="email" type="email" required placeholder="you@example.com">
+      <div class="error" id="lorError"></div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label for="phone">17. Contact No. — for WhatsApp <span class="required">*</span></label>
-        <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX">
+    <!-- Step 11 -->
+    <div class="step" data-step="11" data-section="Committee preferences">
+      <p class="q-label">What's your first-choice committee?<span class="req"> *</span></p>
+      <div class="choice-grid single-col">
+        <label class="choice"><input type="radio" name="firstPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee, 6th–8th grade</small></label>
+        <label class="choice"><input type="radio" name="firstPreference" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice"><input type="radio" name="firstPreference" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice"><input type="radio" name="firstPreference" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice"><input type="radio" name="firstPreference" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice"><input type="radio" name="firstPreference" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
       </div>
-
-      <div class="question">
-        <label for="coordinatorPhone">18. MUN Coordinator's Contact No. — for WhatsApp <span class="required">*</span></label>
-        <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="question">
-        <label>19. Food Preference <span class="required">*</span></label>
-        <div class="choice-grid">
-          <label class="choice"><input type="radio" name="food" value="Veg" required> Veg</label>
-          <label class="choice"><input type="radio" name="food" value="Non Veg"> Non Veg</label>
-        </div>
+    <!-- Step 12 -->
+    <div class="step" data-step="12" data-section="Committee preferences">
+      <p class="q-label">What's your second-choice committee?<span class="req"> *</span></p>
+      <div class="choice-grid single-col">
+        <label class="choice"><input type="radio" name="secondPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee, 6th–8th grade</small></label>
+        <label class="choice"><input type="radio" name="secondPreference" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice"><input type="radio" name="secondPreference" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice"><input type="radio" name="secondPreference" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice"><input type="radio" name="secondPreference" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice"><input type="radio" name="secondPreference" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
       </div>
-
-      <div class="question">
-        <label for="allergies">20. Any food allergy/allergies?</label>
-        <textarea id="allergies" name="allergies" placeholder="Write 'None' if you have no allergies."></textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
-    </section>
+    </div>
 
-    <section class="card">
-      <div class="eyebrow" style="margin-bottom:7px">05 · Confirmation</div><h2 class="section-title">Declaration</h2>
-      <div class="question">
-        <label class="confirm">
-          <input type="checkbox" id="confirmation" name="confirmation" required>
-          <span>21. I confirm that all information provided is accurate and that I am willing to fulfill the responsibilities associated with this position, such as attending training and any other required sessions/meetings. <span class="required">*</span></span>
-        </label>
+    <!-- Step 13 -->
+    <div class="step" data-step="13" data-section="Committee preferences">
+      <p class="q-label">Why does your first-choice committee suit you?<span class="req"> *</span></p>
+      <textarea id="whyFirst" name="whyFirst" required placeholder="Tell us why this committee suits you..."></textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
+    </div>
 
-      <div class="actions">
-        <button type="reset" class="reset">Clear Form</button>
-        <button type="submit" class="submit">Submit Application →</button>
+    <!-- Step 14 -->
+    <div class="step" data-step="14" data-section="Committee preferences">
+      <p class="q-label">If your gavel could speak, what would it say about you after a conference?<span class="req"> *</span></p>
+      <textarea id="gavel" name="gavel" required></textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
       </div>
-      <div class="success" id="success">Application validated successfully. To actually receive submissions and uploaded files, connect this form to a backend/database or form service.</div>
-      <p class="note">Submissions are securely stored in the connected Supabase project. Uploaded documents are stored in a private Supabase Storage bucket.</p>
-    </section>
-  </form>
+    </div>
 
-  <footer class="footer">PaceMUN II · Chair Applications · 31st Oct & 1st Nov</footer>
+    <!-- Step 15 -->
+    <div class="step" data-step="15" data-section="Committee preferences">
+      <p class="q-label">Why would you like to attend PaceMUN II?<span class="req"> *</span></p>
+      <textarea id="whyPace" name="whyPace" required></textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 16 -->
+    <div class="step" data-step="16" data-section="Contact & preferences">
+      <p class="q-label">Where should we send your selection results?<span class="req"> *</span></p>
+      <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 17 -->
+    <div class="step" data-step="17" data-section="Contact & preferences">
+      <p class="q-label">What's your WhatsApp contact number?<span class="req"> *</span></p>
+      <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 18 -->
+    <div class="step" data-step="18" data-section="Contact & preferences">
+      <p class="q-label">What's your MUN coordinator's WhatsApp number?<span class="req"> *</span></p>
+      <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 19 -->
+    <div class="step" data-step="19" data-section="Contact & preferences">
+      <p class="q-label">What's your food preference?<span class="req"> *</span></p>
+      <div class="choice-grid">
+        <label class="choice"><input type="radio" name="food" value="Veg" required> Veg</label>
+        <label class="choice"><input type="radio" name="food" value="Non Veg"> Non veg</label>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 20 -->
+    <div class="step" data-step="20" data-section="Contact & preferences">
+      <p class="q-label">Any food allergies we should know about?</p>
+      <p class="q-help">Optional — write "None" if there aren't any.</p>
+      <textarea id="allergies" name="allergies" placeholder="None"></textarea>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="button" class="btn-primary" data-next>Next</button>
+      </div>
+    </div>
+
+    <!-- Step 21: declaration + submit -->
+    <div class="step" data-step="21" data-section="Declaration">
+      <p class="q-label">One last thing.<span class="req"> *</span></p>
+      <label class="choice confirm">
+        <input type="checkbox" id="confirmation" name="confirmation" required>
+        <span>I confirm that all information provided is accurate, and that I'm willing to fulfil the responsibilities of this role — including attending training and any required sessions.</span>
+      </label>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-back>Back</button>
+        <button type="submit" class="btn-primary" id="submitBtn">Submit application</button>
+      </div>
+      <div class="success" id="success"></div>
+      <p class="footer-note">Submissions are stored in a private database. Uploaded documents are kept in a private storage bucket.</p>
+    </div>
+
+  </div>
+</form>
 </main>
+
+<p class="footer">PaceMUN II · Chair Applications · 31 October &amp; 1 November</p>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -385,6 +485,7 @@ const SUPABASE_URL = "https://whwilpuynwudlddbxmwk.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+/* ---------------- file validation ---------------- */
 const MAX = 100 * 1024 * 1024;
 const allowed = new Set([
   "application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -392,13 +493,11 @@ const allowed = new Set([
   "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation",
   "application/pdf","image/*","video/*","audio/*"
 ]);
-
 function validFile(file){
   if(file.size > MAX) return "Each file must be 100 MB or smaller.";
   if(allowed.has(file.type) || [...allowed].some(x => x.endsWith("/*") && file.type.startsWith(x.slice(0,-1)))) return "";
-  return "This file type is not supported.";
+  return "This file type isn't supported.";
 }
-
 function validateUpload(id, maxFiles){
   const input=document.getElementById(id), error=document.getElementById(id+"Error");
   error.style.display="none"; error.textContent="";
@@ -414,23 +513,28 @@ function validateUpload(id, maxFiles){
   }
   return true;
 }
+["munCertificates","chairCertificates","resume","lor"].forEach(id=>{
+  document.getElementById(id).addEventListener("change",()=>{
+    validateUpload(id, id.includes("Certificates") ? 5 : 1);
+  });
+});
 
+/* ---------------- date of birth ---------------- */
 const dobDay = document.getElementById("dobDay");
 const dobMonth = document.getElementById("dobMonth");
 const dobYear = document.getElementById("dobYear");
 const dobHidden = document.getElementById("dob");
+const dobError = document.getElementById("dobError");
 
 for(let d=1; d<=31; d++){
   const o=document.createElement("option");
-  o.value=String(d).padStart(2,"0");
-  o.textContent=d;
+  o.value=String(d).padStart(2,"0"); o.textContent=d;
   dobDay.appendChild(o);
 }
 const currentYear = new Date().getFullYear();
 for(let y=currentYear; y>=1980; y--){
   const o=document.createElement("option");
-  o.value=y;
-  o.textContent=y;
+  o.value=y; o.textContent=y;
   dobYear.appendChild(o);
 }
 function syncDOB(){
@@ -439,15 +543,83 @@ function syncDOB(){
     const check = new Date(`${candidate}T00:00:00`);
     if(check.getMonth()+1 === Number(dobMonth.value) && check.getDate() === Number(dobDay.value)){
       dobHidden.value=candidate;
-      dobHidden.setCustomValidity("");
-      return;
+      return true;
     }
   }
   dobHidden.value="";
-  dobHidden.setCustomValidity("Please select a valid date of birth.");
+  return false;
 }
-[dobDay,dobMonth,dobYear].forEach(el=>el.addEventListener("change",syncDOB));
+[dobDay,dobMonth,dobYear].forEach(el=>el.addEventListener("change",()=>{ dobError.style.display="none"; syncDOB(); }));
 
+/* ---------------- step wizard ---------------- */
+const steps = Array.from(document.querySelectorAll(".step"));
+const totalQuestions = steps.length - 1; // exclude intro
+const railFill = document.getElementById("railFill");
+const stepCount = document.getElementById("stepCount");
+let current = 0;
+
+function paint(){
+  steps.forEach(s => s.classList.toggle("active", Number(s.dataset.step) === current));
+  const pct = current === 0 ? 0 : (current/totalQuestions)*100;
+  railFill.style.width = pct + "%";
+  stepCount.textContent = current === 0 ? "" : `${current} / ${totalQuestions}`;
+  const activeStep = steps.find(s => Number(s.dataset.step) === current);
+  const firstField = activeStep && activeStep.querySelector("input:not([type=hidden]),textarea,select");
+  if(firstField) setTimeout(() => firstField.focus({preventScroll:true}), 60);
+  window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
+}
+
+function validateStep(stepEl){
+  const id = Number(stepEl.dataset.step);
+
+  if(id === 4){
+    const ok = syncDOB();
+    dobError.style.display = ok ? "none" : "block";
+    return ok;
+  }
+  if(id === 6) return validateUpload("munCertificates", 5);
+  if(id === 8) return validateUpload("chairCertificates", 5);
+  if(id === 9) return validateUpload("resume", 1);
+  if(id === 10) return validateUpload("lor", 1);
+
+  const fields = stepEl.querySelectorAll("input,textarea,select");
+  for(const field of fields){
+    if(field.type === "hidden") continue;
+    if(field.type === "radio" || field.type === "checkbox"){
+      const group = stepEl.querySelectorAll(`input[name="${field.name}"]`);
+      const checked = Array.from(group).some(g => g.checked);
+      if(field.required && !checked){ field.reportValidity(); return false; }
+    } else if(!field.checkValidity()){
+      field.reportValidity();
+      return false;
+    }
+  }
+  return true;
+}
+
+document.querySelectorAll("[data-next]").forEach(btn=>{
+  btn.addEventListener("click", () => {
+    const activeStep = steps.find(s => Number(s.dataset.step) === current);
+    if(current > 0 && !validateStep(activeStep)) return;
+    if(current < steps.length - 1){ current++; paint(); }
+  });
+});
+document.querySelectorAll("[data-back]").forEach(btn=>{
+  btn.addEventListener("click", () => { if(current > 0){ current--; paint(); } });
+});
+
+document.getElementById("chairForm").addEventListener("keydown", e=>{
+  if(e.key === "Enter" && e.target.tagName !== "TEXTAREA"){
+    e.preventDefault();
+    const activeStep = steps.find(s => Number(s.dataset.step) === current);
+    const nextBtn = activeStep.querySelector("[data-next]");
+    if(nextBtn) nextBtn.click();
+  }
+});
+
+paint();
+
+/* ---------------- upload + submit ---------------- */
 async function uploadFiles(files, folder, applicationId) {
   const paths = [];
   for (const file of files) {
@@ -456,7 +628,6 @@ async function uploadFiles(files, folder, applicationId) {
     const { error } = await supabaseClient.storage
       .from("chair-applications")
       .upload(path, file, { upsert: false });
-
     if (error) throw new Error(`${file.name}: ${error.message}`);
     paths.push(path);
   }
@@ -466,20 +637,11 @@ async function uploadFiles(files, folder, applicationId) {
 document.getElementById("chairForm").addEventListener("submit", async e=>{
   e.preventDefault();
   const f=e.target;
-  const submitButton=f.querySelector(".submit");
+  const submitButton=document.getElementById("submitBtn");
   const success=document.getElementById("success");
 
-  const uploads=[
-    validateUpload("munCertificates",5),
-    validateUpload("chairCertificates",5),
-    validateUpload("resume",1),
-    validateUpload("lor",1)
-  ];
-
-  if(!f.checkValidity() || uploads.some(x=>!x)){
-    f.reportValidity();
-    return;
-  }
+  const lastStep = steps[steps.length-1];
+  if(!validateStep(lastStep)) return;
 
   submitButton.disabled=true;
   submitButton.textContent="Submitting…";
@@ -487,87 +649,58 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
 
   try {
     const applicationId = crypto.randomUUID();
-    const munCertificates = await uploadFiles(
-      document.getElementById("munCertificates").files,
-      "participation-certificates",
-      applicationId
-    );
-    const chairCertificates = await uploadFiles(
-      document.getElementById("chairCertificates").files,
-      "chair-certificates",
-      applicationId
-    );
-    const resume = await uploadFiles(
-      document.getElementById("resume").files,
-      "resume",
-      applicationId
-    );
-    const lor = await uploadFiles(
-      document.getElementById("lor").files,
-      "lor",
-      applicationId
-    );
+    const munCertificates = await uploadFiles(document.getElementById("munCertificates").files, "participation-certificates", applicationId);
+    const chairCertificates = await uploadFiles(document.getElementById("chairCertificates").files, "chair-certificates", applicationId);
+    const resume = await uploadFiles(document.getElementById("resume").files, "resume", applicationId);
+    const lor = await uploadFiles(document.getElementById("lor").files, "lor", applicationId);
 
     const gender = f.querySelector('input[name="gender"]:checked')?.value || "";
     const firstPreference = f.querySelector('input[name="firstPreference"]:checked')?.value || "";
     const secondPreference = f.querySelector('input[name="secondPreference"]:checked')?.value || "";
     const food = f.querySelector('input[name="food"]:checked')?.value || "";
 
-    const { error } = await supabaseClient
-      .from("chair_applications")
-      .insert({
-        id: applicationId,
-        full_name: f.fullName.value.trim(),
-        school: f.school.value.trim(),
-        gender: gender,
-        date_of_birth: f.dateOfBirth.value,
-        mun_count: Number(f.munCount.value),
-        mun_certificates: munCertificates,
-        chair_count: Number(f.chairCount.value),
-        chair_certificates: chairCertificates,
-        resume_path: resume[0],
-        lor_path: lor[0],
-        first_preference: firstPreference,
-        second_preference: secondPreference,
-        why_first: f.whyFirst.value.trim(),
-        gavel: f.gavel.value.trim(),
-        why_pace: f.whyPace.value.trim(),
-        email: f.email.value.trim(),
-        phone: f.phone.value.trim(),
-        coordinator_phone: f.coordinatorPhone.value.trim(),
-        food_preference: food,
-        food_allergies: f.allergies.value.trim(),
-        confirmed: f.confirmation.checked
-      });
+    const { error } = await supabaseClient.from("chair_applications").insert({
+      id: applicationId,
+      full_name: f.fullName.value.trim(),
+      school: f.school.value.trim(),
+      gender: gender,
+      date_of_birth: f.dateOfBirth.value,
+      mun_count: Number(f.munCount.value),
+      mun_certificates: munCertificates,
+      chair_count: Number(f.chairCount.value),
+      chair_certificates: chairCertificates,
+      resume_path: resume[0],
+      lor_path: lor[0],
+      first_preference: firstPreference,
+      second_preference: secondPreference,
+      why_first: f.whyFirst.value.trim(),
+      gavel: f.gavel.value.trim(),
+      why_pace: f.whyPace.value.trim(),
+      email: f.email.value.trim(),
+      phone: f.phone.value.trim(),
+      coordinator_phone: f.coordinatorPhone.value.trim(),
+      food_preference: food,
+      food_allergies: f.allergies.value.trim(),
+      confirmed: f.confirmation.checked
+    });
 
     if (error) throw error;
 
-    success.textContent="Application submitted successfully. Your application and uploaded documents have been received.";
+    success.style.borderColor="";
+    success.style.background="";
+    success.textContent="Application submitted. You'll hear back at the email address you provided.";
     success.style.display="block";
-    success.scrollIntoView({behavior:"smooth",block:"center"});
-    f.reset();
   } catch (error) {
     console.error(error);
-    success.textContent="Submission failed: " + (error.message || "Unknown error") + " Please try again.";
+    success.textContent="Submission failed: " + (error.message || "Unknown error") + ". Please try again.";
     success.style.display="block";
-    success.style.borderColor="#7a3434";
-    success.style.background="rgba(180,55,55,.12)";
+    success.style.borderColor="rgba(226,104,95,.35)";
+    success.style.background="rgba(226,104,95,.08)";
   } finally {
     submitButton.disabled=false;
-    submitButton.textContent="Submit Application →";
+    submitButton.textContent="Submit application";
   }
 });
-
-["munCertificates","chairCertificates","resume","lor"].forEach(id=>{
-  document.getElementById(id).addEventListener("change",()=>{
-    validateUpload(id, id.includes("Certificates") ? 5 : 1);
-  });
-});
-
-document.getElementById("chairForm").addEventListener("reset",()=>{
-  setTimeout(()=>document.getElementById("success").style.display="none",0);
-});
 </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"6beff27781ee4f178e97521268a2620f","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
