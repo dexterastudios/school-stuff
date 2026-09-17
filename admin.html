@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#03050b">
+<title>PaceMUN II — Admin Panel</title>
+<style>
+:root{--bg:#03050b;--panel:#0b0f19;--panel2:#111722;--gold:#e6a52c;--gold2:#ffca4b;--text:#f3f4f7;--muted:#8c94a5;--line:rgba(255,255,255,.09);--success:#5cdea6;--danger:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(230,165,44,.08),transparent 28%),#03050b;color:var(--text);font-family:Arial,sans-serif}
+.wrap{width:min(1400px,calc(100% - 30px));margin:auto}.top{padding:35px 0 20px;display:flex;justify-content:space-between;align-items:center;gap:20px}.ey{font-size:11px;color:var(--gold2);font-weight:800;letter-spacing:.15em;text-transform:uppercase}.top h1{font-size:34px;margin:7px 0}.top p{color:var(--muted);margin:0}.btn{border:1px solid var(--line);background:#111722;color:#ddd;padding:10px 14px;border-radius:9px;cursor:pointer;font-weight:700}.btn:hover{border-color:rgba(230,165,44,.5)}.danger{color:#ff9292}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:15px 0}.stat,.card{background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:14px;padding:18px}.stat b{display:block;font-size:28px;margin-top:6px}.stat span{color:var(--muted);font-size:12px}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.toolbar input,.toolbar select{background:#0b0f19;color:#fff;border:1px solid var(--line);padding:11px;border-radius:9px;outline:none}.toolbar input{flex:1;min-width:220px}.tablewrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:850px}.table th,.table td{padding:13px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}.table th{color:var(--muted);font-size:11px;text-transform:uppercase}.rowbtn{background:none;border:1px solid var(--line);color:#ddd;border-radius:7px;padding:7px 9px;cursor:pointer;margin-right:5px}.rowbtn:hover{border-color:var(--gold)}.pill{display:inline-block;padding:4px 8px;border-radius:99px;background:rgba(230,165,44,.09);color:var(--gold2);font-size:11px}.empty{padding:35px;text-align:center;color:var(--muted)}.modal{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal.open{display:flex}.modalbox{background:#0a0e17;border:1px solid var(--line);border-radius:16px;width:min(1250px,100%);max-height:90vh;overflow:auto;padding:22px}.modalhead{display:flex;justify-content:space-between;gap:15px}.modal h2{margin:0}.close{background:none;border:0;color:#aaa;font-size:25px;cursor:pointer}.details{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}.field{background:rgba(255,255,255,.025);border:1px solid var(--line);padding:12px;border-radius:9px}.field small{display:block;color:var(--muted);font-size:10px;margin-bottom:5px}.field div{white-space:pre-wrap;word-break:break-word}.files{margin-top:20px}.fileitem{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.fileitem a{color:var(--gold2);text-decoration:none}.notice{margin:10px 0;padding:11px;border-radius:9px;display:none}.ok{background:rgba(92,222,166,.08);color:#bcebd4}.bad{background:rgba(255,119,119,.08);color:#ffb0b0}@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr)}.details{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div><div class="ey">PACE International · Model United Nations</div><h1>Admin Panel</h1><p>Chair Applications & Supabase Storage</p></div><button class="btn" onclick="loadAll()">↻ Refresh</button></header>
+<div id="notice" class="notice"></div>
+<section class="card" id="setupCard" style="margin-bottom:15px">
+  <div class="ey">Supabase access</div>
+  <h2 style="margin:6px 0">Admin access is currently blocked by RLS</h2>
+  <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:10px">
+    Your current RLS policy only allows <b>INSERT</b> for <b>anon</b> and <b>authenticated</b>.
+    That means the application form can submit, but this browser cannot read or delete rows.
+    Storage has the same kind of policy requirement.
+  </p>
+  <p style="color:#ddd;font-size:12px">Run the admin-only policies supplied with this version in Supabase, then refresh this page.</p>
+</section>
+<section class="grid">
+<div class="stat"><span>Total applications</span><b id="total">—</b></div>
+<div class="stat"><span>Male</span><b id="male">—</b></div>
+<div class="stat"><span>Female</span><b id="female">—</b></div>
+<div class="stat"><span>Storage files</span><b id="filesCount">—</b></div>
+</section>
+<section class="card">
+<div class="toolbar">
+<input id="search" placeholder="Search name, school, email, committee..." oninput="render()">
+<select id="genderFilter" onchange="render()"><option value="">All genders</option><option>Male</option><option>Female</option></select>
+<button class="btn" onclick="loadAll()">Refresh data</button>
+</div>
+<div class="tablewrap"><table class="table"><thead><tr><th>Name</th><th>School</th><th>Gender</th><th>DOB</th><th>MUNs</th><th>Chairs</th><th>1st preference</th><th>2nd preference</th><th>Email</th><th>Phone</th><th>Food</th><th>Allergies</th><th>Confirmed</th><th>Actions</th></tr></thead><tbody id="tbody"></tbody></table></div>
+<div id="empty" class="empty" style="display:none">No applications found.</div>
+</section>
+<section class="card" style="margin-top:15px">
+<div class="ey">Storage bucket</div><h2 style="margin:6px 0">chair-applications</h2>
+<p style="color:var(--muted);font-size:13px">Files are stored under each application's UUID. Use the application viewer to open its uploaded certificates, resume and LOR.</p>
+<div class="toolbar"><input id="fileSearch" placeholder="Search storage files by filename or application ID..." oninput="renderFiles()"></div>
+<div class="tablewrap"><table class="table"><thead><tr><th>File</th><th>Application ID</th><th>Folder</th><th>Action</th></tr></thead><tbody id="filetbody"></tbody></table></div>
+</section>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox"><div class="modalhead"><div><div class="ey">Application</div><h2 id="modalTitle"></h2></div><button class="close" onclick="closeModal()">×</button></div><div id="details" class="details"></div><div class="files"><h3>Uploaded files</h3><div id="modalFiles"></div></div><div style="display:flex;justify-content:flex-end;margin-top:18px"><button class="btn danger" id="deleteBtn">Delete application + files</button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL="https://whwilpuynwudlddbxmwk.supabase.co";
+const SUPABASE_ANON_KEY="sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
+const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const BUCKET="chair-applications";
+let applications=[],storageFiles=[],active=null;
+
+function notice(msg,bad=false){const n=document.getElementById("notice");n.textContent=msg;n.className="notice "+(bad?"bad":"ok");n.style.display="block";setTimeout(()=>n.style.display="none",4500)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function loadAll(){
+  try{
+    const {data,error}=await supabaseClient.from("chair_applications").select("*").order("created_at",{ascending:false});
+    if(error){
+      if(/row-level security|permission denied|not allowed/i.test(error.message||"")){
+        document.getElementById("setupCard").style.display="block";
+        throw new Error("RLS is blocking SELECT on chair_applications. Add the admin SELECT policy in Supabase.");
+      }
+      throw error;
+    }
+    applications=data||[];
+    document.getElementById("total").textContent=applications.length;
+    document.getElementById("male").textContent=applications.filter(x=>x.gender==="Male").length;
+    document.getElementById("female").textContent=applications.filter(x=>x.gender==="Female").length;
+    await loadStorage();
+    render();
+  }catch(e){notice("Could not load applications: "+e.message,true)}
+}
+async function loadStorage(){
+  storageFiles=[];
+  async function walk(path=""){
+    const {data,error}=await supabaseClient.storage.from(BUCKET).list(path,{limit:100,sortBy:{column:"name",order:"asc"}});
+    if(error) throw error;
+    for(const x of data||[]){
+      const full=path?path+"/"+x.name:x.name;
+      if(x.id===null) await walk(full);
+      else storageFiles.push({name:x.name,path:full,folder:path||"(root)"});
+    }
+  }
+  try{await walk();document.getElementById("filesCount").textContent=storageFiles.length;renderFiles()}
+  catch(e){
+    document.getElementById("filesCount").textContent="—";
+    notice("Storage is blocked by its Storage RLS/policy: "+e.message,true);
+  }
+}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase(),g=document.getElementById("genderFilter").value;
+ const rows=applications.filter(a=>!g||a.gender===g).filter(a=>JSON.stringify(a).toLowerCase().includes(q));
+ document.getElementById("empty").style.display=rows.length?"none":"block";
+ document.getElementById("tbody").innerHTML=rows.map(a=>`<tr>
+ <td><b>${esc(a.full_name)}</b></td><td>${esc(a.school)}</td><td><span class="pill">${esc(a.gender)}</span></td>
+ <td>${esc(a.date_of_birth)}</td><td>${esc(a.mun_count)}</td><td>${esc(a.chair_count)}</td>
+ <td>${esc(a.first_preference)}</td><td>${esc(a.second_preference)}</td><td>${esc(a.email)}</td><td>${esc(a.phone)}</td>
+ <td>${esc(a.food_preference)}</td><td>${esc(a.food_allergies)}</td>
+ <td>${a.confirmed ? '<span class="pill">Yes</span>' : '<span style="color:#888">No</span>'}</td>
+ <td><button class="rowbtn" onclick="view('${esc(a.id)}')">View ALL</button><button class="rowbtn" onclick="deleteApplication('${esc(a.id)}')">Delete</button></td></tr>`).join("");
+}
+function renderFiles(){
+ const q=document.getElementById("fileSearch").value.toLowerCase();
+ const rows=storageFiles.filter(f=>(f.name+" "+f.path).toLowerCase().includes(q));
+ document.getElementById("filetbody").innerHTML=rows.map(f=>`<tr><td>${esc(f.name)}</td><td>${esc(f.path.split("/")[0])}</td><td>${esc(f.folder)}</td><td><button class="rowbtn" onclick="openFile('${esc(f.path)}')">Open</button><button class="rowbtn" onclick="deleteFile('${esc(f.path)}')">Delete</button></td></tr>`).join("");
+}
+function field(label,value){return `<div class="field"><small>${esc(label)}</small><div>${esc(value||"—")}</div></div>`}
+async function view(id){
+ active=applications.find(a=>a.id===id);if(!active)return;
+ document.getElementById("modalTitle").textContent=active.full_name||"Application";
+
+ // Display EVERY database field, including fields added later.
+ const labels={
+   id:"Application ID",created_at:"Submitted at",updated_at:"Last updated",
+   full_name:"1. Full Name",school:"2. School / University Name",gender:"3. Gender",
+   date_of_birth:"4. Date of Birth",mun_count:"5. MUNs attended",
+   mun_certificates:"6. MUN participation certificates / awards",
+   chair_count:"7. Chairing experiences",
+   chair_certificates:"8. MUN chair certificates / awards",
+   resume_path:"9. Resume",lor_path:"10. LOR",
+   first_preference:"12. First Committee Preference",
+   second_preference:"11. Second Committee Preference",
+   why_first:"13. Why first preference?",
+   gavel:"14. If your gavel could speak...",
+   why_pace:"15. Why PaceMUN II?",email:"16. Email Address",
+   phone:"17. Contact No.",coordinator_phone:"18. MUN Coordinator's Contact No.",
+   food_preference:"19. Food Preference",food_allergies:"20. Food Allergy / Allergies",
+   confirmed:"21. Declaration Confirmed"
+ };
+ const ordered=[
+   "id","created_at","updated_at","full_name","school","gender","date_of_birth",
+   "mun_count","mun_certificates","chair_count","chair_certificates","resume_path",
+   "lor_path","first_preference","second_preference","why_first","gavel","why_pace",
+   "email","phone","coordinator_phone","food_preference","food_allergies","confirmed"
+ ];
+ const keys=[...ordered,...Object.keys(active).filter(k=>!ordered.includes(k))];
+
+ document.getElementById("details").innerHTML=keys.map(k=>{
+   const value=active[k];
+   if(value===null || value===undefined || value==="") return field(labels[k]||k,"—");
+   if(Array.isArray(value)) return field(labels[k]||k,value.length?value.join("\n"):"—");
+   if(k==="confirmed") return field(labels[k]||k,value?"YES — confirmed":"NO — not confirmed");
+   if(k==="created_at" || k==="updated_at"){
+     const d=new Date(value);
+     return field(labels[k]||k,isNaN(d.getTime())?value:d.toLocaleString());
+   }
+   return field(labels[k]||k,String(value));
+ }).join("");
+
+ const filePaths=[];
+ (active.mun_certificates||[]).forEach(p=>filePaths.push({path:p,label:"MUN participation certificate / award"}));
+ (active.chair_certificates||[]).forEach(p=>filePaths.push({path:p,label:"Chair certificate / award"}));
+ if(active.resume_path) filePaths.push({path:active.resume_path,label:"Resume"});
+ if(active.lor_path) filePaths.push({path:active.lor_path,label:"LOR"});
+
+ document.getElementById("modalFiles").innerHTML=filePaths.map(f=>
+   `<div class="fileitem"><div><b>${esc(f.label)}</b><br><span style="color:#888;font-size:11px">${esc(f.path)}</span></div>
+    <button class="rowbtn" onclick="openFile('${esc(f.path)}')">Open</button></div>`
+ ).join("")||"<div class='empty'>No uploaded files recorded.</div>";
+
+ document.getElementById("deleteBtn").onclick=()=>deleteApplication(active.id);
+ document.getElementById("modal").classList.add("open");
+}
+function closeModal(){document.getElementById("modal").classList.remove("open");active=null}
+async function openFile(path){
+ const {data,error}=await supabaseClient.storage.from(BUCKET).createSignedUrl(path,3600);
+ if(error){notice("Could not create file link: "+error.message,true);return}
+ window.open(data.signedUrl,"_blank","noopener");
+}
+async function deleteFile(path){
+ if(!confirm("Delete this storage file permanently?"))return;
+ const {error}=await supabaseClient.storage.from(BUCKET).remove([path]);
+ if(error){notice("Delete failed: "+error.message,true);return}
+ notice("File deleted.");await loadStorage();
+}
+async function deleteApplication(id){
+ if(!confirm("Delete this application and ALL its uploaded files? This cannot be undone."))return;
+ try{
+   const files=storageFiles.filter(f=>f.path.startsWith(id+"/")).map(f=>f.path);
+   if(files.length){const r=await supabaseClient.storage.from(BUCKET).remove(files);if(r.error)throw r.error}
+   const r=await supabaseClient.from("chair_applications").delete().eq("id",id);
+   if(r.error)throw r.error;
+   closeModal();notice("Application deleted.");await loadAll();
+ }catch(e){notice("Delete failed: "+e.message,true)}
+}
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")closeModal()});
+loadAll();
+</script>
+</body>
+</html>
