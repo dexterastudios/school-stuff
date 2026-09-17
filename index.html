@@ -135,6 +135,31 @@ p{
   margin:0;
 }
 
+/* Style the overall text and container area */
+.custom-file-input {
+  color: #555;
+  font-family: sans-serif;
+}
+
+/* Style the actual "Choose File" button */
+.custom-file-input::file-selector-button {
+  background-color: #4f46e5; /* Indigo background */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 15px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Style the hover effect */
+.custom-file-input::file-selector-button:hover {
+  background-color: #4338ca; /* Darker indigo on hover */
+}
+
+
 .btn{
   min-height:48px;
   display:inline-flex;
@@ -2383,7 +2408,7 @@ body {
         </a>
 
         <p>
-          A management-led diplomatic conference built around preparation,
+          A student-led diplomatic conference built around preparation,
           procedure, leadership and meaningful debate.
         </p>
       </div>
@@ -2985,7 +3010,7 @@ function renderHome(){
           <div class="cta-copy">
             <span class="eyebrow">Ready when you are</span>
             <h2>Take your place on the floor.</h2>
-            <p>Register for Session XV, access the delegate portal and prepare for the next conference.</p>
+            <p>Register for PACEMUN, access the delegate portal and prepare for the next conference.</p>
             <div class="cta-actions">
               <a href="#/register" class="btn btn-primary">
                 Register now
