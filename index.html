@@ -2295,6 +2295,22 @@ body {
   overflow:visible;
   animation:none;
 }
+  h1 {
+  /* Centers the text */
+  text-align: center; 
+  
+  /* Uses a premium system font stack, falls back to clean sans-serif */
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  
+  /* Styling tweaks for a polished look */
+  font-size: 2.5rem;       /* Modern, responsive sizing */
+  font-weight: 700;       /* Crisp bold weighting */
+  color: #1a1a1a;         /* Soft dark gray (better than pure black) */
+  letter-spacing: -0.02em; /* Slightly tighter tracking for an elegant editorial look */
+  line-height: 1.2;       /* Prevents awkward spacing if the title wraps */
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 .hero .hero-countdown{
   display:block;
   width:min(100%,760px);
@@ -3350,19 +3366,7 @@ function renderRegister(){
 
 function renderLogin(){
   renderPage(`
-    <section class="auth-screen">
-      <div class="container">
-        <div class="auth-card">
-          <span class="eyebrow" id="authMode">Unavailable</span>
-
-
-          <div class="auth-switch">
-            <span id="switchLabel">New delegate?</span>
-            <button type="button" id="switchButton">Create an account</button>
-          </div>
-        </div>
-      </div>
-    </section>
+<h1>Delegate applications will open soon</h1>
   `);
 
   let mode = "signin";
