@@ -1143,6 +1143,91 @@ a:focus-visible{
     linear-gradient(145deg,#112743,#08172b);
 }
 
+#pacemun-root*,#pacemun-root*::before,#pacemun-root*::after{box-sizing:border-box;margin:0;padding:0;}
+#pacemun-root{
+  --gold:#c9a84c;
+  --bg:#07101e;
+  --ch:155px;
+  --cr:3.22;
+  --cw:calc(var(--ch)*var(--cr));
+  --ph:248px;
+  --pw:calc(var(--ph)*var(--cr));
+  --gap:14px;
+  width:100%;
+  background:var(--bg);
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+
+/* header */
+.pmun-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 22px 10px;
+}
+.pmun-brand{font-size:9.5px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;opacity:.75;}
+
+/* stage */
+.pmun-stage{
+  overflow:hidden;width:100%;position:relative;
+  height:calc(var(--ph) + 40px);
+  display:flex;align-items:center;
+}
+.pmun-stage::before,.pmun-stage::after{
+  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:20;pointer-events:none;
+}
+.pmun-stage::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.pmun-stage::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+
+.pmun-track{
+  display:flex;align-items:center;gap:var(--gap);
+  width:max-content;will-change:transform;padding:20px 0;
+}
+
+/* cards */
+.pmun-card{
+  flex-shrink:0;
+  width:var(--cw);height:var(--ch);
+  border-radius:8px;overflow:hidden;cursor:pointer;
+  border:none;outline:none;
+  box-shadow:0 2px 14px rgba(0,0,0,.45);
+  transition:
+    width .45s cubic-bezier(.34,1.2,.64,1),
+    height .45s cubic-bezier(.34,1.2,.64,1),
+    box-shadow .35s ease,
+    filter .35s ease;
+  filter:brightness(.42) saturate(.5);
+  opacity:0;
+  animation:pmun-in .55s cubic-bezier(.34,1.56,.64,1) forwards;
+  background:#000;
+}
+.pmun-card.active{
+  width:var(--pw)!important;height:var(--ph)!important;
+  box-shadow:0 16px 50px rgba(0,0,0,.75),0 0 40px rgba(201,168,76,.1);
+  filter:brightness(1) saturate(1.05);
+  z-index:10;
+}
+.pmun-card:hover:not(.active){filter:brightness(.62) saturate(.75);}
+@keyframes pmun-in{
+  from{opacity:0;transform:scale(.88) translateY(16px);}
+  to{opacity:1;transform:scale(1) translateY(0);}
+}
+
+/* Image fits fully within card bounds, no cropping */
+.pmun-card img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  display:block;
+  pointer-events:none;
+  user-select:none;
+  background:#000;
+}
+
+/* bottom padding instead of rail */
+.pmun-bottom-pad{height:18px;}
+
 .gallery-item.image-error::after{
   content:"PACE MUN";
   color:rgba(230,165,44,.62);
@@ -3297,6 +3382,16 @@ function renderSecretariat(){
         </div>
         <div id="memberGridFull"></div>
       </div>
+      <div class="pmun-hdr">
+  <span class="pmun-brand">PACEMUN II · Boys Section · Pace International School</span>
+  <span class="pmun-brand" id="pmunCounter" style="opacity:.45;">1 / 14</span>
+</div>
+
+<div class="pmun-stage" id="pmunStage">
+  <div class="pmun-track" id="pmunTrack"></div>
+</div>
+
+<div class="pmun-bottom-pad"></div>
     </section>
   `);
   loadMembers($("#memberGridFull"));
@@ -3817,6 +3912,133 @@ if(yearNode) yearNode.textContent = new Date().getFullYear();
 })();
 
 </script>
+<script>
+(function(){
+  const IMGS=[
+    "/1.PNG","/2.PNG","/3.PNG","/4.PNG","/5.PNG","/6.PNG","/7.PNG",
+    "/8.PNG","/9.PNG","/10.PNG","/11.PNG","/12.PNG","/13.PNG","/14.PNG"
+  ];
+  const N=IMGS.length;
 
+  const TRAVEL_MS=1100;
+  const DWELL_MS =1400;
+
+  const track   =document.getElementById('pmunTrack');
+  const stage   =document.getElementById('pmunStage');
+  const counter =document.getElementById('pmunCounter');
+  const root    =document.getElementById('pacemun-root');
+
+  let current=0,animating=false,paused=false,dwellTimer=null;
+  let trackX=0;
+  let trackRaf=null,dwellRaf=null;
+
+  /* cards */
+  IMGS.forEach((src,i)=>{
+    const c=document.createElement('div');
+    c.className='pmun-card';
+    c.style.animationDelay=(i*50)+'ms';
+    const img=document.createElement('img');
+    img.src=src;img.alt='';img.loading='lazy';
+    c.appendChild(img);
+    c.addEventListener('click',()=>jumpTo(i));
+    track.appendChild(c);
+  });
+  const cards=track.querySelectorAll('.pmun-card');
+
+  /* geometry */
+  function css(prop){return parseFloat(getComputedStyle(root).getPropertyValue(prop))||0;}
+  function centeredX(idx){
+    const bw=css('--ch')*css('--cr');
+    const pw=css('--ph')*css('--cr');
+    const g =parseInt(getComputedStyle(track).gap)||14;
+    const ow=stage.offsetWidth;
+    let left=0;
+    for(let i=0;i<idx;i++) left+=bw+g;
+    return -left+(ow/2-pw/2);
+  }
+
+  /* easing */
+  function eio(t){return t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;}
+
+  /* animate track */
+  function slideTrack(toX,ms,done){
+    cancelAnimationFrame(trackRaf);
+    const from=trackX,d=toX-from,t0=performance.now();
+    function step(now){
+      const t=Math.min((now-t0)/ms,1);
+      trackX=from+d*eio(t);
+      track.style.transform=`translateX(${trackX}px)`;
+      if(t<1)trackRaf=requestAnimationFrame(step);
+      else{trackX=toX;if(done)done();}
+    }
+    trackRaf=requestAnimationFrame(step);
+  }
+
+  function updateUI(idx){
+    cards.forEach((c,i)=>c.classList.toggle('active',i===idx));
+    counter.textContent=(idx+1)+' / '+N;
+  }
+
+  function goTo(idx){
+    animating=true;
+    updateUI(idx);
+    slideTrack(centeredX(idx),500,()=>{
+      animating=false;
+      if(!paused)dwellTimer=setTimeout(()=>{if(!paused)advance();},DWELL_MS);
+    });
+    current=idx;
+  }
+
+  function advance(){
+    if(animating||paused)return;
+    const next=(current+1)%N;
+    goTo(next);
+  }
+
+  function jumpTo(idx){
+    clearTimeout(dwellTimer);
+    cancelAnimationFrame(trackRaf);
+    animating=false;
+    current=idx;updateUI(idx);
+    slideTrack(centeredX(idx),450,()=>{
+      animating=false;
+      dwellTimer=setTimeout(()=>{if(!paused)advance();},DWELL_MS);
+    });
+  }
+
+  /* hover pause */
+  stage.addEventListener('mouseenter',()=>{paused=true;clearTimeout(dwellTimer);});
+  stage.addEventListener('mouseleave',()=>{paused=false;dwellTimer=setTimeout(()=>advance(),350);});
+
+  /* touch */
+  let tx0=0;
+  stage.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;paused=true;clearTimeout(dwellTimer);},{passive:true});
+  stage.addEventListener('touchend',  e=>{
+    const dx=e.changedTouches[0].clientX-tx0;paused=false;
+    jumpTo(Math.abs(dx)>40?(dx<0?(current+1)%N:(current-1+N)%N):current);
+  },{passive:true});
+
+  /* keyboard */
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight')jumpTo((current+1)%N);
+    if(e.key==='ArrowLeft') jumpTo((current-1+N)%N);
+  });
+
+  /* resize */
+  function resize(){
+    const ow=root.offsetWidth;
+    const bh=Math.min(200,Math.max(90,ow*0.12));
+    root.style.setProperty('--ch',bh+'px');
+    root.style.setProperty('--ph',Math.min(300,bh*1.6)+'px');
+    cancelAnimationFrame(trackRaf);
+    trackX=centeredX(current);
+    track.style.transform=`translateX(${trackX}px)`;
+  }
+  window.addEventListener('resize',resize);
+
+  resize();
+  setTimeout(()=>goTo(0),300);
+})();
+</script>
 </body>
 </html>
