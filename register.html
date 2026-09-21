@@ -166,6 +166,39 @@ button{
 
 .footer{text-align:center;color:var(--muted-dim);font-size:.68rem;padding:0 0 14px;letter-spacing:.02em}
 
+/* ---------- registration path: role + type ---------- */
+.gate-screen{display:none}
+.gate-screen.active{display:block;animation:rise .5s var(--ease)}
+.gate-screen .q-label{max-width:none}
+.gate-list{display:grid;gap:10px}
+.gate-choice{
+  position:relative;display:block;width:100%;text-align:left;overflow:hidden;
+  padding:22px 24px 22px 28px;
+  background:var(--panel-soft);border:1px solid var(--line);border-radius:10px;
+  color:var(--muted);font-family:"DM Sans",system-ui,sans-serif;font-weight:400;font-size:.86rem;
+  transition:border-color .18s,background .18s;
+}
+.gate-choice::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass);
+  transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease);
+}
+.gate-choice:hover{border-color:rgba(207,216,236,.24);background:#0f1a38}
+.gate-choice:hover::before,.gate-choice.is-selected::before{transform:scaleY(1)}
+.gate-choice.is-selected{border-color:rgba(200,162,74,.55);background:var(--brass-dim);color:var(--ink)}
+.gate-title{
+  display:block;margin-bottom:6px;color:#f4f6fb;
+  font-family:"Playfair Display",serif;font-weight:600;font-size:1.55rem;line-height:1.2;
+}
+.gate-desc{display:block;max-width:44ch;line-height:1.55}
+@media(prefers-reduced-motion:reduce){
+  .gate-screen.active{animation:none}
+  .gate-choice::before{transition:none}
+}
+@media(max-width:640px){
+  .gate-choice{padding:18px 18px 18px 22px}
+  .gate-title{font-size:1.4rem}
+}
+
 @media(max-width:640px){
   .wrap{width:min(100% - 32px,680px)}
   .stage{padding:64px 0 16px}
@@ -188,7 +221,47 @@ button{
 </div>
 
 <main class="stage">
-<form id="chairForm" novalidate>
+
+<div class="gate" id="gate">
+  <div class="wrap">
+
+    <!-- Gate 1: role -->
+    <div class="gate-screen active" id="gateRole">
+      <p class="q-label">Which role are you registering for?</p>
+      <div class="gate-list">
+        <button type="button" class="gate-choice" data-role="Chair">
+          <span class="gate-title">Register as Chair</span>
+          <span class="gate-desc">Run a committee: guide the debate, keep order and support delegates.</span>
+        </button>
+        <button type="button" class="gate-choice" data-role="Delegate">
+          <span class="gate-title">Register as Delegate</span>
+          <span class="gate-desc">Represent a country in committee and take part in the debate.</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Gate 2: type -->
+    <div class="gate-screen" id="gateType">
+      <p class="q-label">How are you registering?</p>
+      <div class="gate-list">
+        <button type="button" class="gate-choice" data-type="Individual">
+          <span class="gate-title">Register as Individual</span>
+          <span class="gate-desc">You're signing up on your own.</span>
+        </button>
+        <button type="button" class="gate-choice" data-type="School">
+          <span class="gate-title">Register as School</span>
+          <span class="gate-desc">You're signing up as part of your school's delegation.</span>
+        </button>
+      </div>
+      <div class="step-nav">
+        <button type="button" class="btn-ghost" data-gate-back>Back</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<form id="chairForm" novalidate hidden>
   <div class="wrap">
 
     <!-- Step 0: intro -->
@@ -201,6 +274,7 @@ button{
         <div><b>4 documents</b><small>Certificates, resume, LOR</small></div>
       </div>
       <div class="step-nav" style="justify-content:flex-start">
+        <button type="button" class="btn-ghost" data-gate-exit>Back</button>
         <button type="button" class="btn-start" data-next>Begin application</button>
       </div>
     </div>
@@ -628,6 +702,47 @@ document.getElementById("chairForm").addEventListener("keydown", e=>{
 
 paint();
 
+/* ---------------- registration path (role + type) ---------------- */
+const gate = document.getElementById("gate");
+const chairForm = document.getElementById("chairForm");
+const gateRole = document.getElementById("gateRole");
+const gateType = document.getElementById("gateType");
+let registrationRole = "";
+let registrationType = "";
+
+function showGate(screen, focusFirst){
+  gateRole.classList.toggle("active", screen === gateRole);
+  gateType.classList.toggle("active", screen === gateType);
+  if(focusFirst) setTimeout(() => screen.querySelector(".gate-choice").focus({preventScroll:true}), 60);
+  window.scrollTo({top:0, behavior:"instant"});
+}
+function markSelected(container, attr, value){
+  container.querySelectorAll(".gate-choice").forEach(b => b.classList.toggle("is-selected", b.dataset[attr] === value));
+}
+
+gateRole.querySelectorAll("[data-role]").forEach(btn=>{
+  btn.addEventListener("click", () => {
+    registrationRole = btn.dataset.role;
+    markSelected(gateRole, "role", registrationRole);
+    showGate(gateType, true);
+  });
+});
+gateType.querySelectorAll("[data-type]").forEach(btn=>{
+  btn.addEventListener("click", () => {
+    registrationType = btn.dataset.type;
+    markSelected(gateType, "type", registrationType);
+    gate.hidden = true;
+    chairForm.hidden = false;
+    paint();
+  });
+});
+gateType.querySelector("[data-gate-back]").addEventListener("click", () => showGate(gateRole, true));
+document.querySelector("[data-gate-exit]").addEventListener("click", () => {
+  chairForm.hidden = true;
+  gate.hidden = false;
+  showGate(gateType, true);
+});
+
 /* ---------------- upload + submit ---------------- */
 async function uploadFiles(files, folder, applicationId) {
   const paths = [];
@@ -701,7 +816,9 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
       coordinator_phone: f.coordinatorPhone.value.trim(),
       food_preference: food,
       food_allergies: f.allergies.value.trim(),
-      confirmed: f.confirmation.checked
+      confirmed: f.confirmation.checked,
+      registration_role: registrationRole,
+      registration_type: registrationType
     });
 
     if (error) throw error;
