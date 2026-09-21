@@ -197,7 +197,7 @@ button{
       <p class="intro-copy">PACE International Model United Nations is looking for its next panel of committee chairs. Answer one question at a time — it takes about ten minutes.</p>
       <div class="intro-meta">
         <div><b>31 Oct – 1 Nov</b><small>Conference dates</small></div>
-        <div><b>21 questions</b><small>Roughly 10 minutes</small></div>
+        <div><b>20 questions</b><small>Roughly 10 minutes</small></div>
         <div><b>4 documents</b><small>Certificates, resume, LOR</small></div>
       </div>
       <div class="step-nav" style="justify-content:flex-start">
@@ -316,7 +316,7 @@ button{
     <div class="step" data-step="9" data-section="MUN experience">
       <p class="q-label">Attach your resume.<span class="req"> (optional)</span></p>
       <div class="upload">
-        <input id="resume" name="resume" type="file" >
+        <input id="resume" name="resume" type="file">
         <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
       <div class="error" id="resumeError"></div>
@@ -330,7 +330,7 @@ button{
     <div class="step" data-step="10" data-section="MUN experience">
       <p class="q-label">Attach a letter of recommendation.<span class="req"> (optional)</span></p>
       <div class="upload">
-        <input id="lor" name="lor" type="file" >
+        <input id="lor" name="lor" type="file">
         <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
       </div>
       <div class="error" id="lorError"></div>
@@ -368,6 +368,7 @@ button{
         <label class="choice"><input type="radio" name="secondPreference" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
         <label class="choice"><input type="radio" name="secondPreference" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
       </div>
+      <div class="error" id="secondPreferenceError">Your second choice must be different from your first choice.</div>
       <div class="step-nav">
         <button type="button" class="btn-ghost" data-back>Back</button>
         <button type="button" class="btn-primary" data-next>Next</button>
@@ -384,8 +385,7 @@ button{
       </div>
     </div>
 
-
-    <!-- Step 15 -->
+    <!-- Step 14 -->
     <div class="step" data-step="14" data-section="Committee preferences">
       <p class="q-label">Why would you like to attend PaceMUN II?<span class="req"> *</span></p>
       <textarea id="whyPace" name="whyPace" required></textarea>
@@ -395,7 +395,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 16 -->
+    <!-- Step 15 -->
     <div class="step" data-step="15" data-section="Contact & preferences">
       <p class="q-label">Where should we send your selection results?<span class="req"> *</span></p>
       <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
@@ -405,7 +405,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 17 -->
+    <!-- Step 16 -->
     <div class="step" data-step="16" data-section="Contact & preferences">
       <p class="q-label">What's your WhatsApp contact number?<span class="req"> *</span></p>
       <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
@@ -415,7 +415,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 18 -->
+    <!-- Step 17 -->
     <div class="step" data-step="17" data-section="Contact & preferences">
       <p class="q-label">What's your MUN coordinator's WhatsApp number?<span class="req"> *</span></p>
       <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
@@ -425,7 +425,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 19 -->
+    <!-- Step 18 -->
     <div class="step" data-step="18" data-section="Contact & preferences">
       <p class="q-label">What's your food preference?<span class="req"> *</span></p>
       <div class="choice-grid">
@@ -438,7 +438,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 20 -->
+    <!-- Step 19 -->
     <div class="step" data-step="19" data-section="Contact & preferences">
       <p class="q-label">Any food allergies we should know about?</p>
       <p class="q-help">Optional — write "None" if there aren't any.</p>
@@ -449,7 +449,7 @@ button{
       </div>
     </div>
 
-    <!-- Step 21: declaration + submit -->
+    <!-- Step 20: declaration + submit -->
     <div class="step" data-step="20" data-section="Declaration">
       <p class="q-label">One last thing.<span class="req"> *</span></p>
       <label class="choice confirm">
@@ -532,7 +532,7 @@ function syncDOB(){
   if(dobDay.value && dobMonth.value && dobYear.value){
     const candidate = `${dobYear.value}-${dobMonth.value}-${dobDay.value}`;
     const check = new Date(`${candidate}T00:00:00`);
-    if(check.getMonth()+1 === Number(dobMonth.value) && check.getDate() === Number(dobDay.value)){
+    if(check.getFullYear() === Number(dobYear.value) && check.getMonth()+1 === Number(dobMonth.value) && check.getDate() === Number(dobDay.value)){
       dobHidden.value=candidate;
       return true;
     }
@@ -541,6 +541,17 @@ function syncDOB(){
   return false;
 }
 [dobDay,dobMonth,dobYear].forEach(el=>el.addEventListener("change",()=>{ dobError.style.display="none"; syncDOB(); }));
+
+/* ---------------- committee preferences ---------------- */
+const secondPrefError = document.getElementById("secondPreferenceError");
+function preferencesConflict(){
+  const first = document.querySelector('input[name="firstPreference"]:checked');
+  const second = document.querySelector('input[name="secondPreference"]:checked');
+  return !!(first && second && first.value === second.value);
+}
+document.querySelectorAll('input[name="firstPreference"],input[name="secondPreference"]').forEach(el=>{
+  el.addEventListener("change",()=>{ secondPrefError.style.display="none"; });
+});
 
 /* ---------------- step wizard ---------------- */
 const steps = Array.from(document.querySelectorAll(".step"));
@@ -557,7 +568,7 @@ function paint(){
   const activeStep = steps.find(s => Number(s.dataset.step) === current);
   const firstField = activeStep && activeStep.querySelector("input:not([type=hidden]),textarea,select");
   if(firstField) setTimeout(() => firstField.focus({preventScroll:true}), 60);
-  window.scrollTo({top:0, behavior:"instant" in window ? "instant" : "auto"});
+  window.scrollTo({top:0, behavior:"instant"});
 }
 
 function validateStep(stepEl){
@@ -585,6 +596,14 @@ function validateStep(stepEl){
       return false;
     }
   }
+
+  if(id === 12){
+    if(preferencesConflict()){
+      secondPrefError.style.display = "block";
+      return false;
+    }
+    secondPrefError.style.display = "none";
+  }
   return true;
 }
 
@@ -600,7 +619,7 @@ document.querySelectorAll("[data-back]").forEach(btn=>{
 });
 
 document.getElementById("chairForm").addEventListener("keydown", e=>{
-  if(e.key === "Enter" && e.target.tagName !== "TEXTAREA"){
+  if(e.key === "Enter" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON"){
     e.preventDefault();
     const activeStep = steps.find(s => Number(s.dataset.step) === current);
     const nextBtn = activeStep.querySelector("[data-next]");
@@ -625,14 +644,26 @@ async function uploadFiles(files, folder, applicationId) {
   return paths;
 }
 
+let submitted = false;
+
 document.getElementById("chairForm").addEventListener("submit", async e=>{
   e.preventDefault();
+  if(submitted) return;
+
   const f=e.target;
   const submitButton=document.getElementById("submitBtn");
   const success=document.getElementById("success");
 
   const lastStep = steps[steps.length-1];
   if(!validateStep(lastStep)) return;
+
+  // Committee choices can be edited after step 12, so re-check before uploading anything.
+  if(preferencesConflict()){
+    current = 12;
+    paint();
+    secondPrefError.style.display = "block";
+    return;
+  }
 
   submitButton.disabled=true;
   submitButton.textContent="Submitting…";
@@ -660,12 +691,12 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
       mun_certificates: munCertificates,
       chair_count: Number(f.chairCount.value),
       chair_certificates: chairCertificates,
-      resume_path: resume[0],
-      lor_path: lor[0],
+      resume_path: resume[0] || null,
+      lor_path: lor[0] || null,
       first_preference: firstPreference,
       second_preference: secondPreference,
       why_first: f.whyFirst.value.trim(),
-      gavel: f.gavel.value.trim(),
+      gavel: "", // the "gavel" question no longer exists in the form; kept blank so the database column still receives a value
       why_pace: f.whyPace.value.trim(),
       email: f.email.value.trim(),
       phone: f.phone.value.trim(),
@@ -677,6 +708,7 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
 
     if (error) throw error;
 
+    submitted = true;
     success.style.borderColor="";
     success.style.background="";
     success.textContent="Application submitted. You'll hear back at the email address you provided.";
@@ -688,8 +720,12 @@ document.getElementById("chairForm").addEventListener("submit", async e=>{
     success.style.borderColor="rgba(226,104,95,.35)";
     success.style.background="rgba(226,104,95,.08)";
   } finally {
-    submitButton.disabled=false;
-    submitButton.textContent="Submit application";
+    if(submitted){
+      submitButton.textContent="Submitted";
+    } else {
+      submitButton.disabled=false;
+      submitButton.textContent="Submit application";
+    }
   }
 });
 </script>
