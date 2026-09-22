@@ -18,8 +18,8 @@
    Initialized by renderSecretariat() after the carousel DOM exists. */
 function initPmunGallery(){
   const IMGS=[
-    "/1.png","/2.png","/3.png","/4.png","/5.png","/6.png","/7.png",
-    "/8.png","/9.png","/10.png","/11.png","/12.png","/13.png","/14.png"
+    "/1.PNG","/2.PNG","/3.PNG","/4.PNG","/5.PNG","/6.PNG","/7.PNG",
+    "/8.PNG","/9.PNG","/10.PNG","/11.PNG","/12.PNG","/13.PNG","/14.PNG"
   ];
 
   const root=document.getElementById("pacemun-root");
@@ -3770,7 +3770,17 @@ function renderHome(){
     </section>
 
 
-
+    <section class="section committees">
+      <div class="container">
+        <div class="section-head reveal">
+          <div><span class="eyebrow">The floor</span><h2>Committees</h2></div>
+          <p>Distinct rooms, different levels of complexity and different ways to make your argument matter.</p>
+        </div>
+        <div class="committee-grid">
+          ${COMMITTEES.map((committee,index)=>renderCommitteeCard(committee,index)).join("")}
+        </div>
+      </div>
+    </section>
 
 
     <section class="section">
@@ -3859,7 +3869,16 @@ function renderHome(){
 
 function renderCommitteeCard(committee,index){
   return `
-
+    <article class="committee reveal">
+      <div class="committee-code">${escapeHtml(committee.code)}</div>
+      <div class="committee-number">0${index+1}</div>
+      <h3>${escapeHtml(committee.name)}</h3>
+      <p class="committee-topic">${escapeHtml(committee.topic)}</p>
+      <div class="committee-footer">
+        <span class="pill">${escapeHtml(committee.level)}</span>
+        <span class="pill pill-muted">Session XV</span>
+      </div>
+    </article>
   `;
 }
 
