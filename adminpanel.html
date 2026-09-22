@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PaceMUN Admin Panel</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h1>PaceMUN II</h1>
+        <span>Admin Panel</span>
+    </div>
+
+    <nav>
+
+        <button class="nav-btn active" data-page="dashboard">
+            Dashboard
+        </button>
+
+        <button class="nav-btn" data-page="delegates">
+            Individual Delegates
+        </button>
+
+        <button class="nav-btn" data-page="schools">
+            School Delegations
+        </button>
+
+        <button class="nav-btn" data-page="chairs">
+            Chair Applications
+        </button>
+
+    </nav>
+
+    <button id="logoutBtn" class="logout">
+        Logout
+    </button>
+
+</div>
+
+<div class="content">
+
+<!-- ================= Dashboard ================= -->
+
+<section id="dashboard" class="page active">
+
+<h2>Dashboard</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Delegates</h3>
+<p id="totalDelegates">0</p>
+</div>
+
+<div class="card">
+<h3>Individual</h3>
+<p id="individualCount">0</p>
+</div>
+
+<div class="card">
+<h3>Schools</h3>
+<p id="schoolCount">0</p>
+</div>
+
+<div class="card">
+<h3>Chair Applications</h3>
+<p id="chairCount">0</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- ================= Individual Delegates ================= -->
+
+<section id="delegates" class="page">
+
+<div class="page-top">
+
+<h2>Individual Delegates</h2>
+
+<input
+type="text"
+id="delegateSearch"
+placeholder="Search delegates...">
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>School</th>
+
+<th>Email</th>
+
+<th>Phone</th>
+
+<th>Committee</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="delegateTable">
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- ================= Schools ================= -->
+
+<section id="schools" class="page">
+
+<div class="page-top">
+
+<h2>School Delegations</h2>
+
+<input
+type="text"
+id="schoolSearch"
+placeholder="Search schools...">
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>School</th>
+
+<th>Coordinator</th>
+
+<th>Email</th>
+
+<th>Delegates</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="schoolTable">
+
+</tbody>
+
+</table>
+
+</section>
+
+<!-- ================= Chairs ================= -->
+
+<section id="chairs" class="page">
+
+<div class="page-top">
+
+<h2>Chair Applications</h2>
+
+<input
+type="text"
+id="chairSearch"
+placeholder="Search chairs...">
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Name</th>
+
+<th>School</th>
+
+<th>Experience</th>
+
+<th>Email</th>
+
+<th>Status</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="chairTable">
+
+</tbody>
+
+</table>
+
+</section>
+
+</div>
+
+<!-- ================= View Modal ================= -->
+
+<div id="modal" class="modal">
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>Application Details</h2>
+
+<button id="closeModal">
+
+✕
+
+</button>
+
+</div>
+
+<div id="modalContent">
+
+</div>
+
+</div>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
