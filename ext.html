@@ -40,7 +40,7 @@ function initPmunGallery(){
   const N=IMGS.length;
   let current=0;
   let animating=false;
-  let trackX=0;
+  let trackY=0;
   let trackRaf=null;
   let wheelLocked=false;
   let wheelUnlockTimer=null;
@@ -78,16 +78,16 @@ function initPmunGallery(){
     return parseFloat(getComputedStyle(root).getPropertyValue(property)) || 0;
   }
 
-  function centeredX(index){
+  function centeredY(index){
     const normalWidth=cssNumber("--ch") * cssNumber("--cr");
     const activeWidth=cssNumber("--ph") * cssNumber("--cr");
     const gap=parseFloat(getComputedStyle(track).gap) || cssNumber("--gap") || 14;
-    const stageWidth=stage.clientWidth;
+    const stageHeight=stage.clientHeight;
 
-    let left=0;
-    for(let i=0;i<index;i++) left += normalWidth + gap;
+    let top=0;
+    for(let i=0;i<index;i++) top += cssNumber("--ch") + gap;
 
-    return -left + (stageWidth/2 - activeWidth/2);
+    return -top + (stageHeight/2 - cssNumber("--ph")/2);
   }
 
   function easeInOut(t){
@@ -103,24 +103,24 @@ function initPmunGallery(){
     }
   }
 
-  function slideTrack(toX,duration,done){
+  function slideTrack(toY,duration,done){
     stopAnimation();
 
-    const from=trackX;
-    const distance=toX-from;
+    const from=trackY;
+    const distance=toY-from;
     const started=performance.now();
 
     function step(now){
       const progress=Math.min((now-started)/duration,1);
-      trackX=from + distance*easeInOut(progress);
-      track.style.transform=`translate3d(${trackX}px,0,0)`;
+      trackY=from + distance*easeInOut(progress);
+      track.style.transform=`translate3d(0,${trackY}px,0)`;
 
       if(progress<1){
         trackRaf=requestAnimationFrame(step);
       }else{
         trackRaf=null;
-        trackX=toX;
-        track.style.transform=`translate3d(${toX}px,0,0)`;
+        trackY=toY;
+        track.style.transform=`translate3d(0,${toY}px,0)`;
         if(typeof done === "function") done();
       }
     }
@@ -139,7 +139,7 @@ function initPmunGallery(){
     animating=true;
     updateUI(next);
 
-    slideTrack(centeredX(next),duration,()=>{
+    slideTrack(centeredY(next),duration,()=>{
       animating=false;
     });
   }
@@ -152,28 +152,27 @@ function initPmunGallery(){
     animating=true;
     updateUI(next);
 
-    slideTrack(centeredX(next),450,()=>{
+    slideTrack(centeredY(next),450,()=>{
       animating=false;
     });
   }
 
   function resize(){
     const width=root.clientWidth;
-    const cardHeight=Math.min(200,Math.max(90,width*0.12));
-    const previewHeight=Math.min(300,cardHeight*1.6);
+    const cardHeight=Math.min(175,Math.max(82,width*0.105));
+    const previewHeight=Math.min(220,Math.max(130,cardHeight*1.26));
 
     root.style.setProperty("--ch",`${cardHeight}px`);
     root.style.setProperty("--ph",`${previewHeight}px`);
 
     stopAnimation();
-    trackX=centeredX(current);
-    track.style.transform=`translate3d(${trackX}px,0,0)`;
+    trackY=centeredY(current);
+    track.style.transform=`translate3d(0,${trackY}px,0)`;
   }
 
   /*
    * Manual scrolling:
-   * The carousel no longer advances by itself. Scroll vertically while the
-   * pointer is over the banner to move through the images.
+   * The carousel no longer advances by itself. Scroll up/down while the pointer is over the banner to move through the images.
    */
   stage.addEventListener("wheel",event=>{
     event.preventDefault();
@@ -200,18 +199,18 @@ function initPmunGallery(){
     },320);
   },{passive:false});
 
-  let touchStartX=null;
+  let touchStartY=null;
 
   stage.addEventListener("touchstart",event=>{
-    touchStartX=event.touches[0]?.clientX ?? null;
+    touchStartY=event.touches[0]?.clientY ?? null;
   },{passive:true});
 
   stage.addEventListener("touchend",event=>{
-    if(touchStartX===null) return;
+    if(touchStartY===null) return;
 
-    const endX=event.changedTouches[0]?.clientX ?? touchStartX;
-    const delta=endX-touchStartX;
-    touchStartX=null;
+    const endY=event.changedTouches[0]?.clientY ?? touchStartY;
+    const delta=endY-touchStartY;
+    touchStartY=null;
 
     if(Math.abs(delta)>40){
       jumpTo(delta<0 ? (current+1)%N : (current-1+N)%N);
@@ -223,8 +222,8 @@ function initPmunGallery(){
   /* Namespace the listener so it is only attached once to this carousel. */
   const keyHandler=event=>{
     if(!document.body.contains(root)) return;
-    if(event.key==="ArrowRight") jumpTo((current+1)%N);
-    if(event.key==="ArrowLeft") jumpTo((current-1+N)%N);
+    if(event.key==="ArrowDown") jumpTo((current+1)%N);
+    if(event.key==="ArrowUp") jumpTo((current-1+N)%N);
   };
   document.addEventListener("keydown",keyHandler);
 
@@ -1524,7 +1523,7 @@ a:focus-visible{
   --ch:155px;
   --cr:3.22;
   --cw:calc(var(--ch)*var(--cr));
-  --ph:248px;
+  --ph:220px;
   --pw:calc(var(--ph)*var(--cr));
   --gap:14px;
   width:100%;
@@ -1546,41 +1545,42 @@ a:focus-visible{
 /* stage */
 .pmun-stage{
   overflow:hidden;width:100%;position:relative;
-  height:calc(var(--ph) + 40px);
+  height:calc(var(--ph) + 24px);
   display:flex;align-items:center;
 }
 .pmun-stage::before,.pmun-stage::after{
-  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:20;pointer-events:none;
+  content:'';position:absolute;left:0;right:0;height:90px;z-index:20;pointer-events:none;
 }
-.pmun-stage::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
-.pmun-stage::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.pmun-stage::before{top:0;background:linear-gradient(to bottom,var(--bg),transparent);}
+.pmun-stage::after{bottom:0;background:linear-gradient(to top,var(--bg),transparent);}
 
 
 .pmun-track{
-  display:flex;align-items:center;gap:var(--gap);
-  width:max-content;will-change:transform;padding:20px 0;
+  display:flex;flex-direction:column;align-items:center;gap:var(--gap);
+  width:100%;height:max-content;will-change:transform;padding:12px 0;
 }
 
 
 /* cards */
 .pmun-card{
   flex-shrink:0;
-  width:var(--cw);height:var(--ch);
+  width:min(var(--cw),calc(100% - 32px));height:auto;aspect-ratio:var(--cr);
   border-radius:8px;overflow:hidden;cursor:pointer;
   border:none;outline:none;
   box-shadow:0 2px 14px rgba(0,0,0,.45);
   transition:
-    width .45s cubic-bezier(.34,1.2,.64,1),
-    height .45s cubic-bezier(.34,1.2,.64,1),
     box-shadow .35s ease,
-    filter .35s ease;
+    filter .35s ease,
+    opacity .35s ease;
   filter:brightness(.42) saturate(.5);
   opacity:0;
   animation:pmun-in .55s cubic-bezier(.34,1.56,.64,1) forwards;
   background:#000;
 }
 .pmun-card.active{
-  width:var(--pw)!important;height:var(--ph)!important;
+  width:min(var(--cw),calc(100% - 32px))!important;
+  height:auto!important;
+  aspect-ratio:var(--cr);
   box-shadow:0 16px 50px rgba(0,0,0,.75),0 0 40px rgba(201,168,76,.1);
   filter:brightness(1) saturate(1.05);
   z-index:10;
@@ -1596,7 +1596,7 @@ a:focus-visible{
 .pmun-card img{
   width:100%;
   height:100%;
-  object-fit:contain;
+  object-fit:cover;
   object-position:center;
   display:block;
   pointer-events:none;
@@ -4066,7 +4066,7 @@ function renderSecretariat(){
       </div>
       <div id="pacemun-root">
       <div class="pmun-hdr">
-  <span class="pmun-brand">PACEMUN II · Boys Section · Pace International School · SCROLL TO BROWSE</span>
+  <span class="pmun-brand">PACEMUN II · Boys Section · Pace International School · SCROLL UP / DOWN TO BROWSE</span>
   <span class="pmun-brand" id="pmunCounter" style="opacity:.45;">1 / 14</span>
 </div>
 
