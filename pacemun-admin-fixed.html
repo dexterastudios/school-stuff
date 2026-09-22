@@ -1,5 +1,4 @@
 <!DOCTYPE html>
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -287,6 +286,65 @@ td.muted{color:var(--muted)}
 <div class="lightbox-caption" id="lightboxCaption"></div>
 
 
+
+<script>
+(function () {
+  const PASSCODE = "pacemun2025";
+  const gate = document.getElementById("gate");
+  const input = document.getElementById("gatePass");
+  const button = document.getElementById("gateBtn");
+  const error = document.getElementById("gateErr");
+  const shell = document.getElementById("shell");
+
+  function openAdmin() {
+    gate.style.display = "none";
+    shell.style.display = "flex";
+    try { sessionStorage.setItem("pacemun_admin_ok", "1"); } catch (_) {}
+
+    // init() is defined by the module script. Wait until it exists.
+    const start = () => {
+      if (typeof window.__pacemunInit === "function") {
+        window.__pacemunInit();
+      } else {
+        setTimeout(start, 50);
+      }
+    };
+    start();
+  }
+
+  function enter() {
+    if (input.value === PASSCODE) {
+      error.style.display = "none";
+      openAdmin();
+    } else {
+      error.style.display = "block";
+      input.select();
+      input.focus();
+    }
+  }
+
+  button.addEventListener("click", function (e) {
+    e.preventDefault();
+    enter();
+  });
+
+  input.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      enter();
+    }
+  });
+
+  try {
+    if (sessionStorage.getItem("pacemun_admin_ok") === "1") {
+      openAdmin();
+    }
+  } catch (_) {}
+
+  input.focus();
+})();
+</script>
+
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 /* ═══ Supabase ═══ */
@@ -294,26 +352,6 @@ const SUPABASE_URL = "https://whwilpuynwudlddbxmwk.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const FILE_BUCKET = "chair-applications";
-
-/* ═══ Gate (client-side only) ═══ */
-const ADMIN_PASSCODE = "pacemun2025"; // change this before sharing the link
-(function gate(){
-  const saved = sessionStorage.getItem("pacemun_admin_ok");
-  if(saved==="1"){document.getElementById("gate").style.display="none";document.getElementById("shell").style.display="flex";init();return;}
-  const btn=document.getElementById("gateBtn"), input=document.getElementById("gatePass"), err=document.getElementById("gateErr");
-  function tryEnter(){
-    if(input.value===ADMIN_PASSCODE){
-      sessionStorage.setItem("pacemun_admin_ok","1");
-      document.getElementById("gate").style.display="none";
-      document.getElementById("shell").style.display="flex";
-      init();
-    }else{err.style.display="block";input.value="";input.focus();}
-  }
-  btn.addEventListener("click",tryEnter);
-  input.addEventListener("keydown",e=>{if(e.key==="Enter")tryEnter();});
-  input.focus();
-})();
-
 /* ═══ Config per tab ═══ */
 const TABS = {
   di: {
@@ -719,6 +757,8 @@ function exportCSV(){
   URL.revokeObjectURL(url);
   toast(\`Exported ${rows.length} rows\`);
 }
+
+window.__pacemunInit = init;
 </script>
 </body>
 </html>
