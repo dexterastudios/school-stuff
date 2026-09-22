@@ -3770,17 +3770,7 @@ function renderHome(){
     </section>
 
 
-    <section class="section committees">
-      <div class="container">
-        <div class="section-head reveal">
-          <div><span class="eyebrow">The floor</span><h2>Committees</h2></div>
-          <p>Distinct rooms, different levels of complexity and different ways to make your argument matter.</p>
-        </div>
-        <div class="committee-grid">
-          ${COMMITTEES.map((committee,index)=>renderCommitteeCard(committee,index)).join("")}
-        </div>
-      </div>
-    </section>
+
 
 
     <section class="section">
@@ -3869,16 +3859,7 @@ function renderHome(){
 
 function renderCommitteeCard(committee,index){
   return `
-    <article class="committee reveal">
-      <div class="committee-code">${escapeHtml(committee.code)}</div>
-      <div class="committee-number">0${index+1}</div>
-      <h3>${escapeHtml(committee.name)}</h3>
-      <p class="committee-topic">${escapeHtml(committee.topic)}</p>
-      <div class="committee-footer">
-        <span class="pill">${escapeHtml(committee.level)}</span>
-        <span class="pill pill-muted">Session XV</span>
-      </div>
-    </article>
+
   `;
 }
 
