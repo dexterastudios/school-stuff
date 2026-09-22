@@ -1,321 +1,373 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#050a16">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <title>PaceMUN II — Registration</title>
 <style>
-:root{
-  --bg:#050a16;--bg-deep:#03060f;
-  --panel:#0a1229;--panel-soft:#0d1730;
-  --line:rgba(207,216,236,.13);--line-focus:rgba(200,162,74,.6);
-  --ink:#eef1f8;--muted:#8d97b3;--muted-dim:#5b6584;
-  --brass:#c8a24a;--brass-bright:#e7c374;--brass-dim:rgba(200,162,74,.13);
-  --danger:#e2685f;--danger-bg:rgba(226,104,95,.09);
-  --success:#5fcf9e;--success-bg:rgba(95,207,158,.08);
-  --radius:12px;--ease:cubic-bezier(.22,.8,.26,1);
+/* ── Design tokens ── */
+:root {
+  --navy:   #0d1b2a;
+  --navy2:  #162336;
+  --navy3:  #1e3050;
+  --teal:   #2a7f8f;
+  --teal-l: #3da0b2;
+  --teal-bg:rgba(42,127,143,.08);
+  --teal-border:rgba(42,127,143,.35);
+  --ink:    #dce8f0;
+  --muted:  #7a9ab5;
+  --dim:    #4a6880;
+  --line:   rgba(255,255,255,.07);
+  --line-h: rgba(255,255,255,.13);
+  --danger: #e07070;
+  --danger-bg: rgba(224,112,112,.1);
+  --ok:     #5fcfa0;
+  --ok-bg:  rgba(95,207,160,.09);
+  --r: 10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth}
 body{
   min-height:100vh;
-  background:
-    radial-gradient(ellipse 800px 400px at 20% -5%,rgba(200,162,74,.06),transparent 55%),
-    radial-gradient(ellipse 600px 500px at 90% 15%,rgba(60,85,160,.09),transparent 50%),
-    linear-gradient(180deg,var(--bg-deep) 0%,var(--bg) 50%,var(--bg-deep) 100%);
-  color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;
+  background: #0d1b2a;
+  background-image:
+    radial-gradient(ellipse 900px 500px at 50% -10%, rgba(42,127,143,.13), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 100% 80%, rgba(13,27,42,.6), transparent);
+  color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  line-height:1.6;
+  overflow-x:hidden;
 }
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  opacity:.025;mix-blend-mode:soft-light;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+::selection{background:var(--teal);color:#fff}
+:focus-visible{outline:2px solid var(--teal-l);outline-offset:3px;border-radius:4px}
+
+/* ── Layout ── */
+.page{
+  width:min(640px,calc(100% - 32px));
+  margin:0 auto;
+  padding:56px 0 80px;
+  position:relative;z-index:1;
 }
-::selection{background:rgba(200,162,74,.28);color:#080d1a}
-:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px;border-radius:4px}
-
-.page{position:relative;z-index:1;width:min(660px,calc(100% - 32px));margin:0 auto;padding:60px 0 80px}
-
-/* ── screen switching ── */
 .screen{display:none}
-.screen.active{display:block}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.screen.active{animation:rise .35s var(--ease)}
+.screen.active{display:block;animation:up .3s ease}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.screen.active{animation:none}}
 
-/* ── landing / gate ── */
-.gate-header{
-  background:var(--panel-soft);border:1px solid var(--line);
-  border-top:4px solid var(--brass);border-radius:var(--radius);
-  padding:32px 32px 28px;margin-bottom:14px;
+/* ── Back button ── */
+.back{
+  display:inline-flex;align-items:center;gap:7px;
+  background:none;border:1px solid var(--line-h);border-radius:7px;
+  padding:8px 14px;font:inherit;font-size:.78rem;font-weight:500;
+  color:var(--muted);cursor:pointer;margin-bottom:20px;
+  transition:border-color .15s,color .15s;
 }
-.conf-label{
-  font-size:.7rem;font-weight:600;letter-spacing:.08em;color:var(--brass-bright);
-  text-transform:uppercase;margin-bottom:16px;
-  display:flex;align-items:center;gap:8px;
-}
-.conf-label::after{content:"";flex:1;height:1px;background:var(--line)}
-.gate-title{
-  font-family:"Playfair Display",serif;
-  font-size:clamp(2rem,5vw,2.8rem);font-weight:600;
-  line-height:1.12;letter-spacing:-.015em;margin-bottom:14px;color:#f4f6fb;
-}
-.gate-title em{font-style:italic;color:var(--brass-bright)}
-.gate-desc{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:50ch;margin-bottom:22px}
-.meta-row{display:flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.meta-item{flex:1;padding:10px 14px;border-right:1px solid var(--line);font-size:.72rem;color:var(--muted);line-height:1.4}
-.meta-item:last-child{border-right:none}
-.meta-item strong{display:block;font-size:.84rem;color:var(--ink);font-weight:600;margin-bottom:2px}
+.back:hover{border-color:var(--teal-border);color:var(--teal-l)}
+.back svg{width:13px;height:13px;flex:none}
 
-.gate-prompt{
-  font-family:"Playfair Display",serif;font-size:1.15rem;font-weight:600;
-  color:#f0f3fa;margin:24px 0 12px;
+/* ── Header cards ── */
+.hero{
+  border:1px solid var(--line-h);
+  border-top:3px solid var(--teal);
+  border-radius:var(--r);
+  background:var(--navy2);
+  padding:36px 36px 32px;
+  margin-bottom:12px;
 }
-.role-grid{display:grid;gap:10px}
+.hero-date{
+  font-size:.72rem;font-weight:600;letter-spacing:.06em;
+  color:var(--teal-l);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-date::after{content:"";flex:1;height:1px;background:var(--line)}
+.hero-title{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:clamp(2.2rem,6vw,3rem);
+  font-weight:500;line-height:1.1;
+  color:#edf4f9;letter-spacing:-.01em;
+  margin-bottom:14px;
+}
+.hero-title em{font-style:italic;color:var(--teal-l)}
+.hero-body{color:var(--muted);font-size:.88rem;line-height:1.75;max-width:50ch;margin-bottom:24px}
+.meta{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.meta-cell{padding:10px 14px;border-right:1px solid var(--line);font-size:.72rem;color:var(--muted);line-height:1.4}
+.meta-cell:last-child{border-right:none}
+.meta-cell strong{display:block;font-size:.82rem;color:var(--ink);font-weight:600;margin-bottom:1px}
+
+/* ── Role chooser ── */
+.section-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;font-weight:500;font-style:italic;
+  color:var(--ink);margin:22px 0 12px;
+}
+.role-grid{display:grid;gap:9px}
 .role-btn{
   width:100%;text-align:left;
-  background:var(--panel-soft);border:1px solid var(--line);
-  border-radius:var(--radius);padding:22px 24px 22px 26px;
+  background:var(--navy2);border:1px solid var(--line-h);
+  border-radius:var(--r);padding:20px 22px;
   color:var(--muted);cursor:pointer;
-  font-family:"DM Sans",sans-serif;
-  transition:border-color .18s,background .18s;
+  font-family:'Inter',sans-serif;
+  transition:border-color .15s,background .15s;
   position:relative;overflow:hidden;
 }
 .role-btn::before{
   content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--brass);transform:scaleY(0);transform-origin:top;
-  transition:transform .28s var(--ease);
+  background:var(--teal);transform:scaleY(0);transform-origin:top;
+  transition:transform .25s ease;
 }
-.role-btn:hover{border-color:rgba(207,216,236,.26);background:#0f1a38}
+.role-btn:hover{border-color:var(--teal-border);background:var(--navy3)}
 .role-btn:hover::before{transform:scaleY(1)}
-.role-btn-title{
-  display:block;font-family:"Playfair Display",serif;
-  font-size:1.35rem;font-weight:600;color:#f4f6fb;margin-bottom:5px;line-height:1.2;
+.role-name{
+  display:block;font-family:'Cormorant Garamond',serif;
+  font-size:1.3rem;font-weight:500;color:#edf4f9;
+  margin-bottom:5px;line-height:1.2;
 }
-.role-btn-desc{font-size:.82rem;line-height:1.55;max-width:44ch}
+.role-desc{font-size:.82rem;line-height:1.55;color:var(--muted);max-width:46ch}
 
-/* ── delegate type gate ── */
-.back-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:none;border:1px solid var(--line);border-radius:8px;
-  padding:9px 14px;font:inherit;font-size:.78rem;font-weight:600;
-  color:var(--muted);cursor:pointer;margin-bottom:20px;
-  transition:border-color .15s,color .15s;
+/* ── Form header ── */
+.form-head{
+  background:var(--navy2);border:1px solid var(--line-h);
+  border-top:3px solid var(--teal);
+  border-radius:var(--r);padding:28px 28px 24px;margin-bottom:12px;
 }
-.back-btn:hover{border-color:rgba(207,216,236,.28);color:var(--ink)}
-.back-btn svg{width:14px;height:14px;flex:none}
+.form-head-label{font-size:.69rem;font-weight:600;letter-spacing:.06em;color:var(--teal-l);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.form-head-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.form-head-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.55rem;font-weight:500;color:#edf4f9;
+  margin-bottom:8px;line-height:1.2;
+}
+.form-head-sub{color:var(--muted);font-size:.85rem;line-height:1.7;margin-bottom:14px}
+.req-note{font-size:.7rem;color:var(--dim);padding-top:12px;border-top:1px solid var(--line)}
+.req-note span{color:var(--danger)}
 
-.type-card{
-  background:var(--panel-soft);border:1px solid var(--line);
-  border-top:4px solid var(--brass);border-radius:var(--radius);
-  padding:28px 28px 24px;margin-bottom:14px;
+/* ── Section dividers ── */
+.section-div{
+  margin:22px 0 10px;
+  font-size:.69rem;font-weight:600;letter-spacing:.06em;
+  color:var(--teal-l);
+  display:flex;align-items:center;gap:10px;
 }
-.type-title{
-  font-family:"Playfair Display",serif;font-size:1.6rem;font-weight:600;
-  color:#f4f6fb;margin-bottom:8px;line-height:1.2;
-}
-.type-desc{color:var(--muted);font-size:.86rem;line-height:1.65;margin-bottom:0}
+.section-div::after{content:"";flex:1;height:1px;background:var(--line)}
 
-/* ── form common ── */
-.form-header{
-  background:var(--panel-soft);border:1px solid var(--line);
-  border-top:4px solid var(--brass);border-radius:var(--radius);
-  padding:28px 28px 24px;margin-bottom:14px;
+/* ── Question cards ── */
+.q{
+  background:var(--navy2);border:1px solid var(--line-h);
+  border-radius:var(--r);padding:20px 22px 18px;margin-bottom:9px;
+  transition:border-color .15s;
 }
-.form-title{
-  font-family:"Playfair Display",serif;font-size:1.55rem;font-weight:600;
-  color:#f4f6fb;margin-bottom:8px;line-height:1.2;
-}
-.form-subtitle{color:var(--muted);font-size:.86rem;line-height:1.65;margin-bottom:16px}
-.required-note{font-size:.72rem;color:var(--muted-dim);padding-top:14px;border-top:1px solid var(--line)}
-.required-note span{color:var(--danger)}
+.q:focus-within{border-color:var(--teal-border)}
+.q.err{border-color:rgba(224,112,112,.45)}
 
-.section-heading{
-  margin:24px 0 10px;padding:0 2px;
-  font-size:.67rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  color:var(--brass-bright);display:flex;align-items:center;gap:8px;
+.q-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1rem;font-weight:500;line-height:1.3;
+  color:#dce8f0;margin-bottom:11px;display:block;
 }
-.section-heading::after{content:"";flex:1;height:1px;background:var(--line)}
-
-.q-card{
-  background:var(--panel-soft);border:1px solid var(--line);
-  border-radius:var(--radius);padding:22px 24px 20px;margin-bottom:10px;
-  transition:border-color .18s;
-}
-.q-card:focus-within{border-color:rgba(200,162,74,.28)}
-.q-card.has-error{border-color:rgba(226,104,95,.45)}
-
-.q-label{font-family:"Playfair Display",serif;font-size:1rem;font-weight:600;line-height:1.35;color:#f0f3fa;margin-bottom:12px;display:block}
-.q-label .req{font-family:"DM Sans",sans-serif;font-size:.58em;color:var(--danger);vertical-align:super;margin-left:2px}
-.q-label .opt{font-family:"DM Sans",sans-serif;font-size:.58em;color:var(--muted);vertical-align:super;margin-left:2px}
-.q-help{font-size:.76rem;color:var(--muted);margin-bottom:12px;margin-top:-6px;line-height:1.6}
+.q-label .r{font-family:'Inter',sans-serif;font-size:.6em;color:var(--danger);vertical-align:super;margin-left:2px}
+.q-label .o{font-family:'Inter',sans-serif;font-size:.6em;color:var(--dim);vertical-align:super;margin-left:2px}
+.q-hint{font-size:.75rem;color:var(--muted);margin:-6px 0 11px;line-height:1.6}
 
 input[type=text],input[type=email],input[type=tel],input[type=number],textarea,select{
-  width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;
-  color:var(--ink);padding:11px 13px;font:inherit;font-size:.9rem;outline:none;
-  transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;
+  width:100%;background:#0a1620;border:1px solid var(--line-h);border-radius:7px;
+  color:var(--ink);padding:10px 12px;font:inherit;font-size:.88rem;outline:none;
+  transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;appearance:none;
 }
-input::placeholder,textarea::placeholder{color:var(--muted-dim)}
-input:focus,textarea:focus,select:focus{border-color:var(--line-focus);box-shadow:0 0 0 3px rgba(200,162,74,.09)}
-textarea{min-height:120px;resize:vertical;line-height:1.7;font-size:.87rem}
-select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235b6584' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
-
-.dob-row{display:grid;grid-template-columns:.7fr 1.5fr 1fr;gap:10px}
-
-.choices{display:grid;gap:8px}
-.choices.two-col{grid-template-columns:1fr 1fr}
-.choice-label{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:10px 13px;background:var(--bg);border:1px solid var(--line);
-  border-radius:8px;cursor:pointer;color:var(--muted);font-size:.84rem;
-  line-height:1.45;transition:border-color .15s,background .15s;
+input::placeholder,textarea::placeholder{color:var(--dim)}
+input:focus,textarea:focus,select:focus{
+  border-color:var(--teal-border);
+  box-shadow:0 0 0 3px rgba(42,127,143,.12);
 }
-.choice-label:hover{border-color:rgba(207,216,236,.25);background:rgba(255,255,255,.02)}
-.choice-label:has(input:checked){border-color:var(--line-focus);background:var(--brass-dim);color:var(--ink)}
-.choice-label input{width:15px;height:15px;flex:none;margin-top:2px;accent-color:var(--brass);background:unset;border:unset;border-radius:unset;padding:unset;box-shadow:none}
-.choice-label input:focus{box-shadow:none;border-color:unset}
-.choice-label small{display:block;color:var(--muted-dim);font-size:.7rem;margin-top:1px}
+textarea{min-height:110px;resize:vertical;line-height:1.7;font-size:.86rem}
+select{
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' fill='none'%3E%3Cpath d='M1 1l4.5 5L10 1' stroke='%234a6880' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:32px;
+}
 
-.upload-box{border:1px dashed rgba(207,216,236,.18);border-radius:8px;background:var(--bg);padding:16px}
-.upload-box input[type=file]{width:100%;font:inherit;font-size:.8rem;color:var(--muted);background:none;border:none;padding:0;box-shadow:none}
-.upload-box input[type=file]:focus{box-shadow:none;border:none}
-.upload-box small{display:block;margin-top:7px;color:var(--muted-dim);font-size:.68rem;line-height:1.6}
+/* ── DOB row ── */
+.dob-row{display:grid;grid-template-columns:.65fr 1.5fr 1fr;gap:9px}
 
-.field-error{display:none;margin-top:8px;color:var(--danger);font-size:.73rem;padding:6px 10px;background:var(--danger-bg);border-radius:6px}
-.field-error.visible{display:block}
+/* ── Radio choices ── */
+.choices{display:grid;gap:7px}
+.choices.two{grid-template-columns:1fr 1fr}
+.choice{
+  display:flex;align-items:flex-start;gap:9px;
+  padding:9px 12px;background:#0a1620;border:1px solid var(--line-h);
+  border-radius:7px;cursor:pointer;color:var(--muted);
+  font-size:.83rem;line-height:1.45;
+  transition:border-color .13s,background .13s;
+}
+.choice:hover{border-color:var(--line-h);background:rgba(255,255,255,.02)}
+.choice:has(input:checked){
+  border-color:var(--teal-border);
+  background:var(--teal-bg);color:var(--ink);
+}
+.choice input{width:14px;height:14px;flex:none;margin-top:2px;accent-color:var(--teal-l);background:unset;border:unset;border-radius:unset;padding:unset;box-shadow:none}
+.choice input:focus{box-shadow:none}
+.choice small{display:block;color:var(--dim);font-size:.7rem;margin-top:1px}
 
-.submit-area{background:var(--panel-soft);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin-top:10px}
-.confirm-label{display:flex;align-items:flex-start;gap:12px;color:var(--muted);font-size:.83rem;line-height:1.6;cursor:pointer;margin-bottom:18px}
-.confirm-label input[type=checkbox]{width:16px;height:16px;flex:none;margin-top:3px;accent-color:var(--brass);background:unset;border:unset;border-radius:unset;padding:unset;box-shadow:none}
+/* ── File upload ── */
+.upload-box{border:1px dashed rgba(255,255,255,.1);border-radius:7px;background:#0a1620;padding:14px}
+.upload-box input[type=file]{width:100%;font:inherit;font-size:.79rem;color:var(--muted);background:none;border:none;padding:0;box-shadow:none;outline:none}
+.upload-box small{display:block;margin-top:6px;color:var(--dim);font-size:.68rem;line-height:1.6}
+
+/* ── Delegate table (school form) ── */
+.delegate-table-wrap{overflow-x:auto;border:1px solid var(--line-h);border-radius:8px;margin-top:4px}
+.delegate-table{width:100%;border-collapse:collapse;font-size:.78rem;min-width:700px}
+.delegate-table th{
+  background:var(--navy3);color:var(--teal-l);font-weight:600;
+  font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;
+  padding:10px 10px;text-align:left;border-bottom:1px solid var(--line-h);
+  white-space:nowrap;
+}
+.delegate-table td{padding:6px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.delegate-table tr:last-child td{border-bottom:none}
+.delegate-table input,.delegate-table select{
+  padding:7px 8px;font-size:.76rem;min-width:0;
+  border-radius:5px;
+}
+.delegate-table select{padding-right:24px;background-position:right 7px center}
+.row-num{color:var(--dim);font-weight:600;text-align:center;width:28px;padding:0 4px}
+
+/* ── Field errors ── */
+.ferr{display:none;margin-top:7px;color:var(--danger);font-size:.72rem;padding:6px 10px;background:var(--danger-bg);border-radius:6px}
+.ferr.show{display:block}
+
+/* ── Submit area ── */
+.submit-area{
+  background:var(--navy2);border:1px solid var(--line-h);
+  border-radius:var(--r);padding:22px 22px;margin-top:10px;
+}
+.confirm-label{
+  display:flex;align-items:flex-start;gap:11px;
+  color:var(--muted);font-size:.82rem;line-height:1.65;cursor:pointer;margin-bottom:16px;
+}
+.confirm-label input[type=checkbox]{width:15px;height:15px;flex:none;margin-top:3px;accent-color:var(--teal-l);background:unset;border:unset;padding:unset;box-shadow:none}
 .confirm-label input:focus{box-shadow:none}
 .btn-submit{
-  width:100%;background:var(--brass);color:#190f02;border:none;border-radius:9px;
-  padding:14px 24px;font:inherit;font-family:"DM Sans",sans-serif;
-  font-size:.88rem;font-weight:700;cursor:pointer;
-  transition:background .18s,opacity .18s;letter-spacing:.01em;
+  width:100%;background:var(--teal);color:#fff;
+  border:none;border-radius:8px;
+  padding:13px 22px;font:inherit;font-size:.88rem;font-weight:600;
+  cursor:pointer;transition:background .15s,opacity .15s;letter-spacing:.01em;
 }
-.btn-submit:hover:not(:disabled){background:var(--brass-bright)}
+.btn-submit:hover:not(:disabled){background:var(--teal-l)}
 .btn-submit:disabled{opacity:.5;cursor:wait}
-.form-notice{margin-top:12px;font-size:.68rem;color:var(--muted-dim);line-height:1.7}
+.form-note{margin-top:11px;font-size:.67rem;color:var(--dim);line-height:1.7}
 
-.result-banner{display:none;margin-top:12px;padding:13px 15px;border-radius:8px;font-size:.82rem;line-height:1.6}
-.result-banner.success{display:block;background:var(--success-bg);border:1px solid rgba(95,207,158,.28);color:#c4ecdb}
-.result-banner.error{display:block;background:var(--danger-bg);border:1px solid rgba(226,104,95,.3);color:#f4c0bb}
+.banner{display:none;margin-top:11px;padding:12px 14px;border-radius:8px;font-size:.81rem;line-height:1.6}
+.banner.ok{display:block;background:var(--ok-bg);border:1px solid rgba(95,207,160,.25);color:#a8e8cc}
+.banner.fail{display:block;background:var(--danger-bg);border:1px solid rgba(224,112,112,.28);color:#f5c0c0}
 
-footer{text-align:center;margin-top:28px;color:var(--muted-dim);font-size:.66rem;letter-spacing:.02em}
+footer{text-align:center;margin-top:28px;color:var(--dim);font-size:.65rem;letter-spacing:.03em}
 
+/* ── Responsive ── */
 @media(max-width:520px){
-  .page{padding:36px 0 56px;width:calc(100% - 24px)}
-  .gate-header,.type-card,.form-header,.q-card,.submit-area{padding:18px 16px}
-  .dob-row{grid-template-columns:1fr;gap:8px}
-  .choices.two-col{grid-template-columns:1fr}
-  .meta-row{flex-direction:column}
-  .meta-item{border-right:none;border-bottom:1px solid var(--line)}
-  .meta-item:last-child{border-bottom:none}
-  .role-btn{padding:16px 18px}
-  .role-btn-title{font-size:1.2rem}
+  .page{padding:32px 0 56px;width:calc(100% - 20px)}
+  .hero,.form-head,.q,.submit-area{padding:16px 15px}
+  .dob-row{grid-template-columns:1fr;gap:7px}
+  .choices.two{grid-template-columns:1fr}
+  .meta{grid-template-columns:1fr}
+  .meta-cell{border-right:none;border-bottom:1px solid var(--line)}
+  .meta-cell:last-child{border-bottom:none}
+  .role-btn{padding:15px 16px}
 }
 </style>
 </head>
 <body>
 <div class="page">
 
-<!-- ══════════════════════════════════════════
-     SCREEN 0 — Landing / role gate
-════════════════════════════════════════════ -->
-<div class="screen active" id="screenLanding">
-  <div class="gate-header">
-    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; 31 Oct – 1 Nov</div>
-    <h1 class="gate-title">Welcome to<br><em>Registration</em></h1>
-    <p class="gate-desc">PACE International Model United Nations. Choose your role below to get started — the form takes about ten minutes.</p>
-    <div class="meta-row">
-      <div class="meta-item"><strong>31 Oct – 1 Nov</strong>Conference dates</div>
-      <div class="meta-item"><strong>~10 minutes</strong>To register</div>
-      <div class="meta-item"><strong>Private</strong>Secure storage</div>
+<!-- ════════════════════════════════════════
+     SCREEN 0 — Landing
+═════════════════════════════════════════ -->
+<div class="screen active" id="sLanding">
+  <div class="hero">
+    <div class="hero-date">PaceMUN II &nbsp;·&nbsp; 31 Oct – 1 Nov 2025</div>
+    <h1 class="hero-title">Welcome to<br><em>Registration</em></h1>
+    <p class="hero-body">PACE International Model United Nations, Sharjah. Choose your role below — the form takes about ten minutes to complete.</p>
+    <div class="meta">
+      <div class="meta-cell"><strong>31 Oct – 1 Nov</strong>Conference dates</div>
+      <div class="meta-cell"><strong>~10 min</strong>To register</div>
+      <div class="meta-cell"><strong>Secure</strong>Private storage</div>
     </div>
   </div>
 
-  <p class="gate-prompt">I am registering as a…</p>
+  <p class="section-label">I am registering as a…</p>
   <div class="role-grid">
     <button type="button" class="role-btn" id="btnDelegate">
-      <span class="role-btn-title">Delegate</span>
-      <span class="role-btn-desc">Represent a country in committee and take part in the debate.</span>
+      <span class="role-name">Delegate</span>
+      <span class="role-desc">Represent a country in committee and take part in the debate.</span>
     </button>
     <button type="button" class="role-btn" id="btnChair">
-      <span class="role-btn-title">Chair</span>
-      <span class="role-btn-desc">Run a committee — guide the debate, keep order, and support delegates.</span>
+      <span class="role-name">Chair</span>
+      <span class="role-desc">Run a committee — guide the debate and support delegates.</span>
     </button>
   </div>
   <footer style="margin-top:40px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
 </div>
 
-<!-- ══════════════════════════════════════════
+<!-- ════════════════════════════════════════
      SCREEN 1 — Delegate type gate
-════════════════════════════════════════════ -->
-<div class="screen" id="screenDelegateType">
-  <button type="button" class="back-btn" data-back-to="screenLanding">
-    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+═════════════════════════════════════════ -->
+<div class="screen" id="sDelegateType">
+  <button type="button" class="back" data-to="sLanding">
+    <svg viewBox="0 0 13 13" fill="none"><path d="M8 2L3 6.5l5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Back
   </button>
-  <div class="type-card">
-    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate Registration</div>
-    <div class="type-title">How are you registering?</div>
-    <p class="type-desc">Choose whether you're signing up on your own or as part of your school's delegation.</p>
+  <div class="form-head">
+    <div class="form-head-label">PaceMUN II &nbsp;·&nbsp; Delegate</div>
+    <div class="form-head-title">How are you registering?</div>
+    <p class="form-head-sub">Signing up on your own, or as part of your school's delegation?</p>
   </div>
   <div class="role-grid">
     <button type="button" class="role-btn" id="btnIndividual">
-      <span class="role-btn-title">Individual</span>
-      <span class="role-btn-desc">You're signing up on your own, independently of a school group.</span>
+      <span class="role-name">Individual</span>
+      <span class="role-desc">Registering independently, outside of a school group.</span>
     </button>
     <button type="button" class="role-btn" id="btnSchool">
-      <span class="role-btn-title">School</span>
-      <span class="role-btn-desc">You're registering as part of your school's official delegation.</span>
+      <span class="role-name">School delegation</span>
+      <span class="role-desc">Registering as part of your school's official delegation (up to 12 students).</span>
     </button>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SCREEN 2 — Delegate Individual form
-════════════════════════════════════════════ -->
-<div class="screen" id="screenDelegateIndividual">
-  <button type="button" class="back-btn" data-back-to="screenDelegateType">
-    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<!-- ════════════════════════════════════════
+     SCREEN 2 — Individual Delegate
+═════════════════════════════════════════ -->
+<div class="screen" id="sDelegateInd">
+  <button type="button" class="back" data-to="sDelegateType">
+    <svg viewBox="0 0 13 13" fill="none"><path d="M8 2L3 6.5l5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Back
   </button>
-  <div class="form-header">
-    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate · Individual</div>
-    <div class="form-title">Individual Delegate Registration</div>
-    <p class="form-subtitle">Fill in all required fields below. Your application will be reviewed after the deadline.</p>
-    <p class="required-note"><span>*</span> Required</p>
+  <div class="form-head">
+    <div class="form-head-label">PaceMUN II &nbsp;·&nbsp; Individual Delegate</div>
+    <div class="form-head-title">Individual Delegate Registration</div>
+    <p class="form-head-sub">Fill in all required fields. Your application will be reviewed after the deadline.</p>
+    <p class="req-note"><span>*</span> Required</p>
   </div>
 
-  <form id="formDelegateIndividual" novalidate autocomplete="on">
-    <div class="section-heading">Personal details</div>
+  <form id="formDI" novalidate autocomplete="on">
+    <div class="section-div">Personal details</div>
 
-    <div class="q-card" id="di-card-fullName">
-      <label class="q-label" for="di-fullName">Full name <span class="req">*</span></label>
-      <input id="di-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
-      <div class="field-error" id="di-err-fullName">Please enter your full name.</div>
+    <div class="q" id="di-card-fullName">
+      <label class="q-label" for="di-fullName">Full name <span class="r">*</span></label>
+      <input id="di-fullName" name="fullName" type="text" required placeholder="Your full legal name" autocomplete="name">
+      <div class="ferr" id="di-e-fullName">Please enter your full name.</div>
     </div>
-    <div class="q-card" id="di-card-school">
-      <label class="q-label" for="di-school">School or university <span class="req">*</span></label>
-      <input id="di-school" name="school" type="text" required placeholder="Institution name">
-      <div class="field-error" id="di-err-school">Please enter your school or university.</div>
+
+    <div class="q" id="di-card-school">
+      <label class="q-label" for="di-school">School name <span class="r">*</span></label>
+      <input id="di-school" name="school" type="text" required placeholder="Your school's name">
+      <div class="ferr" id="di-e-school">Please enter your school name.</div>
     </div>
-    <div class="q-card" id="di-card-gender">
-      <span class="q-label">Gender <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="di-gender" value="Male" required> Male</label>
-        <label class="choice-label"><input type="radio" name="di-gender" value="Female"> Female</label>
-      </div>
-      <div class="field-error" id="di-err-gender">Please select your gender.</div>
-    </div>
-    <div class="q-card" id="di-card-dob">
-      <span class="q-label">Date of birth <span class="req">*</span></span>
+
+    <div class="q" id="di-card-dob">
+      <span class="q-label">Date of birth <span class="r">*</span></span>
       <div class="dob-row">
         <select id="di-dobDay" aria-label="Day" required><option value="">Day</option></select>
         <select id="di-dobMonth" aria-label="Month" required>
@@ -330,249 +382,252 @@ footer{text-align:center;margin-top:28px;color:var(--muted-dim);font-size:.66rem
         <select id="di-dobYear" aria-label="Year" required><option value="">Year</option></select>
       </div>
       <input id="di-dob" name="dateOfBirth" type="hidden">
-      <div class="field-error" id="di-err-dob">Please select a valid date of birth.</div>
+      <div class="ferr" id="di-e-dob">Please select a valid date of birth.</div>
     </div>
 
-    <div class="section-heading">Committee preferences</div>
-
-    <div class="q-card" id="di-card-firstPreference">
-      <span class="q-label">First-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="di-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+    <div class="q" id="di-card-gender">
+      <span class="q-label">Gender <span class="r">*</span></span>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="di-gender" value="Male" required> Male</label>
+        <label class="choice"><input type="radio" name="di-gender" value="Female"> Female</label>
       </div>
-      <div class="field-error" id="di-err-firstPreference">Please select your first-choice committee.</div>
-    </div>
-    <div class="q-card" id="di-card-secondPreference">
-      <span class="q-label">Second-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="di-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
-      </div>
-      <div class="field-error" id="di-err-secondPreference">Your second choice must differ from your first.</div>
+      <div class="ferr" id="di-e-gender">Please select your gender.</div>
     </div>
 
-    <div class="section-heading">Contact &amp; preferences</div>
-
-    <div class="q-card" id="di-card-email">
-      <label class="q-label" for="di-email">Email address <span class="req">*</span></label>
-      <input id="di-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
-      <div class="field-error" id="di-err-email">Please enter a valid email address.</div>
-    </div>
-    <div class="q-card" id="di-card-phone">
-      <label class="q-label" for="di-phone">Your WhatsApp number <span class="req">*</span></label>
+    <div class="q" id="di-card-phone">
+      <label class="q-label" for="di-phone">Student contact number <span class="r">*</span></label>
       <input id="di-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
-      <div class="field-error" id="di-err-phone">Please enter your WhatsApp number.</div>
+      <div class="ferr" id="di-e-phone">Please enter your contact number.</div>
     </div>
-    <div class="q-card" id="di-card-food">
-      <span class="q-label">Food preference <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="di-food" value="Veg" required> Vegetarian</label>
-        <label class="choice-label"><input type="radio" name="di-food" value="Non Veg"> Non-vegetarian</label>
+
+    <div class="q" id="di-card-email">
+      <label class="q-label" for="di-email">Student email address <span class="r">*</span></label>
+      <input id="di-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="ferr" id="di-e-email">Please enter a valid email address.</div>
+    </div>
+
+    <div class="section-div">Parent / Guardian</div>
+
+    <div class="q" id="di-card-guardianName">
+      <label class="q-label" for="di-guardianName">Parent / Guardian name <span class="r">*</span></label>
+      <input id="di-guardianName" name="guardianName" type="text" required placeholder="Full name">
+      <div class="ferr" id="di-e-guardianName">Please enter a parent or guardian name.</div>
+    </div>
+
+    <div class="q" id="di-card-guardianPhone">
+      <label class="q-label" for="di-guardianPhone">Parent / Guardian contact number <span class="r">*</span></label>
+      <input id="di-guardianPhone" name="guardianPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="ferr" id="di-e-guardianPhone">Please enter a parent or guardian contact number.</div>
+    </div>
+
+    <div class="section-div">MUN experience</div>
+
+    <div class="q" id="di-card-munCount">
+      <label class="q-label" for="di-munCount">MUN conferences attended <span class="r">*</span></label>
+      <input id="di-munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 3">
+      <div class="ferr" id="di-e-munCount">Please enter a number (0 or more).</div>
+    </div>
+
+    <div class="section-div">Committee preferences</div>
+
+    <div class="q" id="di-card-pref1">
+      <span class="q-label">Committee preference 1 <span class="r">*</span></span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="di-pref1" value="WHO (Grades 6–8)" required> WHO <small>Grades 6–8</small></label>
+        <label class="choice"><input type="radio" name="di-pref1" value="UNCTAD (Grades 9–12)"> UNCTAD <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref1" value="UNODC (Grades 9–12)"> UNODC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref1" value="INTERPOL (Grades 9–12)"> INTERPOL <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref1" value="DISEC (Grades 9–12)"> DISEC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref1" value="UNHRC (Grades 9–12)"> UNHRC <small>Grades 9–12</small></label>
       </div>
-      <div class="field-error" id="di-err-food">Please select a food preference.</div>
+      <div class="ferr" id="di-e-pref1">Please select your first-choice committee.</div>
     </div>
-    <div class="q-card" id="di-card-allergies">
-      <label class="q-label" for="di-allergies">Food allergies <span class="opt">Optional</span></label>
-      <p class="q-help">Write "None" if you don't have any.</p>
+
+    <div class="q" id="di-card-pref2">
+      <span class="q-label">Committee preference 2 <span class="r">*</span></span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="di-pref2" value="WHO (Grades 6–8)" required> WHO <small>Grades 6–8</small></label>
+        <label class="choice"><input type="radio" name="di-pref2" value="UNCTAD (Grades 9–12)"> UNCTAD <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref2" value="UNODC (Grades 9–12)"> UNODC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref2" value="INTERPOL (Grades 9–12)"> INTERPOL <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref2" value="DISEC (Grades 9–12)"> DISEC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="di-pref2" value="UNHRC (Grades 9–12)"> UNHRC <small>Grades 9–12</small></label>
+      </div>
+      <div class="ferr" id="di-e-pref2">Your second choice must differ from your first.</div>
+    </div>
+
+    <div class="section-div">Food &amp; dietary</div>
+
+    <div class="q" id="di-card-food">
+      <span class="q-label">Food preference <span class="r">*</span></span>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="di-food" value="Vegetarian" required> Vegetarian</label>
+        <label class="choice"><input type="radio" name="di-food" value="Non-vegetarian"> Non-vegetarian</label>
+      </div>
+      <div class="ferr" id="di-e-food">Please select a food preference.</div>
+    </div>
+
+    <div class="q">
+      <label class="q-label" for="di-allergies">Food allergy / dietary restrictions <span class="o">Optional</span></label>
+      <p class="q-hint">Write "None" if not applicable.</p>
       <textarea id="di-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
     </div>
 
     <div class="submit-area">
       <label class="confirm-label">
-        <input type="checkbox" id="di-confirmation" required>
-        <span>I confirm that all information provided is accurate and I agree to attend PaceMUN II on 31 Oct – 1 Nov.</span>
+        <input type="checkbox" id="di-confirm" required>
+        <span>I hereby confirm that all information provided is accurate and I agree to attend PaceMUN II on 31 Oct – 1 Nov.</span>
       </label>
-      <div class="field-error" id="di-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
-      <button type="submit" class="btn-submit" id="di-submitBtn">Submit registration</button>
-      <p class="form-notice">Submissions are stored in a private database and are not shared publicly.</p>
-      <div class="result-banner" id="di-resultBanner"></div>
+      <div class="ferr" id="di-e-confirm" style="margin-bottom:13px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="di-btn">Submit registration</button>
+      <p class="form-note">Submissions are stored in a private database and are not shared publicly.</p>
+      <div class="banner" id="di-banner"></div>
     </div>
   </form>
   <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SCREEN 3 — Delegate School form
-════════════════════════════════════════════ -->
-<div class="screen" id="screenDelegateSchool">
-  <button type="button" class="back-btn" data-back-to="screenDelegateType">
-    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<!-- ════════════════════════════════════════
+     SCREEN 3 — School Delegation
+═════════════════════════════════════════ -->
+<div class="screen" id="sDelegateSchool">
+  <button type="button" class="back" data-to="sDelegateType">
+    <svg viewBox="0 0 13 13" fill="none"><path d="M8 2L3 6.5l5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Back
   </button>
-  <div class="form-header">
-    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate · School</div>
-    <div class="form-title">School Delegate Registration</div>
-    <p class="form-subtitle">Fill in your details and your school delegation info. Your coordinator will be contacted for confirmation.</p>
-    <p class="required-note"><span>*</span> Required</p>
+  <div class="form-head">
+    <div class="form-head-label">PaceMUN II &nbsp;·&nbsp; School Delegation</div>
+    <div class="form-head-title">School Delegation Registration</div>
+    <p class="form-head-sub">Complete your school's details and fill in the delegate table below. Maximum 12 delegates (up to 6 girls and 6 boys).</p>
+    <p class="req-note"><span>*</span> Required</p>
   </div>
 
-  <form id="formDelegateSchool" novalidate autocomplete="on">
-    <div class="section-heading">Personal details</div>
+  <form id="formDS" novalidate autocomplete="on">
+    <div class="section-div">School information</div>
 
-    <div class="q-card" id="ds-card-fullName">
-      <label class="q-label" for="ds-fullName">Full name <span class="req">*</span></label>
-      <input id="ds-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
-      <div class="field-error" id="ds-err-fullName">Please enter your full name.</div>
+    <div class="q" id="ds-card-school">
+      <label class="q-label" for="ds-school">School name <span class="r">*</span></label>
+      <input id="ds-school" name="school" type="text" required placeholder="Full school name">
+      <div class="ferr" id="ds-e-school">Please enter your school name.</div>
     </div>
-    <div class="q-card" id="ds-card-school">
-      <label class="q-label" for="ds-school">School name <span class="req">*</span></label>
-      <input id="ds-school" name="school" type="text" required placeholder="Your school's name">
-      <div class="field-error" id="ds-err-school">Please enter your school name.</div>
+
+    <div class="q" id="ds-card-coordName">
+      <label class="q-label" for="ds-coordName">MUN coordinator name <span class="r">*</span></label>
+      <input id="ds-coordName" name="coordName" type="text" required placeholder="Full name">
+      <div class="ferr" id="ds-e-coordName">Please enter the coordinator's name.</div>
     </div>
-    <div class="q-card" id="ds-card-gender">
-      <span class="q-label">Gender <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="ds-gender" value="Male" required> Male</label>
-        <label class="choice-label"><input type="radio" name="ds-gender" value="Female"> Female</label>
+
+    <div class="q" id="ds-card-coordPhone">
+      <label class="q-label" for="ds-coordPhone">MUN coordinator contact number <span class="r">*</span></label>
+      <input id="ds-coordPhone" name="coordPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="ferr" id="ds-e-coordPhone">Please enter the coordinator's contact number.</div>
+    </div>
+
+    <div class="q" id="ds-card-coordEmail">
+      <label class="q-label" for="ds-coordEmail">MUN coordinator email address <span class="r">*</span></label>
+      <input id="ds-coordEmail" name="coordEmail" type="email" required placeholder="coordinator@school.ae">
+      <div class="ferr" id="ds-e-coordEmail">Please enter a valid email address.</div>
+    </div>
+
+    <div class="q" id="ds-card-escortName">
+      <label class="q-label" for="ds-escortName">Escort teacher name <span class="r">*</span></label>
+      <input id="ds-escortName" name="escortName" type="text" required placeholder="Full name">
+      <div class="ferr" id="ds-e-escortName">Please enter the escort teacher's name.</div>
+    </div>
+
+    <div class="q" id="ds-card-escortFood">
+      <span class="q-label">Escort teacher food preference <span class="r">*</span></span>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="ds-escortFood" value="Vegetarian" required> Vegetarian</label>
+        <label class="choice"><input type="radio" name="ds-escortFood" value="Non-vegetarian"> Non-vegetarian</label>
       </div>
-      <div class="field-error" id="ds-err-gender">Please select your gender.</div>
+      <div class="ferr" id="ds-e-escortFood">Please select a food preference for the escort teacher.</div>
     </div>
-    <div class="q-card" id="ds-card-dob">
-      <span class="q-label">Date of birth <span class="req">*</span></span>
-      <div class="dob-row">
-        <select id="ds-dobDay" aria-label="Day" required><option value="">Day</option></select>
-        <select id="ds-dobMonth" aria-label="Month" required>
-          <option value="">Month</option>
-          <option value="01">January</option><option value="02">February</option>
-          <option value="03">March</option><option value="04">April</option>
-          <option value="05">May</option><option value="06">June</option>
-          <option value="07">July</option><option value="08">August</option>
-          <option value="09">September</option><option value="10">October</option>
-          <option value="11">November</option><option value="12">December</option>
-        </select>
-        <select id="ds-dobYear" aria-label="Year" required><option value="">Year</option></select>
+
+    <div class="section-div">Delegation details — up to 12 delegates</div>
+
+    <div class="q" id="ds-card-delegates">
+      <span class="q-label">Delegate list <span class="r">*</span></span>
+      <p class="q-hint">Maximum 12 delegates: up to 6 girls and 6 boys. Fill only the rows you need.</p>
+      <div class="delegate-table-wrap">
+        <table class="delegate-table" id="delegateTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Student name</th>
+              <th>DOB</th>
+              <th>Gender</th>
+              <th>Contact no.</th>
+              <th>Email</th>
+              <th>MUN experience</th>
+              <th>Pref 1</th>
+              <th>Pref 2</th>
+              <th>Food</th>
+            </tr>
+          </thead>
+          <tbody id="delegateRows"></tbody>
+        </table>
       </div>
-      <input id="ds-dob" name="dateOfBirth" type="hidden">
-      <div class="field-error" id="ds-err-dob">Please select a valid date of birth.</div>
+      <div class="ferr" id="ds-e-delegates">Please fill in at least one delegate row (name and contact required).</div>
     </div>
 
-    <div class="section-heading">Delegation details</div>
+    <div class="section-div">File upload</div>
 
-    <div class="q-card" id="ds-card-coordinatorName">
-      <label class="q-label" for="ds-coordinatorName">MUN coordinator's name <span class="req">*</span></label>
-      <input id="ds-coordinatorName" name="coordinatorName" type="text" required placeholder="Coordinator's full name">
-      <div class="field-error" id="ds-err-coordinatorName">Please enter your coordinator's name.</div>
-    </div>
-    <div class="q-card" id="ds-card-coordinatorPhone">
-      <label class="q-label" for="ds-coordinatorPhone">Coordinator's WhatsApp number <span class="req">*</span></label>
-      <input id="ds-coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
-      <div class="field-error" id="ds-err-coordinatorPhone">Please enter the coordinator's number.</div>
-    </div>
-
-    <div class="section-heading">Committee preferences</div>
-
-    <div class="q-card" id="ds-card-firstPreference">
-      <span class="q-label">First-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+    <div class="q" id="ds-card-template">
+      <span class="q-label">Delegation details template <span class="o">Optional</span></span>
+      <p class="q-hint">Upload a completed delegation file if provided by the secretariat.</p>
+      <div class="upload-box">
+        <input id="ds-template" name="template" type="file">
+        <small>1 file · PDF, Word, Excel · up to 20 MB</small>
       </div>
-      <div class="field-error" id="ds-err-firstPreference">Please select your first-choice committee.</div>
-    </div>
-    <div class="q-card" id="ds-card-secondPreference">
-      <span class="q-label">Second-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="ds-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="ds-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ds-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ds-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ds-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
-      </div>
-      <div class="field-error" id="ds-err-secondPreference">Your second choice must differ from your first.</div>
-    </div>
-
-    <div class="section-heading">Contact &amp; preferences</div>
-
-    <div class="q-card" id="ds-card-email">
-      <label class="q-label" for="ds-email">Email address <span class="req">*</span></label>
-      <input id="ds-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
-      <div class="field-error" id="ds-err-email">Please enter a valid email address.</div>
-    </div>
-    <div class="q-card" id="ds-card-phone">
-      <label class="q-label" for="ds-phone">Your WhatsApp number <span class="req">*</span></label>
-      <input id="ds-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
-      <div class="field-error" id="ds-err-phone">Please enter your WhatsApp number.</div>
-    </div>
-    <div class="q-card" id="ds-card-food">
-      <span class="q-label">Food preference <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="ds-food" value="Veg" required> Vegetarian</label>
-        <label class="choice-label"><input type="radio" name="ds-food" value="Non Veg"> Non-vegetarian</label>
-      </div>
-      <div class="field-error" id="ds-err-food">Please select a food preference.</div>
-    </div>
-    <div class="q-card" id="ds-card-allergies">
-      <label class="q-label" for="ds-allergies">Food allergies <span class="opt">Optional</span></label>
-      <p class="q-help">Write "None" if you don't have any.</p>
-      <textarea id="ds-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
     </div>
 
     <div class="submit-area">
       <label class="confirm-label">
-        <input type="checkbox" id="ds-confirmation" required>
-        <span>I confirm that all information provided is accurate and I agree to attend PaceMUN II on 31 Oct – 1 Nov.</span>
+        <input type="checkbox" id="ds-confirm" required>
+        <span>We confirm that: the delegation does not exceed 12 students; the delegation consists of a maximum of 6 girls and 6 boys; and all information provided is accurate.</span>
       </label>
-      <div class="field-error" id="ds-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
-      <button type="submit" class="btn-submit" id="ds-submitBtn">Submit registration</button>
-      <p class="form-notice">Submissions are stored in a private database and are not shared publicly.</p>
-      <div class="result-banner" id="ds-resultBanner"></div>
+      <div class="ferr" id="ds-e-confirm" style="margin-bottom:13px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="ds-btn">Submit delegation</button>
+      <p class="form-note">Submissions are stored in a private database and are not shared publicly.</p>
+      <div class="banner" id="ds-banner"></div>
     </div>
   </form>
   <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SCREEN 4 — Chair application form
-════════════════════════════════════════════ -->
-<div class="screen" id="screenChair">
-  <button type="button" class="back-btn" data-back-to="screenLanding">
-    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<!-- ════════════════════════════════════════
+     SCREEN 4 — Chair Application
+═════════════════════════════════════════ -->
+<div class="screen" id="sChair">
+  <button type="button" class="back" data-to="sLanding">
+    <svg viewBox="0 0 13 13" fill="none"><path d="M8 2L3 6.5l5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Back
   </button>
-  <div class="form-header">
-    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Chair Application</div>
-    <div class="form-title">Chair Application</div>
-    <p class="form-subtitle">Apply to run a committee. Fill in all required fields — this takes about ten minutes. Upload your certificates and documents as you go.</p>
-    <p class="required-note"><span>*</span> Required</p>
+  <div class="form-head">
+    <div class="form-head-label">PaceMUN II &nbsp;·&nbsp; Chair Application</div>
+    <div class="form-head-title">Chair Application</div>
+    <p class="form-head-sub">Apply to chair a committee. Fill in all required fields and upload your documents — this takes about ten minutes.</p>
+    <p class="req-note"><span>*</span> Required</p>
   </div>
 
-  <form id="formChair" novalidate autocomplete="on">
-    <div class="section-heading">Candidate details</div>
+  <form id="formCH" novalidate autocomplete="on">
+    <div class="section-div">Personal details</div>
 
-    <div class="q-card" id="ch-card-fullName">
-      <label class="q-label" for="ch-fullName">Full name <span class="req">*</span></label>
-      <input id="ch-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
-      <div class="field-error" id="ch-err-fullName">Please enter your full name.</div>
+    <div class="q" id="ch-card-fullName">
+      <label class="q-label" for="ch-fullName">Full name <span class="r">*</span></label>
+      <input id="ch-fullName" name="fullName" type="text" required placeholder="Your full legal name" autocomplete="name">
+      <div class="ferr" id="ch-e-fullName">Please enter your full name.</div>
     </div>
-    <div class="q-card" id="ch-card-school">
-      <label class="q-label" for="ch-school">School or university <span class="req">*</span></label>
-      <input id="ch-school" name="school" type="text" required placeholder="Institution name">
-      <div class="field-error" id="ch-err-school">Please enter your school or university.</div>
+
+    <div class="q" id="ch-card-school">
+      <label class="q-label" for="ch-school">School name <span class="r">*</span></label>
+      <input id="ch-school" name="school" type="text" required placeholder="Your school's name">
+      <div class="ferr" id="ch-e-school">Please enter your school name.</div>
     </div>
-    <div class="q-card" id="ch-card-gender">
-      <span class="q-label">Gender <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="ch-gender" value="Male" required> Male</label>
-        <label class="choice-label"><input type="radio" name="ch-gender" value="Female"> Female</label>
-      </div>
-      <div class="field-error" id="ch-err-gender">Please select your gender.</div>
-    </div>
-    <div class="q-card" id="ch-card-dob">
-      <span class="q-label">Date of birth <span class="req">*</span></span>
+
+    <div class="q" id="ch-card-dob">
+      <span class="q-label">Date of birth <span class="r">*</span></span>
       <div class="dob-row">
         <select id="ch-dobDay" aria-label="Day" required><option value="">Day</option></select>
         <select id="ch-dobMonth" aria-label="Month" required>
@@ -587,134 +642,144 @@ footer{text-align:center;margin-top:28px;color:var(--muted-dim);font-size:.66rem
         <select id="ch-dobYear" aria-label="Year" required><option value="">Year</option></select>
       </div>
       <input id="ch-dob" name="dateOfBirth" type="hidden">
-      <div class="field-error" id="ch-err-dob">Please select a valid date of birth.</div>
+      <div class="ferr" id="ch-e-dob">Please select a valid date of birth.</div>
     </div>
-    <div class="q-card" id="ch-card-munCount">
-      <label class="q-label" for="ch-munCount">MUN conferences attended <span class="req">*</span></label>
+
+    <div class="q" id="ch-card-gender">
+      <span class="q-label">Gender <span class="r">*</span></span>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="ch-gender" value="Male" required> Male</label>
+        <label class="choice"><input type="radio" name="ch-gender" value="Female"> Female</label>
+      </div>
+      <div class="ferr" id="ch-e-gender">Please select your gender.</div>
+    </div>
+
+    <div class="q" id="ch-card-phone">
+      <label class="q-label" for="ch-phone">Student contact number <span class="r">*</span></label>
+      <input id="ch-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
+      <div class="ferr" id="ch-e-phone">Please enter your contact number.</div>
+    </div>
+
+    <div class="q" id="ch-card-email">
+      <label class="q-label" for="ch-email">Student email address <span class="r">*</span></label>
+      <p class="q-hint">We'll send your selection result here.</p>
+      <input id="ch-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="ferr" id="ch-e-email">Please enter a valid email address.</div>
+    </div>
+
+    <div class="section-div">Parent / Guardian</div>
+
+    <div class="q" id="ch-card-guardianName">
+      <label class="q-label" for="ch-guardianName">Parent / Guardian name <span class="r">*</span></label>
+      <input id="ch-guardianName" name="guardianName" type="text" required placeholder="Full name">
+      <div class="ferr" id="ch-e-guardianName">Please enter a parent or guardian name.</div>
+    </div>
+
+    <div class="q" id="ch-card-guardianPhone">
+      <label class="q-label" for="ch-guardianPhone">Parent / Guardian contact number <span class="r">*</span></label>
+      <input id="ch-guardianPhone" name="guardianPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="ferr" id="ch-e-guardianPhone">Please enter a parent or guardian contact number.</div>
+    </div>
+
+    <div class="section-div">MUN experience</div>
+
+    <div class="q" id="ch-card-munCount">
+      <label class="q-label" for="ch-munCount">MUN conferences attended <span class="r">*</span></label>
       <input id="ch-munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
-      <div class="field-error" id="ch-err-munCount">Please enter a number (0 or more).</div>
+      <div class="ferr" id="ch-e-munCount">Please enter a number (0 or more).</div>
     </div>
 
-    <div class="section-heading">MUN experience</div>
+    <div class="q" id="ch-card-munCerts">
+      <span class="q-label">MUN conference awards / recognition <span class="r">*</span></span>
+      <p class="q-hint">Upload certificates or award documents from conferences you attended as a delegate.</p>
+      <div class="upload-box">
+        <input id="ch-munCerts" name="munCerts" type="file" multiple required>
+        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint</small>
+      </div>
+      <div class="ferr" id="ch-e-munCerts">Please upload at least one file.</div>
+    </div>
 
-    <div class="q-card" id="ch-card-munCertificates">
-      <span class="q-label">Delegate certificates or awards <span class="req">*</span></span>
-      <p class="q-help">Upload certificates from conferences you've attended as a delegate.</p>
+    <div class="q" id="ch-card-chairExp">
+      <label class="q-label" for="ch-chairExp">MUN conference chairing experience <span class="r">*</span></label>
+      <p class="q-hint">Number of committees you have chaired.</p>
+      <input id="ch-chairExp" name="chairExp" type="number" min="0" step="1" required placeholder="e.g. 3">
+      <div class="ferr" id="ch-e-chairExp">Please enter a number (0 or more).</div>
+    </div>
+
+    <div class="q" id="ch-card-chairCerts">
+      <span class="q-label">MUN chairing awards / recognition <span class="r">*</span></span>
+      <p class="q-hint">Upload certificates or award documents from conferences you chaired.</p>
       <div class="upload-box">
-        <input id="ch-munCertificates" name="munCertificates" type="file" multiple required>
-        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint, video or audio</small>
+        <input id="ch-chairCerts" name="chairCerts" type="file" multiple required>
+        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint</small>
       </div>
-      <div class="field-error" id="ch-err-munCertificates">Please upload at least one file.</div>
+      <div class="ferr" id="ch-e-chairCerts">Please upload at least one file.</div>
     </div>
-    <div class="q-card" id="ch-card-chairCount">
-      <label class="q-label" for="ch-chairCount">Committees chaired <span class="req">*</span></label>
-      <input id="ch-chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
-      <div class="field-error" id="ch-err-chairCount">Please enter a number (0 or more).</div>
-    </div>
-    <div class="q-card" id="ch-card-chairCertificates">
-      <span class="q-label">Chairing certificates or awards <span class="req">*</span></span>
-      <p class="q-help">Upload certificates from conferences you've chaired.</p>
-      <div class="upload-box">
-        <input id="ch-chairCertificates" name="chairCertificates" type="file" multiple required>
-        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint, video or audio</small>
+
+    <div class="section-div">Committee preferences</div>
+
+    <div class="q" id="ch-card-pref1">
+      <span class="q-label">Committee preference 1 <span class="r">*</span></span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="ch-pref1" value="WHO (Grades 6–8)" required> WHO <small>Grades 6–8</small></label>
+        <label class="choice"><input type="radio" name="ch-pref1" value="UNCTAD (Grades 9–12)"> UNCTAD <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref1" value="UNODC (Grades 9–12)"> UNODC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref1" value="INTERPOL (Grades 9–12)"> INTERPOL <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref1" value="DISEC (Grades 9–12)"> DISEC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref1" value="UNHRC (Grades 9–12)"> UNHRC <small>Grades 9–12</small></label>
       </div>
-      <div class="field-error" id="ch-err-chairCertificates">Please upload at least one file.</div>
+      <div class="ferr" id="ch-e-pref1">Please select your first-choice committee.</div>
     </div>
-    <div class="q-card" id="ch-card-resume">
-      <span class="q-label">Résumé <span class="opt">Optional</span></span>
+
+    <div class="q" id="ch-card-pref2">
+      <span class="q-label">Committee preference 2 <span class="r">*</span></span>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="ch-pref2" value="WHO (Grades 6–8)" required> WHO <small>Grades 6–8</small></label>
+        <label class="choice"><input type="radio" name="ch-pref2" value="UNCTAD (Grades 9–12)"> UNCTAD <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref2" value="UNODC (Grades 9–12)"> UNODC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref2" value="INTERPOL (Grades 9–12)"> INTERPOL <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref2" value="DISEC (Grades 9–12)"> DISEC <small>Grades 9–12</small></label>
+        <label class="choice"><input type="radio" name="ch-pref2" value="UNHRC (Grades 9–12)"> UNHRC <small>Grades 9–12</small></label>
+      </div>
+      <div class="ferr" id="ch-e-pref2">Your second choice must differ from your first.</div>
+    </div>
+
+    <div class="section-div">Documents</div>
+
+    <div class="q">
+      <span class="q-label">Résumé <span class="o">Optional</span></span>
       <div class="upload-box">
         <input id="ch-resume" name="resume" type="file">
-        <small>1 file · up to 100 MB · PDF, Word, image</small>
+        <small>1 file · PDF or Word · up to 100 MB</small>
       </div>
-      <div class="field-error" id="ch-err-resume"></div>
-    </div>
-    <div class="q-card" id="ch-card-lor">
-      <span class="q-label">Letter of recommendation <span class="opt">Optional</span></span>
-      <div class="upload-box">
-        <input id="ch-lor" name="lor" type="file">
-        <small>1 file · up to 100 MB · PDF, Word, image</small>
-      </div>
-      <div class="field-error" id="ch-err-lor"></div>
     </div>
 
-    <div class="section-heading">Committee preferences</div>
+    <div class="section-div">Food &amp; dietary</div>
 
-    <div class="q-card" id="ch-card-firstPreference">
-      <span class="q-label">First-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ch-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+    <div class="q" id="ch-card-food">
+      <span class="q-label">Food preference <span class="r">*</span></span>
+      <div class="choices two">
+        <label class="choice"><input type="radio" name="ch-food" value="Vegetarian" required> Vegetarian</label>
+        <label class="choice"><input type="radio" name="ch-food" value="Non-vegetarian"> Non-vegetarian</label>
       </div>
-      <div class="field-error" id="ch-err-firstPreference">Please select your first-choice committee.</div>
-    </div>
-    <div class="q-card" id="ch-card-secondPreference">
-      <span class="q-label">Second-choice committee <span class="req">*</span></span>
-      <div class="choices">
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice-label"><input type="radio" name="ch-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
-      </div>
-      <div class="field-error" id="ch-err-secondPreference">Your second choice must differ from your first.</div>
-    </div>
-    <div class="q-card" id="ch-card-whyFirst">
-      <label class="q-label" for="ch-whyFirst">Why does your first-choice committee suit you? <span class="req">*</span></label>
-      <textarea id="ch-whyFirst" name="whyFirst" required placeholder="Describe your interest and relevant background..."></textarea>
-      <div class="field-error" id="ch-err-whyFirst">Please write a response.</div>
-    </div>
-    <div class="q-card" id="ch-card-whyPace">
-      <label class="q-label" for="ch-whyPace">Why would you like to attend PaceMUN II? <span class="req">*</span></label>
-      <textarea id="ch-whyPace" name="whyPace" required placeholder="Tell us what draws you to this conference..."></textarea>
-      <div class="field-error" id="ch-err-whyPace">Please write a response.</div>
+      <div class="ferr" id="ch-e-food">Please select a food preference.</div>
     </div>
 
-    <div class="section-heading">Contact &amp; preferences</div>
-
-    <div class="q-card" id="ch-card-email">
-      <label class="q-label" for="ch-email">Email address <span class="req">*</span></label>
-      <p class="q-help">We'll send your selection results here.</p>
-      <input id="ch-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
-      <div class="field-error" id="ch-err-email">Please enter a valid email address.</div>
-    </div>
-    <div class="q-card" id="ch-card-phone">
-      <label class="q-label" for="ch-phone">Your WhatsApp number <span class="req">*</span></label>
-      <input id="ch-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
-      <div class="field-error" id="ch-err-phone">Please enter your WhatsApp number.</div>
-    </div>
-    <div class="q-card" id="ch-card-coordinatorPhone">
-      <label class="q-label" for="ch-coordinatorPhone">MUN coordinator's WhatsApp number <span class="req">*</span></label>
-      <input id="ch-coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
-      <div class="field-error" id="ch-err-coordinatorPhone">Please enter your coordinator's number.</div>
-    </div>
-    <div class="q-card" id="ch-card-food">
-      <span class="q-label">Food preference <span class="req">*</span></span>
-      <div class="choices two-col">
-        <label class="choice-label"><input type="radio" name="ch-food" value="Veg" required> Vegetarian</label>
-        <label class="choice-label"><input type="radio" name="ch-food" value="Non Veg"> Non-vegetarian</label>
-      </div>
-      <div class="field-error" id="ch-err-food">Please select a food preference.</div>
-    </div>
-    <div class="q-card" id="ch-card-allergies">
-      <label class="q-label" for="ch-allergies">Food allergies <span class="opt">Optional</span></label>
-      <p class="q-help">Write "None" if you don't have any.</p>
+    <div class="q">
+      <label class="q-label" for="ch-allergies">Food allergy / dietary restrictions <span class="o">Optional</span></label>
+      <p class="q-hint">Write "None" if not applicable.</p>
       <textarea id="ch-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
     </div>
 
     <div class="submit-area">
       <label class="confirm-label">
-        <input type="checkbox" id="ch-confirmation" required>
-        <span>I confirm that all information provided is accurate, and I'm willing to fulfil the responsibilities of this role — including attending training and any required sessions.</span>
+        <input type="checkbox" id="ch-confirm" required>
+        <span>I hereby confirm that all information provided is accurate and I am willing to fulfil the responsibilities of this role, including attending any required training and sessions.</span>
       </label>
-      <div class="field-error" id="ch-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
-      <button type="submit" class="btn-submit" id="ch-submitBtn">Submit application</button>
-      <p class="form-notice">Submissions are stored in a private database. Uploaded documents are kept in a private storage bucket and are not shared publicly.</p>
-      <div class="result-banner" id="ch-resultBanner"></div>
+      <div class="ferr" id="ch-e-confirm" style="margin-bottom:13px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="ch-btn">Submit application</button>
+      <p class="form-note">Submissions are stored in a private database. Uploaded documents are kept in a private storage bucket and are not shared publicly.</p>
+      <div class="banner" id="ch-banner"></div>
     </div>
   </form>
   <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
@@ -729,152 +794,276 @@ const SUPABASE_URL = "https://whwilpuynwudlddbxmwk.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ── Screen navigation ── */
-function showScreen(id){
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  const target = document.getElementById(id);
-  target.classList.add("active");
-  window.scrollTo({top:0, behavior:"instant"});
+/* ── Screen nav ── */
+function show(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({top:0,behavior:"instant"});
 }
+document.getElementById("btnDelegate").onclick=()=>show("sDelegateType");
+document.getElementById("btnChair").onclick=()=>show("sChair");
+document.getElementById("btnIndividual").onclick=()=>show("sDelegateInd");
+document.getElementById("btnSchool").onclick=()=>show("sDelegateSchool");
+document.querySelectorAll("[data-to]").forEach(b=>b.addEventListener("click",()=>show(b.dataset.to)));
 
-document.getElementById("btnDelegate").addEventListener("click", () => showScreen("screenDelegateType"));
-document.getElementById("btnChair").addEventListener("click",    () => showScreen("screenChair"));
-document.getElementById("btnIndividual").addEventListener("click",() => showScreen("screenDelegateIndividual"));
-document.getElementById("btnSchool").addEventListener("click",   () => showScreen("screenDelegateSchool"));
-
-document.querySelectorAll("[data-back-to]").forEach(btn => {
-  btn.addEventListener("click", () => showScreen(btn.dataset.backTo));
-});
-
-/* ── DOB helpers ── */
-function buildDOBDropdowns(prefix){
-  const dayEl   = document.getElementById(prefix+"-dobDay");
-  const yearEl  = document.getElementById(prefix+"-dobYear");
-  const hiddenEl= document.getElementById(prefix+"-dob");
-  for(let d=1;d<=31;d++){
-    const o=document.createElement("option");
-    o.value=String(d).padStart(2,"0");o.textContent=d;dayEl.appendChild(o);
+/* ── Delegate table ── */
+const COMMITTEES = ["WHO (Grades 6–8)","UNCTAD (Grades 9–12)","UNODC (Grades 9–12)","INTERPOL (Grades 9–12)","DISEC (Grades 9–12)","UNHRC (Grades 9–12)"];
+function commSel(name,placeholder){
+  const s=document.createElement("select");
+  s.name=name;s.setAttribute("aria-label",placeholder);
+  s.innerHTML=`<option value="">${placeholder}</option>`+COMMITTEES.map(c=>`<option value="${c}">${c.split(" ")[0]}</option>`).join("");
+  return s;
+}
+(function buildTable(){
+  const tbody=document.getElementById("delegateRows");
+  for(let i=1;i<=12;i++){
+    const tr=document.createElement("tr");
+    tr.innerHTML=`<td class="row-num">${i}</td>`;
+    // name
+    const tdN=document.createElement("td");const iN=document.createElement("input");iN.type="text";iN.name=`d${i}_name`;iN.placeholder="Full name";tdN.appendChild(iN);tr.appendChild(tdN);
+    // dob
+    const tdD=document.createElement("td");const iD=document.createElement("input");iD.type="date";iD.name=`d${i}_dob`;iD.style.minWidth="130px";tdD.appendChild(iD);tr.appendChild(tdD);
+    // gender
+    const tdG=document.createElement("td");
+    const sg=document.createElement("select");sg.name=`d${i}_gender`;sg.setAttribute("aria-label","Gender");
+    sg.innerHTML='<option value="">–</option><option value="Male">Male</option><option value="Female">Female</option>';
+    tdG.appendChild(sg);tr.appendChild(tdG);
+    // phone
+    const tdP=document.createElement("td");const iP=document.createElement("input");iP.type="tel";iP.name=`d${i}_phone`;iP.placeholder="+971…";iP.style.minWidth="120px";tdP.appendChild(iP);tr.appendChild(tdP);
+    // email
+    const tdE=document.createElement("td");const iE=document.createElement("input");iE.type="email";iE.name=`d${i}_email`;iE.placeholder="email";iE.style.minWidth="130px";tdE.appendChild(iE);tr.appendChild(tdE);
+    // mun exp
+    const tdM=document.createElement("td");const iM=document.createElement("input");iM.type="number";iM.min="0";iM.step="1";iM.name=`d${i}_mun`;iM.placeholder="0";iM.style.width="60px";tdM.appendChild(iM);tr.appendChild(tdM);
+    // pref1
+    const tdC1=document.createElement("td");tdC1.appendChild(commSel(`d${i}_pref1`,"Pref 1"));tr.appendChild(tdC1);
+    // pref2
+    const tdC2=document.createElement("td");tdC2.appendChild(commSel(`d${i}_pref2`,"Pref 2"));tr.appendChild(tdC2);
+    // food
+    const tdF=document.createElement("td");
+    const sf=document.createElement("select");sf.name=`d${i}_food`;sf.setAttribute("aria-label","Food");
+    sf.innerHTML='<option value="">–</option><option value="Vegetarian">Veg</option><option value="Non-vegetarian">Non-veg</option>';
+    tdF.appendChild(sf);tr.appendChild(tdF);
+    tbody.appendChild(tr);
   }
+})();
+
+/* ── DOB dropdowns ── */
+function buildDOB(prefix){
+  const day=document.getElementById(`${prefix}-dobDay`);
+  const month=document.getElementById(`${prefix}-dobMonth`);
+  const year=document.getElementById(`${prefix}-dobYear`);
+  const hidden=document.getElementById(`${prefix}-dob`);
+  for(let d=1;d<=31;d++){const o=document.createElement("option");o.value=String(d).padStart(2,"0");o.textContent=d;day.appendChild(o);}
   const cur=new Date().getFullYear();
-  for(let y=cur;y>=1980;y--){
-    const o=document.createElement("option");
-    o.value=y;o.textContent=y;yearEl.appendChild(o);
-  }
+  for(let y=cur;y>=1980;y--){const o=document.createElement("option");o.value=y;o.textContent=y;year.appendChild(o);}
   function sync(){
-    const d=dayEl.value, m=document.getElementById(prefix+"-dobMonth").value, y=yearEl.value;
-    if(!d||!m||!y){hiddenEl.value="";return false;}
-    const candidate=`${y}-${m}-${d}`;
-    const dt=new Date(candidate+"T00:00:00");
-    const valid=dt.getFullYear()===Number(y)&&dt.getMonth()+1===Number(m)&&dt.getDate()===Number(d);
-    hiddenEl.value=valid?candidate:"";
-    return valid;
+    const d=day.value,m=month.value,y=year.value;
+    if(!d||!m||!y){hidden.value="";return false;}
+    const dt=new Date(`${y}-${m}-${d}T00:00:00`);
+    const ok=dt.getFullYear()===+y&&dt.getMonth()+1===+m&&dt.getDate()===+d;
+    hidden.value=ok?`${y}-${m}-${d}`:"";
+    return ok;
   }
-  [dayEl, document.getElementById(prefix+"-dobMonth"), yearEl].forEach(el=>el.addEventListener("change",()=>{sync();clearError(prefix,"dob");}));
+  [day,month,year].forEach(el=>el.addEventListener("change",()=>{sync();clearErr(prefix,"dob");}));
   return sync;
 }
-const syncDI = buildDOBDropdowns("di");
-const syncDS = buildDOBDropdowns("ds");
-const syncCH = buildDOBDropdowns("ch");
-
-/* ── File validation ── */
-const MAX_SIZE=100*1024*1024;
-const ALLOWED_TYPES=["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation"];
-function fileOk(file){
-  if(file.size>MAX_SIZE)return"Each file must be 100 MB or smaller.";
-  if(ALLOWED_TYPES.includes(file.type))return"";
-  if(file.type.startsWith("image/")||file.type.startsWith("video/")||file.type.startsWith("audio/"))return"";
-  return"Unsupported file type.";
-}
-function validateFileInput(id,maxFiles){
-  const input=document.getElementById(id);
-  if(!input)return"";
-  if(input.required&&input.files.length===0)return"Please upload at least one file.";
-  if(input.files.length>maxFiles)return`Maximum ${maxFiles} file${maxFiles>1?"s":""} allowed.`;
-  for(const f of input.files){const msg=fileOk(f);if(msg)return msg;}
-  return"";
-}
-["ch-munCertificates","ch-chairCertificates","ch-resume","ch-lor"].forEach(id=>{
-  const el=document.getElementById(id);
-  if(!el)return;
-  el.addEventListener("change",()=>{
-    const isMulti=id.includes("Certificates");
-    const msg=validateFileInput(id,isMulti?5:1);
-    const key=id.replace("ch-","");
-    if(msg)showError("ch",key,msg);else clearError("ch",key);
-  });
-});
+const syncDI=buildDOB("di");
+const syncCH=buildDOB("ch");
 
 /* ── Error helpers ── */
-function showError(prefix,key,msg){
-  const err=document.getElementById(`${prefix}-err-${key}`);
-  const card=document.getElementById(`${prefix}-card-${key}`);
-  if(!err)return;
-  if(msg)err.textContent=msg;
-  err.classList.add("visible");
-  if(card)card.classList.add("has-error");
+function showErr(prefix,key,msg){
+  const e=document.getElementById(`${prefix}-e-${key}`);
+  const c=document.getElementById(`${prefix}-card-${key}`);
+  if(e){if(msg)e.textContent=msg;e.classList.add("show");}
+  if(c)c.classList.add("err");
 }
-function clearError(prefix,key){
-  const err=document.getElementById(`${prefix}-err-${key}`);
-  const card=document.getElementById(`${prefix}-card-${key}`);
-  if(err)err.classList.remove("visible");
-  if(card)card.classList.remove("has-error");
+function clearErr(prefix,key){
+  const e=document.getElementById(`${prefix}-e-${key}`);
+  const c=document.getElementById(`${prefix}-card-${key}`);
+  if(e)e.classList.remove("show");
+  if(c)c.classList.remove("err");
 }
-
-/* auto-clear on interaction */
 document.querySelectorAll("input,textarea,select").forEach(el=>{
   const ev=(el.type==="radio"||el.type==="checkbox")?"change":"input";
   el.addEventListener(ev,()=>{
-    const card=el.closest(".q-card");
-    if(!card)return;
-    const id=card.id; // e.g. "ch-card-fullName"
-    const parts=id.split("-card-");
-    if(parts.length===2) clearError(parts[0],parts[1]);
+    const card=el.closest(".q");
+    if(!card||!card.id)return;
+    const parts=card.id.split("-card-");
+    if(parts.length===2)clearErr(parts[0],parts[1]);
   });
 });
 
-/* ── Validation factories ── */
-function checkText(prefix,key,label){
-  const val=document.getElementById(`${prefix}-${key}`)?.value.trim()||"";
-  if(!val){showError(prefix,key,`Please enter ${label}.`);return false;}
-  clearError(prefix,key);return true;
+/* ── Validation helpers ── */
+function vText(p,k,label){
+  const v=(document.getElementById(`${p}-${k}`)?.value||"").trim();
+  if(!v){showErr(p,k,`Please enter ${label}.`);return false;}
+  clearErr(p,k);return true;
 }
-function checkEmail(prefix,key){
-  const val=document.getElementById(`${prefix}-${key}`)?.value.trim()||"";
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){showError(prefix,key,"Please enter a valid email address.");return false;}
-  clearError(prefix,key);return true;
+function vEmail(p,k){
+  const v=(document.getElementById(`${p}-${k}`)?.value||"").trim();
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)){showErr(p,k,"Please enter a valid email address.");return false;}
+  clearErr(p,k);return true;
 }
-function checkRadio(prefix,key,name,msg){
-  const checked=document.querySelector(`input[name="${name}"]:checked`);
-  if(!checked){showError(prefix,key,msg);return false;}
-  clearError(prefix,key);return true;
+function vRadio(p,k,name,msg){
+  if(!document.querySelector(`input[name="${name}"]:checked`)){showErr(p,k,msg);return false;}
+  clearErr(p,k);return true;
 }
-function checkCheckbox(prefix,key,id,msg){
-  if(!document.getElementById(id)?.checked){showError(prefix,key,msg);return false;}
-  clearError(prefix,key);return true;
+function vCheck(p,k,id,msg){
+  if(!document.getElementById(id)?.checked){showErr(p,k,msg);return false;}
+  clearErr(p,k);return true;
 }
-function checkNum(prefix,key){
-  const val=document.getElementById(`${prefix}-${key}`)?.value;
-  if(val===""||Number(val)<0){showError(prefix,key,"Please enter a number (0 or more).");return false;}
-  clearError(prefix,key);return true;
+function vNum(p,k){
+  const v=document.getElementById(`${p}-${k}`)?.value;
+  if(v===""||+v<0){showErr(p,k,"Please enter a number (0 or more).");return false;}
+  clearErr(p,k);return true;
 }
-function checkPrefs(prefix,fName,sName){
-  const first=document.querySelector(`input[name="${fName}"]:checked`);
-  const second=document.querySelector(`input[name="${sName}"]:checked`);
+function vDOB(syncFn,p){
+  if(!syncFn()){showErr(p,"dob","Please select a valid date of birth.");return false;}
+  clearErr(p,"dob");return true;
+}
+function vPrefs(p,n1,n2){
+  const f=document.querySelector(`input[name="${n1}"]:checked`);
+  const s=document.querySelector(`input[name="${n2}"]:checked`);
   let ok=true;
-  if(!first){showError(prefix,"firstPreference","Please select your first-choice committee.");ok=false;}
-  else clearError(prefix,"firstPreference");
-  if(!second){showError(prefix,"secondPreference","Please select your second-choice committee.");ok=false;}
-  else if(first&&first.value===second.value){showError(prefix,"secondPreference","Your second choice must differ from your first.");ok=false;}
-  else clearError(prefix,"secondPreference");
+  if(!f){showErr(p,"pref1","Please select your first-choice committee.");ok=false;}else clearErr(p,"pref1");
+  if(!s){showErr(p,"pref2","Please select your second-choice committee.");ok=false;}
+  else if(f&&f.value===s.value){showErr(p,"pref2","Your second choice must differ from your first.");ok=false;}
+  else clearErr(p,"pref2");
   return ok;
 }
+function vFiles(id,max){
+  const inp=document.getElementById(id);
+  if(!inp)return"";
+  if(inp.required&&inp.files.length===0)return"Please upload at least one file.";
+  if(inp.files.length>max)return`Maximum ${max} file${max>1?"s":""} allowed.`;
+  return"";
+}
 
-/* ── Upload helper ── */
+/* ── Submit state ── */
+function setSubmit(btnId,bannerId,busy,label){
+  const btn=document.getElementById(btnId);
+  const ban=document.getElementById(bannerId);
+  btn.disabled=busy;
+  btn.textContent=busy?"Submitting…":label;
+  ban.className="banner";ban.textContent="";
+}
+function showResult(btnId,bannerId,ok,msg,label){
+  const btn=document.getElementById(btnId);
+  const ban=document.getElementById(bannerId);
+  if(ok){btn.textContent="Submitted ✓";}
+  else{btn.disabled=false;btn.textContent=label;}
+  ban.textContent=msg;
+  ban.className="banner "+(ok?"ok":"fail");
+  ban.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+/* ── Individual Delegate submit ── */
+let diDone=false;
+document.getElementById("formDI").addEventListener("submit",async e=>{
+  e.preventDefault();if(diDone)return;
+  const p="di";let ok=true;
+  ok=vText(p,"fullName","your full name")&&ok;
+  ok=vText(p,"school","your school name")&&ok;
+  ok=vDOB(syncDI,p)&&ok;
+  ok=vRadio(p,"gender","di-gender","Please select your gender.")&&ok;
+  ok=vText(p,"phone","your contact number")&&ok;
+  ok=vEmail(p,"email")&&ok;
+  ok=vText(p,"guardianName","a parent or guardian name")&&ok;
+  ok=vText(p,"guardianPhone","a parent or guardian contact number")&&ok;
+  ok=vNum(p,"munCount")&&ok;
+  ok=vPrefs(p,"di-pref1","di-pref2")&&ok;
+  ok=vRadio(p,"food","di-food","Please select a food preference.")&&ok;
+  ok=vCheck(p,"confirm","di-confirm","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".q.err")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
+
+  setSubmit("di-btn","di-banner",true,"Submit registration");
+  try{
+    const{error}=await sb.from("delegate_registrations").insert({
+      id:crypto.randomUUID(),registration_type:"Individual",
+      full_name:document.getElementById("di-fullName").value.trim(),
+      school:document.getElementById("di-school").value.trim(),
+      date_of_birth:document.getElementById("di-dob").value,
+      gender:document.querySelector('input[name="di-gender"]:checked')?.value||"",
+      phone:document.getElementById("di-phone").value.trim(),
+      email:document.getElementById("di-email").value.trim(),
+      guardian_name:document.getElementById("di-guardianName").value.trim(),
+      guardian_phone:document.getElementById("di-guardianPhone").value.trim(),
+      mun_count:+document.getElementById("di-munCount").value,
+      first_preference:document.querySelector('input[name="di-pref1"]:checked')?.value||"",
+      second_preference:document.querySelector('input[name="di-pref2"]:checked')?.value||"",
+      food_preference:document.querySelector('input[name="di-food"]:checked')?.value||"",
+      food_allergies:document.getElementById("di-allergies").value.trim(),
+      confirmed:true,
+    });
+    if(error)throw error;
+    diDone=true;
+    showResult("di-btn","di-banner",true,"Registration submitted — you'll hear back at the email address you provided.","Submit registration");
+  }catch(err){
+    showResult("di-btn","di-banner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.","Submit registration");
+  }
+});
+
+/* ── School Delegation submit ── */
+let dsDone=false;
+document.getElementById("formDS").addEventListener("submit",async e=>{
+  e.preventDefault();if(dsDone)return;
+  const p="ds";let ok=true;
+  ok=vText(p,"school","your school name")&&ok;
+  ok=vText(p,"coordName","the coordinator's name")&&ok;
+  ok=vText(p,"coordPhone","the coordinator's contact number")&&ok;
+  ok=vEmail(p,"coordEmail")&&ok;
+  ok=vText(p,"escortName","the escort teacher's name")&&ok;
+  ok=vRadio(p,"escortFood","ds-escortFood","Please select a food preference for the escort teacher.")&&ok;
+
+  // validate delegate table
+  const rows=document.querySelectorAll("#delegateRows tr");
+  let hasDelegate=false;
+  rows.forEach(row=>{
+    const name=row.querySelector('input[type="text"]')?.value.trim();
+    if(name)hasDelegate=true;
+  });
+  if(!hasDelegate){showErr(p,"delegates","Please fill in at least one delegate row.");ok=false;}
+  else clearErr(p,"delegates");
+
+  ok=vCheck(p,"confirm","ds-confirm","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".q.err")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
+
+  setSubmit("ds-btn","ds-banner",true,"Submit delegation");
+  try{
+    const delegates=[];
+    rows.forEach((row,i)=>{
+      const inputs=row.querySelectorAll("input,select");
+      const name=row.querySelector('input[type="text"]')?.value.trim();
+      if(!name)return;
+      const obj={row:i+1};
+      inputs.forEach(inp=>{if(inp.name)obj[inp.name.replace(`d${i+1}_`,"")]=inp.value;});
+      delegates.push(obj);
+    });
+    const{error}=await sb.from("school_delegations").insert({
+      id:crypto.randomUUID(),
+      school:document.getElementById("ds-school").value.trim(),
+      coord_name:document.getElementById("ds-coordName").value.trim(),
+      coord_phone:document.getElementById("ds-coordPhone").value.trim(),
+      coord_email:document.getElementById("ds-coordEmail").value.trim(),
+      escort_name:document.getElementById("ds-escortName").value.trim(),
+      escort_food:document.querySelector('input[name="ds-escortFood"]:checked')?.value||"",
+      delegates:delegates,
+      confirmed:true,
+    });
+    if(error)throw error;
+    dsDone=true;
+    showResult("ds-btn","ds-banner",true,"Delegation submitted — your coordinator will be contacted to confirm your school's spot.","Submit delegation");
+  }catch(err){
+    showResult("ds-btn","ds-banner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.","Submit delegation");
+  }
+});
+
+/* ── File upload helper ── */
 async function uploadFiles(files,folder,appId){
   const paths=[];
   for(const file of files){
-    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-    const path=`${appId}/${folder}/${crypto.randomUUID()}-${safeName}`;
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path=`${appId}/${folder}/${crypto.randomUUID()}-${safe}`;
     const{error}=await sb.storage.from("chair-applications").upload(path,file,{upsert:false});
     if(error)throw new Error(`${file.name}: ${error.message}`);
     paths.push(path);
@@ -882,190 +1071,69 @@ async function uploadFiles(files,folder,appId){
   return paths;
 }
 
-/* ── Submit helpers ── */
-function setSubmitting(btnId,bannerId,submitting){
-  const btn=document.getElementById(btnId);
-  const banner=document.getElementById(bannerId);
-  btn.disabled=submitting;
-  btn.textContent=submitting?"Submitting…":"Submit registration";
-  banner.className="result-banner";
-  banner.textContent="";
-}
-function showResult(btnId,bannerId,success,msg){
-  const btn=document.getElementById(btnId);
-  const banner=document.getElementById(bannerId);
-  if(success){btn.textContent="Submitted ✓";}
-  else{btn.disabled=false;btn.textContent="Submit registration";}
-  banner.textContent=msg;
-  banner.className="result-banner "+(success?"success":"error");
-  banner.scrollIntoView({behavior:"smooth",block:"center"});
-}
+/* ── Chair submit ── */
+let chDone=false;
+document.getElementById("formCH").addEventListener("submit",async e=>{
+  e.preventDefault();if(chDone)return;
+  const p="ch";let ok=true;
+  ok=vText(p,"fullName","your full name")&&ok;
+  ok=vText(p,"school","your school name")&&ok;
+  ok=vDOB(syncCH,p)&&ok;
+  ok=vRadio(p,"gender","ch-gender","Please select your gender.")&&ok;
+  ok=vText(p,"phone","your contact number")&&ok;
+  ok=vEmail(p,"email")&&ok;
+  ok=vText(p,"guardianName","a parent or guardian name")&&ok;
+  ok=vText(p,"guardianPhone","a parent or guardian contact number")&&ok;
+  ok=vNum(p,"munCount")&&ok;
 
-/* ── Delegate Individual ── */
-let diSubmitted=false;
-document.getElementById("formDelegateIndividual").addEventListener("submit",async e=>{
-  e.preventDefault();
-  if(diSubmitted)return;
-  const p="di";
-  let ok=true;
-  ok=checkText(p,"fullName","your full name")&&ok;
-  ok=checkText(p,"school","your school or university")&&ok;
-  ok=checkRadio(p,"gender","di-gender","Please select your gender.")&&ok;
-  if(!syncDI()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
-  ok=checkPrefs(p,"di-firstPref","di-secondPref")&&ok;
-  ok=checkEmail(p,"email")&&ok;
-  ok=checkText(p,"phone","your WhatsApp number")&&ok;
-  ok=checkRadio(p,"food","di-food","Please select a food preference.")&&ok;
-  ok=checkCheckbox(p,"confirmation","di-confirmation","Please accept the declaration to submit.")&&ok;
-  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
+  const munMsg=vFiles("ch-munCerts",5);
+  if(munMsg){showErr(p,"munCerts",munMsg);ok=false;}else clearErr(p,"munCerts");
+  ok=vNum(p,"chairExp")&&ok;
+  const chairMsg=vFiles("ch-chairCerts",5);
+  if(chairMsg){showErr(p,"chairCerts",chairMsg);ok=false;}else clearErr(p,"chairCerts");
 
-  setSubmitting("di-submitBtn","di-resultBanner",true);
+  ok=vPrefs(p,"ch-pref1","ch-pref2")&&ok;
+  ok=vRadio(p,"food","ch-food","Please select a food preference.")&&ok;
+  ok=vCheck(p,"confirm","ch-confirm","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".q.err")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
+
+  setSubmit("ch-btn","ch-banner",true,"Submit application");
   try{
     const appId=crypto.randomUUID();
-    const{error}=await sb.from("delegate_registrations").insert({
-      id:appId,
-      registration_type:"Individual",
-      full_name:document.getElementById("di-fullName").value.trim(),
-      school:document.getElementById("di-school").value.trim(),
-      gender:document.querySelector('input[name="di-gender"]:checked')?.value||"",
-      date_of_birth:document.getElementById("di-dob").value,
-      first_preference:document.querySelector('input[name="di-firstPref"]:checked')?.value||"",
-      second_preference:document.querySelector('input[name="di-secondPref"]:checked')?.value||"",
-      email:document.getElementById("di-email").value.trim(),
-      phone:document.getElementById("di-phone").value.trim(),
-      food_preference:document.querySelector('input[name="di-food"]:checked')?.value||"",
-      food_allergies:document.getElementById("di-allergies").value.trim(),
-      confirmed:document.getElementById("di-confirmation").checked,
-    });
-    if(error)throw error;
-    diSubmitted=true;
-    showResult("di-submitBtn","di-resultBanner",true,"Registration submitted — you'll hear back at the email address you provided.");
-  }catch(err){
-    console.error(err);
-    showResult("di-submitBtn","di-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
-  }
-});
-
-/* ── Delegate School ── */
-let dsSubmitted=false;
-document.getElementById("formDelegateSchool").addEventListener("submit",async e=>{
-  e.preventDefault();
-  if(dsSubmitted)return;
-  const p="ds";
-  let ok=true;
-  ok=checkText(p,"fullName","your full name")&&ok;
-  ok=checkText(p,"school","your school name")&&ok;
-  ok=checkRadio(p,"gender","ds-gender","Please select your gender.")&&ok;
-  if(!syncDS()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
-  ok=checkText(p,"coordinatorName","your coordinator's name")&&ok;
-  ok=checkText(p,"coordinatorPhone","your coordinator's number")&&ok;
-  ok=checkPrefs(p,"ds-firstPref","ds-secondPref")&&ok;
-  ok=checkEmail(p,"email")&&ok;
-  ok=checkText(p,"phone","your WhatsApp number")&&ok;
-  ok=checkRadio(p,"food","ds-food","Please select a food preference.")&&ok;
-  ok=checkCheckbox(p,"confirmation","ds-confirmation","Please accept the declaration to submit.")&&ok;
-  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
-
-  setSubmitting("ds-submitBtn","ds-resultBanner",true);
-  try{
-    const appId=crypto.randomUUID();
-    const{error}=await sb.from("delegate_registrations").insert({
-      id:appId,
-      registration_type:"School",
-      full_name:document.getElementById("ds-fullName").value.trim(),
-      school:document.getElementById("ds-school").value.trim(),
-      gender:document.querySelector('input[name="ds-gender"]:checked')?.value||"",
-      date_of_birth:document.getElementById("ds-dob").value,
-      coordinator_name:document.getElementById("ds-coordinatorName").value.trim(),
-      coordinator_phone:document.getElementById("ds-coordinatorPhone").value.trim(),
-      first_preference:document.querySelector('input[name="ds-firstPref"]:checked')?.value||"",
-      second_preference:document.querySelector('input[name="ds-secondPref"]:checked')?.value||"",
-      email:document.getElementById("ds-email").value.trim(),
-      phone:document.getElementById("ds-phone").value.trim(),
-      food_preference:document.querySelector('input[name="ds-food"]:checked')?.value||"",
-      food_allergies:document.getElementById("ds-allergies").value.trim(),
-      confirmed:document.getElementById("ds-confirmation").checked,
-    });
-    if(error)throw error;
-    dsSubmitted=true;
-    showResult("ds-submitBtn","ds-resultBanner",true,"Registration submitted — your coordinator will be contacted to confirm your spot.");
-  }catch(err){
-    console.error(err);
-    showResult("ds-submitBtn","ds-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
-  }
-});
-
-/* ── Chair ── */
-let chSubmitted=false;
-document.getElementById("formChair").addEventListener("submit",async e=>{
-  e.preventDefault();
-  if(chSubmitted)return;
-  const p="ch";
-  let ok=true;
-  ok=checkText(p,"fullName","your full name")&&ok;
-  ok=checkText(p,"school","your school or university")&&ok;
-  ok=checkRadio(p,"gender","ch-gender","Please select your gender.")&&ok;
-  if(!syncCH()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
-  ok=checkNum(p,"munCount")&&ok;
-  const munCertMsg=validateFileInput("ch-munCertificates",5);
-  if(munCertMsg){showError(p,"munCertificates",munCertMsg);ok=false;}else clearError(p,"munCertificates");
-  ok=checkNum(p,"chairCount")&&ok;
-  const chairCertMsg=validateFileInput("ch-chairCertificates",5);
-  if(chairCertMsg){showError(p,"chairCertificates",chairCertMsg);ok=false;}else clearError(p,"chairCertificates");
-  const resumeMsg=validateFileInput("ch-resume",1);
-  if(resumeMsg&&document.getElementById("ch-resume").files.length>0){showError(p,"resume",resumeMsg);ok=false;}
-  const lorMsg=validateFileInput("ch-lor",1);
-  if(lorMsg&&document.getElementById("ch-lor").files.length>0){showError(p,"lor",lorMsg);ok=false;}
-  ok=checkPrefs(p,"ch-firstPref","ch-secondPref")&&ok;
-  ok=checkText(p,"whyFirst","a response")&&ok;
-  ok=checkText(p,"whyPace","a response")&&ok;
-  ok=checkEmail(p,"email")&&ok;
-  ok=checkText(p,"phone","your WhatsApp number")&&ok;
-  ok=checkText(p,"coordinatorPhone","your coordinator's number")&&ok;
-  ok=checkRadio(p,"food","ch-food","Please select a food preference.")&&ok;
-  ok=checkCheckbox(p,"confirmation","ch-confirmation","Please accept the declaration to submit.")&&ok;
-  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
-
-  setSubmitting("ch-submitBtn","ch-resultBanner",true);
-  try{
-    const appId=crypto.randomUUID();
-    const[munCerts,chairCerts,resumePaths,lorPaths]=await Promise.all([
-      uploadFiles(document.getElementById("ch-munCertificates").files,"participation-certificates",appId),
-      uploadFiles(document.getElementById("ch-chairCertificates").files,"chair-certificates",appId),
+    const[munCerts,chairCerts,resumePaths]=await Promise.all([
+      uploadFiles(document.getElementById("ch-munCerts").files,"mun-certs",appId),
+      uploadFiles(document.getElementById("ch-chairCerts").files,"chair-certs",appId),
       uploadFiles(document.getElementById("ch-resume").files,"resume",appId),
-      uploadFiles(document.getElementById("ch-lor").files,"lor",appId),
     ]);
     const{error}=await sb.from("chair_applications").insert({
       id:appId,
       full_name:document.getElementById("ch-fullName").value.trim(),
       school:document.getElementById("ch-school").value.trim(),
-      gender:document.querySelector('input[name="ch-gender"]:checked')?.value||"",
       date_of_birth:document.getElementById("ch-dob").value,
-      mun_count:Number(document.getElementById("ch-munCount").value),
+      gender:document.querySelector('input[name="ch-gender"]:checked')?.value||"",
+      phone:document.getElementById("ch-phone").value.trim(),
+      email:document.getElementById("ch-email").value.trim(),
+      guardian_name:document.getElementById("ch-guardianName").value.trim(),
+      guardian_phone:document.getElementById("ch-guardianPhone").value.trim(),
+      mun_count:+document.getElementById("ch-munCount").value,
       mun_certificates:munCerts,
-      chair_count:Number(document.getElementById("ch-chairCount").value),
+      chair_experience:+document.getElementById("ch-chairExp").value,
       chair_certificates:chairCerts,
       resume_path:resumePaths[0]||null,
-      lor_path:lorPaths[0]||null,
-      first_preference:document.querySelector('input[name="ch-firstPref"]:checked')?.value||"",
-      second_preference:document.querySelector('input[name="ch-secondPref"]:checked')?.value||"",
-      why_first:document.getElementById("ch-whyFirst").value.trim(),
-      why_pace:document.getElementById("ch-whyPace").value.trim(),
-      email:document.getElementById("ch-email").value.trim(),
-      phone:document.getElementById("ch-phone").value.trim(),
-      coordinator_phone:document.getElementById("ch-coordinatorPhone").value.trim(),
+      first_preference:document.querySelector('input[name="ch-pref1"]:checked')?.value||"",
+      second_preference:document.querySelector('input[name="ch-pref2"]:checked')?.value||"",
       food_preference:document.querySelector('input[name="ch-food"]:checked')?.value||"",
       food_allergies:document.getElementById("ch-allergies").value.trim(),
-      confirmed:document.getElementById("ch-confirmation").checked,
+      confirmed:true,
     });
     if(error)throw error;
-    chSubmitted=true;
-    showResult("ch-submitBtn","ch-resultBanner",true,"Application submitted — you'll hear back at the email address you provided.");
+    chDone=true;
+    showResult("ch-btn","ch-banner",true,"Application submitted — you'll hear back at the email address you provided.","Submit application");
   }catch(err){
-    console.error(err);
-    showResult("ch-submitBtn","ch-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
+    showResult("ch-btn","ch-banner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.","Submit application");
   }
 });
 </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"6beff27781ee4f178e97521268a2620f","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
