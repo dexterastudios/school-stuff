@@ -2,322 +2,323 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#050a16">
-<meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-<title>PaceMUN II — Chair Applications</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+<title>PaceMUN II — Registration</title>
 <style>
 :root{
-  --bg:#050a16;
-  --bg-deep:#03060f;
-  --panel:#0a1229;
-  --panel-soft:#0d1730;
-  --line:rgba(207,216,236,.12);
-  --line-soft:rgba(207,216,236,.07);
-  --ink:#eef1f8;
-  --muted:#8d97b3;
-  --muted-dim:#5b6584;
-  --brass:#c8a24a;
-  --brass-bright:#e7c374;
-  --brass-dim:rgba(200,162,74,.14);
-  --success:#5fcf9e;
-  --danger:#e2685f;
-  --radius:14px;
-  --ease:cubic-bezier(.22,.8,.26,1);
+  --bg:#050a16;--bg-deep:#03060f;
+  --panel:#0a1229;--panel-soft:#0d1730;
+  --line:rgba(207,216,236,.13);--line-focus:rgba(200,162,74,.6);
+  --ink:#eef1f8;--muted:#8d97b3;--muted-dim:#5b6584;
+  --brass:#c8a24a;--brass-bright:#e7c374;--brass-dim:rgba(200,162,74,.13);
+  --danger:#e2685f;--danger-bg:rgba(226,104,95,.09);
+  --success:#5fcf9e;--success-bg:rgba(95,207,158,.08);
+  --radius:12px;--ease:cubic-bezier(.22,.8,.26,1);
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
-  margin:0;min-height:100vh;display:flex;flex-direction:column;color:var(--ink);
+  min-height:100vh;
   background:
-    radial-gradient(ellipse 900px 500px at 15% -10%,rgba(200,162,74,.07),transparent 60%),
-    radial-gradient(ellipse 700px 500px at 100% 10%,rgba(72,98,168,.10),transparent 55%),
-    linear-gradient(180deg,var(--bg-deep) 0%,var(--bg) 40%,var(--bg-deep) 100%);
-  font-family:"DM Sans",system-ui,sans-serif;
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6;
+    radial-gradient(ellipse 800px 400px at 20% -5%,rgba(200,162,74,.06),transparent 55%),
+    radial-gradient(ellipse 600px 500px at 90% 15%,rgba(60,85,160,.09),transparent 50%),
+    linear-gradient(180deg,var(--bg-deep) 0%,var(--bg) 50%,var(--bg-deep) 100%);
+  color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden;
 }
 body::before{
-  content:"";position:fixed;inset:0;z-index:2000;pointer-events:none;
-  opacity:.03;mix-blend-mode:soft-light;
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  opacity:.025;mix-blend-mode:soft-light;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-::selection{background:rgba(200,162,74,.3);color:#0a0f1c}
-:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px}
+::selection{background:rgba(200,162,74,.28);color:#080d1a}
+:focus-visible{outline:2px solid var(--brass-bright);outline-offset:3px;border-radius:4px}
 
-/* ---------- shell ---------- */
-.wrap{width:min(680px,calc(100% - 40px));margin:0 auto}
+.page{position:relative;z-index:1;width:min(660px,calc(100% - 32px));margin:0 auto;padding:60px 0 80px}
 
-/* ---------- progress rail ---------- */
-.rail{
-  position:fixed;top:0;left:0;right:0;height:3px;background:var(--line-soft);z-index:500;
-}
-.rail-fill{
-  height:100%;width:0%;background:linear-gradient(90deg,var(--brass),var(--brass-bright));
-  transition:width .5s var(--ease);
-}
-.topbar{
-  position:fixed;top:3px;left:0;right:0;z-index:400;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 0;background:linear-gradient(180deg,var(--bg-deep) 60%,transparent);
-}
-.topbar .wrap{display:flex;align-items:center;justify-content:space-between}
-.brand{font-family:"Manrope",sans-serif;font-weight:800;font-size:.82rem;letter-spacing:-.01em;color:#dfe4f0}
-.brand em{font-style:normal;color:var(--brass-bright)}
-.step-count{font-family:"Manrope",sans-serif;font-size:.72rem;font-weight:700;color:var(--muted)}
+/* ── screen switching ── */
+.screen{display:none}
+.screen.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.screen.active{animation:rise .35s var(--ease)}
+@media(prefers-reduced-motion:reduce){.screen.active{animation:none}}
 
-/* ---------- steps ---------- */
-.stage{flex:1 0 auto;display:flex;flex-direction:column;justify-content:center;padding:72px 0 16px;position:relative}
-.step{display:none}
-.step.active{display:block;animation:rise .5s var(--ease)}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.step.active{animation:none}}
+/* ── landing / gate ── */
+.gate-header{
+  background:var(--panel-soft);border:1px solid var(--line);
+  border-top:4px solid var(--brass);border-radius:var(--radius);
+  padding:32px 32px 28px;margin-bottom:14px;
+}
+.conf-label{
+  font-size:.7rem;font-weight:600;letter-spacing:.08em;color:var(--brass-bright);
+  text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.conf-label::after{content:"";flex:1;height:1px;background:var(--line)}
+.gate-title{
+  font-family:"Playfair Display",serif;
+  font-size:clamp(2rem,5vw,2.8rem);font-weight:600;
+  line-height:1.12;letter-spacing:-.015em;margin-bottom:14px;color:#f4f6fb;
+}
+.gate-title em{font-style:italic;color:var(--brass-bright)}
+.gate-desc{color:var(--muted);font-size:.9rem;line-height:1.7;max-width:50ch;margin-bottom:22px}
+.meta-row{display:flex;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.meta-item{flex:1;padding:10px 14px;border-right:1px solid var(--line);font-size:.72rem;color:var(--muted);line-height:1.4}
+.meta-item:last-child{border-right:none}
+.meta-item strong{display:block;font-size:.84rem;color:var(--ink);font-weight:600;margin-bottom:2px}
 
-.step-kicker{
-  font-family:"Manrope",sans-serif;font-size:.72rem;font-weight:700;color:var(--brass-bright);
-  margin:0 0 14px;
+.gate-prompt{
+  font-family:"Playfair Display",serif;font-size:1.15rem;font-weight:600;
+  color:#f0f3fa;margin:24px 0 12px;
 }
-.step-kicker span{color:var(--muted-dim)}
+.role-grid{display:grid;gap:10px}
+.role-btn{
+  width:100%;text-align:left;
+  background:var(--panel-soft);border:1px solid var(--line);
+  border-radius:var(--radius);padding:22px 24px 22px 26px;
+  color:var(--muted);cursor:pointer;
+  font-family:"DM Sans",sans-serif;
+  transition:border-color .18s,background .18s;
+  position:relative;overflow:hidden;
+}
+.role-btn::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--brass);transform:scaleY(0);transform-origin:top;
+  transition:transform .28s var(--ease);
+}
+.role-btn:hover{border-color:rgba(207,216,236,.26);background:#0f1a38}
+.role-btn:hover::before{transform:scaleY(1)}
+.role-btn-title{
+  display:block;font-family:"Playfair Display",serif;
+  font-size:1.35rem;font-weight:600;color:#f4f6fb;margin-bottom:5px;line-height:1.2;
+}
+.role-btn-desc{font-size:.82rem;line-height:1.55;max-width:44ch}
 
-h1.intro-title{
-  font-family:"Playfair Display",serif;font-weight:600;font-style:normal;
-  font-size:clamp(2.6rem,6.4vw,3.9rem);line-height:1.04;letter-spacing:-.01em;
-  margin:0 0 20px;max-width:11ch;
+/* ── delegate type gate ── */
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:none;border:1px solid var(--line);border-radius:8px;
+  padding:9px 14px;font:inherit;font-size:.78rem;font-weight:600;
+  color:var(--muted);cursor:pointer;margin-bottom:20px;
+  transition:border-color .15s,color .15s;
 }
-.intro-title .ampersand{font-style:italic;color:var(--brass-bright)}
-.intro-copy{color:var(--muted);font-size:1rem;max-width:52ch;margin:0 0 10px}
-.intro-meta{
-  display:flex;gap:22px;flex-wrap:wrap;margin:30px 0 38px;
-  font-family:"Manrope",sans-serif;font-size:.74rem;color:#c4cae0;
-}
-.intro-meta div{display:flex;flex-direction:column;gap:4px;padding-left:14px;border-left:2px solid var(--brass-dim)}
-.intro-meta b{font-weight:700;color:var(--ink);font-size:.86rem}
-.intro-meta small{color:var(--muted-dim);font-weight:500}
+.back-btn:hover{border-color:rgba(207,216,236,.28);color:var(--ink)}
+.back-btn svg{width:14px;height:14px;flex:none}
 
-.q-label{
-  font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(1.5rem,3.6vw,2.05rem);
-  line-height:1.28;letter-spacing:-.005em;margin:0 0 22px;max-width:26ch;color:#f4f6fb;
+.type-card{
+  background:var(--panel-soft);border:1px solid var(--line);
+  border-top:4px solid var(--brass);border-radius:var(--radius);
+  padding:28px 28px 24px;margin-bottom:14px;
 }
-.q-label .req{font-family:"DM Sans",sans-serif;font-size:.62em;color:var(--brass-bright);vertical-align:top}
-.q-help{color:var(--muted);font-size:.84rem;margin:-14px 0 22px;max-width:48ch}
+.type-title{
+  font-family:"Playfair Display",serif;font-size:1.6rem;font-weight:600;
+  color:#f4f6fb;margin-bottom:8px;line-height:1.2;
+}
+.type-desc{color:var(--muted);font-size:.86rem;line-height:1.65;margin-bottom:0}
+
+/* ── form common ── */
+.form-header{
+  background:var(--panel-soft);border:1px solid var(--line);
+  border-top:4px solid var(--brass);border-radius:var(--radius);
+  padding:28px 28px 24px;margin-bottom:14px;
+}
+.form-title{
+  font-family:"Playfair Display",serif;font-size:1.55rem;font-weight:600;
+  color:#f4f6fb;margin-bottom:8px;line-height:1.2;
+}
+.form-subtitle{color:var(--muted);font-size:.86rem;line-height:1.65;margin-bottom:16px}
+.required-note{font-size:.72rem;color:var(--muted-dim);padding-top:14px;border-top:1px solid var(--line)}
+.required-note span{color:var(--danger)}
+
+.section-heading{
+  margin:24px 0 10px;padding:0 2px;
+  font-size:.67rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--brass-bright);display:flex;align-items:center;gap:8px;
+}
+.section-heading::after{content:"";flex:1;height:1px;background:var(--line)}
+
+.q-card{
+  background:var(--panel-soft);border:1px solid var(--line);
+  border-radius:var(--radius);padding:22px 24px 20px;margin-bottom:10px;
+  transition:border-color .18s;
+}
+.q-card:focus-within{border-color:rgba(200,162,74,.28)}
+.q-card.has-error{border-color:rgba(226,104,95,.45)}
+
+.q-label{font-family:"Playfair Display",serif;font-size:1rem;font-weight:600;line-height:1.35;color:#f0f3fa;margin-bottom:12px;display:block}
+.q-label .req{font-family:"DM Sans",sans-serif;font-size:.58em;color:var(--danger);vertical-align:super;margin-left:2px}
+.q-label .opt{font-family:"DM Sans",sans-serif;font-size:.58em;color:var(--muted);vertical-align:super;margin-left:2px}
+.q-help{font-size:.76rem;color:var(--muted);margin-bottom:12px;margin-top:-6px;line-height:1.6}
 
 input[type=text],input[type=email],input[type=tel],input[type=number],textarea,select{
-  width:100%;border:1px solid var(--line);background:var(--panel-soft);
-  color:var(--ink);border-radius:10px;padding:15px 16px;
-  font:inherit;font-size:.94rem;outline:none;transition:border .2s,box-shadow .2s,background .2s;
+  width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;
+  color:var(--ink);padding:11px 13px;font:inherit;font-size:.9rem;outline:none;
+  transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;
 }
 input::placeholder,textarea::placeholder{color:var(--muted-dim)}
-input:focus,textarea:focus,select:focus{
-  border-color:rgba(200,162,74,.55);
-  box-shadow:0 0 0 4px rgba(200,162,74,.10);
-}
-textarea{min-height:150px;resize:vertical;line-height:1.7;font-size:.92rem}
-select{appearance:auto;cursor:pointer}
+input:focus,textarea:focus,select:focus{border-color:var(--line-focus);box-shadow:0 0 0 3px rgba(200,162,74,.09)}
+textarea{min-height:120px;resize:vertical;line-height:1.7;font-size:.87rem}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235b6584' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:34px}
 
-.choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.choice-grid.single-col{grid-template-columns:1fr;gap:8px}
-.choice-grid.single-col .choice{padding:11px 16px}
-.choice{
-  display:flex;align-items:flex-start;gap:11px;padding:15px 16px;
-  border:1px solid var(--line);border-radius:10px;background:var(--panel-soft);
-  cursor:pointer;transition:.18s;color:var(--muted);font-size:.86rem;
-}
-.choice small{display:block;color:var(--muted-dim);font-size:.75rem;margin-top:2px}
-.choice:hover{border-color:rgba(207,216,236,.24);background:#0f1a38}
-.choice:has(input:checked){
-  border-color:rgba(200,162,74,.55);background:var(--brass-dim);color:var(--ink);
-}
-.choice input{accent-color:var(--brass);flex:none;margin-top:2px}
+.dob-row{display:grid;grid-template-columns:.7fr 1.5fr 1fr;gap:10px}
 
-.upload{border:1px dashed var(--line);background:var(--panel-soft);padding:20px;border-radius:12px}
-.upload input[type=file]{width:100%;font:inherit;color:var(--muted);font-size:.82rem}
-.upload small{display:block;color:var(--muted-dim);margin-top:10px;font-size:.72rem;line-height:1.65}
-
-.dob-scroll{display:grid;grid-template-columns:.75fr 1.45fr 1fr;gap:10px}
-
-.confirm{display:flex;align-items:flex-start;gap:14px;color:var(--muted);cursor:pointer}
-.confirm input{margin-top:4px;accent-color:var(--brass);width:18px;height:18px;flex:none}
-
-.error{color:var(--danger);font-size:.76rem;margin-top:9px;display:none}
-
-/* ---------- nav ---------- */
-.step-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
-button{
-  border:1px solid transparent;border-radius:10px;padding:14px 24px;
-  font:inherit;font-size:.84rem;font-weight:700;cursor:pointer;transition:.18s;
-  font-family:"Manrope",sans-serif;
+.choices{display:grid;gap:8px}
+.choices.two-col{grid-template-columns:1fr 1fr}
+.choice-label{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:10px 13px;background:var(--bg);border:1px solid var(--line);
+  border-radius:8px;cursor:pointer;color:var(--muted);font-size:.84rem;
+  line-height:1.45;transition:border-color .15s,background .15s;
 }
-.btn-primary{background:var(--brass);color:#191204}
-.btn-primary:hover{background:var(--brass-bright)}
-.btn-primary:disabled{opacity:.55;cursor:wait}
-.btn-ghost{background:transparent;border-color:var(--line);color:var(--muted)}
-.btn-ghost:hover{border-color:rgba(207,216,236,.3);color:var(--ink)}
-.btn-start{background:var(--brass);color:#191204;padding:15px 28px}
-.btn-start:hover{background:var(--brass-bright)}
+.choice-label:hover{border-color:rgba(207,216,236,.25);background:rgba(255,255,255,.02)}
+.choice-label:has(input:checked){border-color:var(--line-focus);background:var(--brass-dim);color:var(--ink)}
+.choice-label input{width:15px;height:15px;flex:none;margin-top:2px;accent-color:var(--brass);background:unset;border:unset;border-radius:unset;padding:unset;box-shadow:none}
+.choice-label input:focus{box-shadow:none;border-color:unset}
+.choice-label small{display:block;color:var(--muted-dim);font-size:.7rem;margin-top:1px}
 
-.success{
-  display:none;margin-top:22px;border:1px solid rgba(95,207,158,.28);
-  background:rgba(95,207,158,.08);padding:16px 18px;border-radius:11px;
-  color:#c4ecdb;font-size:.86rem;line-height:1.6;
-}
-.footer-note{color:var(--muted-dim);font-size:.72rem;line-height:1.7;margin:20px 0 0}
+.upload-box{border:1px dashed rgba(207,216,236,.18);border-radius:8px;background:var(--bg);padding:16px}
+.upload-box input[type=file]{width:100%;font:inherit;font-size:.8rem;color:var(--muted);background:none;border:none;padding:0;box-shadow:none}
+.upload-box input[type=file]:focus{box-shadow:none;border:none}
+.upload-box small{display:block;margin-top:7px;color:var(--muted-dim);font-size:.68rem;line-height:1.6}
 
-.footer{text-align:center;color:var(--muted-dim);font-size:.68rem;padding:0 0 14px;letter-spacing:.02em}
+.field-error{display:none;margin-top:8px;color:var(--danger);font-size:.73rem;padding:6px 10px;background:var(--danger-bg);border-radius:6px}
+.field-error.visible{display:block}
 
-/* ---------- registration path: role + type ---------- */
-.gate-screen{display:none}
-.gate-screen.active{display:block;animation:rise .5s var(--ease)}
-.gate-screen .q-label{max-width:none}
-.gate-list{display:grid;gap:10px}
-.gate-choice{
-  position:relative;display:block;width:100%;text-align:left;overflow:hidden;
-  padding:22px 24px 22px 28px;
-  background:var(--panel-soft);border:1px solid var(--line);border-radius:10px;
-  color:var(--muted);font-family:"DM Sans",system-ui,sans-serif;font-weight:400;font-size:.86rem;
-  transition:border-color .18s,background .18s;
+.submit-area{background:var(--panel-soft);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin-top:10px}
+.confirm-label{display:flex;align-items:flex-start;gap:12px;color:var(--muted);font-size:.83rem;line-height:1.6;cursor:pointer;margin-bottom:18px}
+.confirm-label input[type=checkbox]{width:16px;height:16px;flex:none;margin-top:3px;accent-color:var(--brass);background:unset;border:unset;border-radius:unset;padding:unset;box-shadow:none}
+.confirm-label input:focus{box-shadow:none}
+.btn-submit{
+  width:100%;background:var(--brass);color:#190f02;border:none;border-radius:9px;
+  padding:14px 24px;font:inherit;font-family:"DM Sans",sans-serif;
+  font-size:.88rem;font-weight:700;cursor:pointer;
+  transition:background .18s,opacity .18s;letter-spacing:.01em;
 }
-.gate-choice::before{
-  content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--brass);
-  transform:scaleY(0);transform-origin:top;transition:transform .3s var(--ease);
-}
-.gate-choice:hover{border-color:rgba(207,216,236,.24);background:#0f1a38}
-.gate-choice:hover::before,.gate-choice.is-selected::before{transform:scaleY(1)}
-.gate-choice.is-selected{border-color:rgba(200,162,74,.55);background:var(--brass-dim);color:var(--ink)}
-.gate-title{
-  display:block;margin-bottom:6px;color:#f4f6fb;
-  font-family:"Playfair Display",serif;font-weight:600;font-size:1.55rem;line-height:1.2;
-}
-.gate-desc{display:block;max-width:44ch;line-height:1.55}
-@media(prefers-reduced-motion:reduce){
-  .gate-screen.active{animation:none}
-  .gate-choice::before{transition:none}
-}
-@media(max-width:640px){
-  .gate-choice{padding:18px 18px 18px 22px}
-  .gate-title{font-size:1.4rem}
-}
+.btn-submit:hover:not(:disabled){background:var(--brass-bright)}
+.btn-submit:disabled{opacity:.5;cursor:wait}
+.form-notice{margin-top:12px;font-size:.68rem;color:var(--muted-dim);line-height:1.7}
 
-@media(max-width:640px){
-  .wrap{width:min(100% - 32px,680px)}
-  .stage{padding:64px 0 16px}
-  .choice-grid{grid-template-columns:1fr}
-  .dob-scroll{grid-template-columns:1fr}
-  .step-nav{flex-direction:column-reverse}
-  .step-nav button{width:100%}
-  .intro-meta{gap:16px}
+.result-banner{display:none;margin-top:12px;padding:13px 15px;border-radius:8px;font-size:.82rem;line-height:1.6}
+.result-banner.success{display:block;background:var(--success-bg);border:1px solid rgba(95,207,158,.28);color:#c4ecdb}
+.result-banner.error{display:block;background:var(--danger-bg);border:1px solid rgba(226,104,95,.3);color:#f4c0bb}
+
+footer{text-align:center;margin-top:28px;color:var(--muted-dim);font-size:.66rem;letter-spacing:.02em}
+
+@media(max-width:520px){
+  .page{padding:36px 0 56px;width:calc(100% - 24px)}
+  .gate-header,.type-card,.form-header,.q-card,.submit-area{padding:18px 16px}
+  .dob-row{grid-template-columns:1fr;gap:8px}
+  .choices.two-col{grid-template-columns:1fr}
+  .meta-row{flex-direction:column}
+  .meta-item{border-right:none;border-bottom:1px solid var(--line)}
+  .meta-item:last-child{border-bottom:none}
+  .role-btn{padding:16px 18px}
+  .role-btn-title{font-size:1.2rem}
 }
 </style>
 </head>
 <body>
+<div class="page">
 
-<div class="rail"><div class="rail-fill" id="railFill"></div></div>
-<div class="topbar">
-  <div class="wrap">
-    <div class="brand">PaceMUN <em>II</em></div>
-    <div class="step-count" id="stepCount"></div>
+<!-- ══════════════════════════════════════════
+     SCREEN 0 — Landing / role gate
+════════════════════════════════════════════ -->
+<div class="screen active" id="screenLanding">
+  <div class="gate-header">
+    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; 31 Oct – 1 Nov</div>
+    <h1 class="gate-title">Welcome to<br><em>Registration</em></h1>
+    <p class="gate-desc">PACE International Model United Nations. Choose your role below to get started — the form takes about ten minutes.</p>
+    <div class="meta-row">
+      <div class="meta-item"><strong>31 Oct – 1 Nov</strong>Conference dates</div>
+      <div class="meta-item"><strong>~10 minutes</strong>To register</div>
+      <div class="meta-item"><strong>Private</strong>Secure storage</div>
+    </div>
+  </div>
+
+  <p class="gate-prompt">I am registering as a…</p>
+  <div class="role-grid">
+    <button type="button" class="role-btn" id="btnDelegate">
+      <span class="role-btn-title">Delegate</span>
+      <span class="role-btn-desc">Represent a country in committee and take part in the debate.</span>
+    </button>
+    <button type="button" class="role-btn" id="btnChair">
+      <span class="role-btn-title">Chair</span>
+      <span class="role-btn-desc">Run a committee — guide the debate, keep order, and support delegates.</span>
+    </button>
+  </div>
+  <footer style="margin-top:40px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 1 — Delegate type gate
+════════════════════════════════════════════ -->
+<div class="screen" id="screenDelegateType">
+  <button type="button" class="back-btn" data-back-to="screenLanding">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="type-card">
+    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate Registration</div>
+    <div class="type-title">How are you registering?</div>
+    <p class="type-desc">Choose whether you're signing up on your own or as part of your school's delegation.</p>
+  </div>
+  <div class="role-grid">
+    <button type="button" class="role-btn" id="btnIndividual">
+      <span class="role-btn-title">Individual</span>
+      <span class="role-btn-desc">You're signing up on your own, independently of a school group.</span>
+    </button>
+    <button type="button" class="role-btn" id="btnSchool">
+      <span class="role-btn-title">School</span>
+      <span class="role-btn-desc">You're registering as part of your school's official delegation.</span>
+    </button>
   </div>
 </div>
 
-<main class="stage">
-
-<div class="gate" id="gate">
-  <div class="wrap">
-
-    <!-- Gate 1: role -->
-    <div class="gate-screen active" id="gateRole">
-      <p class="q-label">Which role are you registering for?</p>
-      <div class="gate-list">
-        <button type="button" class="gate-choice" data-role="Chair">
-          <span class="gate-title">Register as Chair</span>
-          <span class="gate-desc">Run a committee: guide the debate, keep order and support delegates.</span>
-        </button>
-        <button type="button" class="gate-choice" data-role="Delegate">
-          <span class="gate-title">Register as Delegate</span>
-          <span class="gate-desc">Represent a country in committee and take part in the debate.</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Gate 2: type -->
-    <div class="gate-screen" id="gateType">
-      <p class="q-label">How are you registering?</p>
-      <div class="gate-list">
-        <button type="button" class="gate-choice" data-type="Individual">
-          <span class="gate-title">Register as Individual</span>
-          <span class="gate-desc">You're signing up on your own.</span>
-        </button>
-        <button type="button" class="gate-choice" data-type="School">
-          <span class="gate-title">Register as School</span>
-          <span class="gate-desc">You're signing up as part of your school's delegation.</span>
-        </button>
-      </div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-gate-back>Back</button>
-      </div>
-    </div>
-
+<!-- ══════════════════════════════════════════
+     SCREEN 2 — Delegate Individual form
+════════════════════════════════════════════ -->
+<div class="screen" id="screenDelegateIndividual">
+  <button type="button" class="back-btn" data-back-to="screenDelegateType">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="form-header">
+    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate · Individual</div>
+    <div class="form-title">Individual Delegate Registration</div>
+    <p class="form-subtitle">Fill in all required fields below. Your application will be reviewed after the deadline.</p>
+    <p class="required-note"><span>*</span> Required</p>
   </div>
-</div>
 
-<form id="chairForm" novalidate hidden>
-  <div class="wrap">
+  <form id="formDelegateIndividual" novalidate autocomplete="on">
+    <div class="section-heading">Personal details</div>
 
-    <!-- Step 0: intro -->
-    <div class="step active" data-step="0">
-      <h1 class="intro-title">Chair applications<span class="ampersand">.</span></h1>
-      <p class="intro-copy">PACE International Model United Nations is looking for its next panel of committee chairs. Answer one question at a time — it takes about ten minutes.</p>
-      <div class="intro-meta">
-        <div><b>31 Oct – 1 Nov</b><small>Conference dates</small></div>
-        <div><b>20 questions</b><small>Roughly 10 minutes</small></div>
-        <div><b>4 documents</b><small>Certificates, resume, LOR</small></div>
-      </div>
-      <div class="step-nav" style="justify-content:flex-start">
-        <button type="button" class="btn-ghost" data-gate-exit>Back</button>
-        <button type="button" class="btn-start" data-next>Begin application</button>
-      </div>
+    <div class="q-card" id="di-card-fullName">
+      <label class="q-label" for="di-fullName">Full name <span class="req">*</span></label>
+      <input id="di-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
+      <div class="field-error" id="di-err-fullName">Please enter your full name.</div>
     </div>
-
-    <!-- Step 1 -->
-    <div class="step" data-step="1" data-section="Candidate details">
-      <p class="q-label">What's your full name?<span class="req"> *</span></p>
-      <input id="name" name="fullName" type="text" required placeholder="Full name" autocomplete="name">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
+    <div class="q-card" id="di-card-school">
+      <label class="q-label" for="di-school">School or university <span class="req">*</span></label>
+      <input id="di-school" name="school" type="text" required placeholder="Institution name">
+      <div class="field-error" id="di-err-school">Please enter your school or university.</div>
     </div>
-
-    <!-- Step 2 -->
-    <div class="step" data-step="2" data-section="Candidate details">
-      <p class="q-label">Which school or university do you attend?<span class="req"> *</span></p>
-      <input id="school" name="school" type="text" required placeholder="School or university name">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
+    <div class="q-card" id="di-card-gender">
+      <span class="q-label">Gender <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="di-gender" value="Male" required> Male</label>
+        <label class="choice-label"><input type="radio" name="di-gender" value="Female"> Female</label>
       </div>
+      <div class="field-error" id="di-err-gender">Please select your gender.</div>
     </div>
-
-    <!-- Step 3 -->
-    <div class="step" data-step="3" data-section="Candidate details">
-      <p class="q-label">What's your gender?<span class="req"> *</span></p>
-      <div class="choice-grid">
-        <label class="choice"><input type="radio" name="gender" value="Male" required> Male</label>
-        <label class="choice"><input type="radio" name="gender" value="Female"> Female</label>
-      </div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 4 -->
-    <div class="step" data-step="4" data-section="Candidate details">
-      <p class="q-label">When were you born?<span class="req"> *</span></p>
-      <div class="dob-scroll">
-        <select id="dobDay" aria-label="Day" required><option value="">Day</option></select>
-        <select id="dobMonth" aria-label="Month" required>
+    <div class="q-card" id="di-card-dob">
+      <span class="q-label">Date of birth <span class="req">*</span></span>
+      <div class="dob-row">
+        <select id="di-dobDay" aria-label="Day" required><option value="">Day</option></select>
+        <select id="di-dobMonth" aria-label="Month" required>
           <option value="">Month</option>
           <option value="01">January</option><option value="02">February</option>
           <option value="03">March</option><option value="04">April</option>
@@ -326,521 +327,743 @@ button{
           <option value="09">September</option><option value="10">October</option>
           <option value="11">November</option><option value="12">December</option>
         </select>
-        <select id="dobYear" aria-label="Year" required><option value="">Year</option></select>
+        <select id="di-dobYear" aria-label="Year" required><option value="">Year</option></select>
       </div>
-      <input id="dob" name="dateOfBirth" type="hidden" required>
-      <div class="error" id="dobError">Please select a complete, valid date of birth.</div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
+      <input id="di-dob" name="dateOfBirth" type="hidden">
+      <div class="field-error" id="di-err-dob">Please select a valid date of birth.</div>
     </div>
 
-    <!-- Step 5 -->
-    <div class="step" data-step="5" data-section="Candidate details">
-      <p class="q-label">How many MUN conferences have you attended so far?<span class="req"> *</span></p>
-      <input id="munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
+    <div class="section-heading">Committee preferences</div>
+
+    <div class="q-card" id="di-card-firstPreference">
+      <span class="q-label">First-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="di-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
       </div>
+      <div class="field-error" id="di-err-firstPreference">Please select your first-choice committee.</div>
+    </div>
+    <div class="q-card" id="di-card-secondPreference">
+      <span class="q-label">Second-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="di-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+      </div>
+      <div class="field-error" id="di-err-secondPreference">Your second choice must differ from your first.</div>
     </div>
 
-    <!-- Step 6 -->
-    <div class="step" data-step="6" data-section="MUN experience">
-      <p class="q-label">Upload your delegate certificates or awards.<span class="req"> *</span></p>
-      <p class="q-help">From any prior conferences you've attended as a delegate.</p>
-      <div class="upload">
-        <input id="munCertificates" name="munCertificates" type="file" multiple required>
-        <small>Up to 5 files, 100 MB each · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
+    <div class="section-heading">Contact &amp; preferences</div>
+
+    <div class="q-card" id="di-card-email">
+      <label class="q-label" for="di-email">Email address <span class="req">*</span></label>
+      <input id="di-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="field-error" id="di-err-email">Please enter a valid email address.</div>
+    </div>
+    <div class="q-card" id="di-card-phone">
+      <label class="q-label" for="di-phone">Your WhatsApp number <span class="req">*</span></label>
+      <input id="di-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
+      <div class="field-error" id="di-err-phone">Please enter your WhatsApp number.</div>
+    </div>
+    <div class="q-card" id="di-card-food">
+      <span class="q-label">Food preference <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="di-food" value="Veg" required> Vegetarian</label>
+        <label class="choice-label"><input type="radio" name="di-food" value="Non Veg"> Non-vegetarian</label>
       </div>
-      <div class="error" id="munCertificatesError"></div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
+      <div class="field-error" id="di-err-food">Please select a food preference.</div>
+    </div>
+    <div class="q-card" id="di-card-allergies">
+      <label class="q-label" for="di-allergies">Food allergies <span class="opt">Optional</span></label>
+      <p class="q-help">Write "None" if you don't have any.</p>
+      <textarea id="di-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
     </div>
 
-    <!-- Step 7 -->
-    <div class="step" data-step="7" data-section="MUN experience">
-      <p class="q-label">How many times have you chaired a committee?<span class="req"> *</span></p>
-      <input id="chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 8 -->
-    <div class="step" data-step="8" data-section="MUN experience">
-      <p class="q-label">Upload your chairing certificates or awards.<span class="req"> *</span></p>
-      <p class="q-help">From any prior conferences you've chaired.</p>
-      <div class="upload">
-        <input id="chairCertificates" name="chairCertificates" type="file" multiple required>
-        <small>Up to 5 files, 100 MB each · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
-      </div>
-      <div class="error" id="chairCertificatesError"></div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 9 -->
-    <div class="step" data-step="9" data-section="MUN experience">
-      <p class="q-label">Attach your resume.<span class="req"> (optional)</span></p>
-      <div class="upload">
-        <input id="resume" name="resume" type="file">
-        <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
-      </div>
-      <div class="error" id="resumeError"></div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 10 -->
-    <div class="step" data-step="10" data-section="MUN experience">
-      <p class="q-label">Attach a letter of recommendation.<span class="req"> (optional)</span></p>
-      <div class="upload">
-        <input id="lor" name="lor" type="file">
-        <small>1 file, up to 100 MB · Word, Excel, PowerPoint, PDF, image, video or audio.</small>
-      </div>
-      <div class="error" id="lorError"></div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 11 -->
-    <div class="step" data-step="11" data-section="Committee preferences">
-      <p class="q-label">What's your first-choice committee?<span class="req"> *</span></p>
-      <div class="choice-grid single-col">
-        <label class="choice"><input type="radio" name="firstPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee, 6th–8th grade</small></label>
-        <label class="choice"><input type="radio" name="firstPreference" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice"><input type="radio" name="firstPreference" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice"><input type="radio" name="firstPreference" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice"><input type="radio" name="firstPreference" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice"><input type="radio" name="firstPreference" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
-      </div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 12 -->
-    <div class="step" data-step="12" data-section="Committee preferences">
-      <p class="q-label">What's your second-choice committee?<span class="req"> *</span></p>
-      <div class="choice-grid single-col">
-        <label class="choice"><input type="radio" name="secondPreference" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee, 6th–8th grade</small></label>
-        <label class="choice"><input type="radio" name="secondPreference" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
-        <label class="choice"><input type="radio" name="secondPreference" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
-        <label class="choice"><input type="radio" name="secondPreference" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
-        <label class="choice"><input type="radio" name="secondPreference" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
-        <label class="choice"><input type="radio" name="secondPreference" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
-      </div>
-      <div class="error" id="secondPreferenceError">Your second choice must be different from your first choice.</div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 13 -->
-    <div class="step" data-step="13" data-section="Committee preferences">
-      <p class="q-label">Why does your first-choice committee suit you?<span class="req"> *</span></p>
-      <textarea id="whyFirst" name="whyFirst" required placeholder="Tell us why this committee suits you..."></textarea>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 14 -->
-    <div class="step" data-step="14" data-section="Committee preferences">
-      <p class="q-label">Why would you like to attend PaceMUN II?<span class="req"> *</span></p>
-      <textarea id="whyPace" name="whyPace" required></textarea>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 15 -->
-    <div class="step" data-step="15" data-section="Contact & preferences">
-      <p class="q-label">Where should we send your selection results?<span class="req"> *</span></p>
-      <input id="email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 16 -->
-    <div class="step" data-step="16" data-section="Contact & preferences">
-      <p class="q-label">What's your WhatsApp contact number?<span class="req"> *</span></p>
-      <input id="phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 17 -->
-    <div class="step" data-step="17" data-section="Contact & preferences">
-      <p class="q-label">What's your MUN coordinator's WhatsApp number?<span class="req"> *</span></p>
-      <input id="coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 18 -->
-    <div class="step" data-step="18" data-section="Contact & preferences">
-      <p class="q-label">What's your food preference?<span class="req"> *</span></p>
-      <div class="choice-grid">
-        <label class="choice"><input type="radio" name="food" value="Veg" required> Veg</label>
-        <label class="choice"><input type="radio" name="food" value="Non Veg"> Non veg</label>
-      </div>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 19 -->
-    <div class="step" data-step="19" data-section="Contact & preferences">
-      <p class="q-label">Any food allergies we should know about?</p>
-      <p class="q-help">Optional — write "None" if there aren't any.</p>
-      <textarea id="allergies" name="allergies" placeholder="None"></textarea>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="button" class="btn-primary" data-next>Next</button>
-      </div>
-    </div>
-
-    <!-- Step 20: declaration + submit -->
-    <div class="step" data-step="20" data-section="Declaration">
-      <p class="q-label">One last thing.<span class="req"> *</span></p>
-      <label class="choice confirm">
-        <input type="checkbox" id="confirmation" name="confirmation" required>
-        <span>I confirm that all information provided is accurate, and that I'm willing to fulfil the responsibilities of this role — including attending training and any required sessions.</span>
+    <div class="submit-area">
+      <label class="confirm-label">
+        <input type="checkbox" id="di-confirmation" required>
+        <span>I confirm that all information provided is accurate and I agree to attend PaceMUN II on 31 Oct – 1 Nov.</span>
       </label>
-      <div class="step-nav">
-        <button type="button" class="btn-ghost" data-back>Back</button>
-        <button type="submit" class="btn-primary" id="submitBtn">Submit application</button>
+      <div class="field-error" id="di-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="di-submitBtn">Submit registration</button>
+      <p class="form-notice">Submissions are stored in a private database and are not shared publicly.</p>
+      <div class="result-banner" id="di-resultBanner"></div>
+    </div>
+  </form>
+  <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 3 — Delegate School form
+════════════════════════════════════════════ -->
+<div class="screen" id="screenDelegateSchool">
+  <button type="button" class="back-btn" data-back-to="screenDelegateType">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="form-header">
+    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Delegate · School</div>
+    <div class="form-title">School Delegate Registration</div>
+    <p class="form-subtitle">Fill in your details and your school delegation info. Your coordinator will be contacted for confirmation.</p>
+    <p class="required-note"><span>*</span> Required</p>
+  </div>
+
+  <form id="formDelegateSchool" novalidate autocomplete="on">
+    <div class="section-heading">Personal details</div>
+
+    <div class="q-card" id="ds-card-fullName">
+      <label class="q-label" for="ds-fullName">Full name <span class="req">*</span></label>
+      <input id="ds-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
+      <div class="field-error" id="ds-err-fullName">Please enter your full name.</div>
+    </div>
+    <div class="q-card" id="ds-card-school">
+      <label class="q-label" for="ds-school">School name <span class="req">*</span></label>
+      <input id="ds-school" name="school" type="text" required placeholder="Your school's name">
+      <div class="field-error" id="ds-err-school">Please enter your school name.</div>
+    </div>
+    <div class="q-card" id="ds-card-gender">
+      <span class="q-label">Gender <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="ds-gender" value="Male" required> Male</label>
+        <label class="choice-label"><input type="radio" name="ds-gender" value="Female"> Female</label>
       </div>
-      <div class="success" id="success"></div>
-      <p class="footer-note">Submissions are stored in a private database. Uploaded documents are kept in a private storage bucket.</p>
+      <div class="field-error" id="ds-err-gender">Please select your gender.</div>
+    </div>
+    <div class="q-card" id="ds-card-dob">
+      <span class="q-label">Date of birth <span class="req">*</span></span>
+      <div class="dob-row">
+        <select id="ds-dobDay" aria-label="Day" required><option value="">Day</option></select>
+        <select id="ds-dobMonth" aria-label="Month" required>
+          <option value="">Month</option>
+          <option value="01">January</option><option value="02">February</option>
+          <option value="03">March</option><option value="04">April</option>
+          <option value="05">May</option><option value="06">June</option>
+          <option value="07">July</option><option value="08">August</option>
+          <option value="09">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+        <select id="ds-dobYear" aria-label="Year" required><option value="">Year</option></select>
+      </div>
+      <input id="ds-dob" name="dateOfBirth" type="hidden">
+      <div class="field-error" id="ds-err-dob">Please select a valid date of birth.</div>
     </div>
 
-  </div>
-</form>
-</main>
+    <div class="section-heading">Delegation details</div>
 
+    <div class="q-card" id="ds-card-coordinatorName">
+      <label class="q-label" for="ds-coordinatorName">MUN coordinator's name <span class="req">*</span></label>
+      <input id="ds-coordinatorName" name="coordinatorName" type="text" required placeholder="Coordinator's full name">
+      <div class="field-error" id="ds-err-coordinatorName">Please enter your coordinator's name.</div>
+    </div>
+    <div class="q-card" id="ds-card-coordinatorPhone">
+      <label class="q-label" for="ds-coordinatorPhone">Coordinator's WhatsApp number <span class="req">*</span></label>
+      <input id="ds-coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="field-error" id="ds-err-coordinatorPhone">Please enter the coordinator's number.</div>
+    </div>
+
+    <div class="section-heading">Committee preferences</div>
+
+    <div class="q-card" id="ds-card-firstPreference">
+      <span class="q-label">First-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+      </div>
+      <div class="field-error" id="ds-err-firstPreference">Please select your first-choice committee.</div>
+    </div>
+    <div class="q-card" id="ds-card-secondPreference">
+      <span class="q-label">Second-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="ds-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="ds-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ds-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ds-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ds-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ds-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+      </div>
+      <div class="field-error" id="ds-err-secondPreference">Your second choice must differ from your first.</div>
+    </div>
+
+    <div class="section-heading">Contact &amp; preferences</div>
+
+    <div class="q-card" id="ds-card-email">
+      <label class="q-label" for="ds-email">Email address <span class="req">*</span></label>
+      <input id="ds-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="field-error" id="ds-err-email">Please enter a valid email address.</div>
+    </div>
+    <div class="q-card" id="ds-card-phone">
+      <label class="q-label" for="ds-phone">Your WhatsApp number <span class="req">*</span></label>
+      <input id="ds-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
+      <div class="field-error" id="ds-err-phone">Please enter your WhatsApp number.</div>
+    </div>
+    <div class="q-card" id="ds-card-food">
+      <span class="q-label">Food preference <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="ds-food" value="Veg" required> Vegetarian</label>
+        <label class="choice-label"><input type="radio" name="ds-food" value="Non Veg"> Non-vegetarian</label>
+      </div>
+      <div class="field-error" id="ds-err-food">Please select a food preference.</div>
+    </div>
+    <div class="q-card" id="ds-card-allergies">
+      <label class="q-label" for="ds-allergies">Food allergies <span class="opt">Optional</span></label>
+      <p class="q-help">Write "None" if you don't have any.</p>
+      <textarea id="ds-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
+    </div>
+
+    <div class="submit-area">
+      <label class="confirm-label">
+        <input type="checkbox" id="ds-confirmation" required>
+        <span>I confirm that all information provided is accurate and I agree to attend PaceMUN II on 31 Oct – 1 Nov.</span>
+      </label>
+      <div class="field-error" id="ds-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="ds-submitBtn">Submit registration</button>
+      <p class="form-notice">Submissions are stored in a private database and are not shared publicly.</p>
+      <div class="result-banner" id="ds-resultBanner"></div>
+    </div>
+  </form>
+  <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN 4 — Chair application form
+════════════════════════════════════════════ -->
+<div class="screen" id="screenChair">
+  <button type="button" class="back-btn" data-back-to="screenLanding">
+    <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 2L4 7l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Back
+  </button>
+  <div class="form-header">
+    <div class="conf-label">PaceMUN II &nbsp;·&nbsp; Chair Application</div>
+    <div class="form-title">Chair Application</div>
+    <p class="form-subtitle">Apply to run a committee. Fill in all required fields — this takes about ten minutes. Upload your certificates and documents as you go.</p>
+    <p class="required-note"><span>*</span> Required</p>
+  </div>
+
+  <form id="formChair" novalidate autocomplete="on">
+    <div class="section-heading">Candidate details</div>
+
+    <div class="q-card" id="ch-card-fullName">
+      <label class="q-label" for="ch-fullName">Full name <span class="req">*</span></label>
+      <input id="ch-fullName" name="fullName" type="text" required placeholder="Your full name" autocomplete="name">
+      <div class="field-error" id="ch-err-fullName">Please enter your full name.</div>
+    </div>
+    <div class="q-card" id="ch-card-school">
+      <label class="q-label" for="ch-school">School or university <span class="req">*</span></label>
+      <input id="ch-school" name="school" type="text" required placeholder="Institution name">
+      <div class="field-error" id="ch-err-school">Please enter your school or university.</div>
+    </div>
+    <div class="q-card" id="ch-card-gender">
+      <span class="q-label">Gender <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="ch-gender" value="Male" required> Male</label>
+        <label class="choice-label"><input type="radio" name="ch-gender" value="Female"> Female</label>
+      </div>
+      <div class="field-error" id="ch-err-gender">Please select your gender.</div>
+    </div>
+    <div class="q-card" id="ch-card-dob">
+      <span class="q-label">Date of birth <span class="req">*</span></span>
+      <div class="dob-row">
+        <select id="ch-dobDay" aria-label="Day" required><option value="">Day</option></select>
+        <select id="ch-dobMonth" aria-label="Month" required>
+          <option value="">Month</option>
+          <option value="01">January</option><option value="02">February</option>
+          <option value="03">March</option><option value="04">April</option>
+          <option value="05">May</option><option value="06">June</option>
+          <option value="07">July</option><option value="08">August</option>
+          <option value="09">September</option><option value="10">October</option>
+          <option value="11">November</option><option value="12">December</option>
+        </select>
+        <select id="ch-dobYear" aria-label="Year" required><option value="">Year</option></select>
+      </div>
+      <input id="ch-dob" name="dateOfBirth" type="hidden">
+      <div class="field-error" id="ch-err-dob">Please select a valid date of birth.</div>
+    </div>
+    <div class="q-card" id="ch-card-munCount">
+      <label class="q-label" for="ch-munCount">MUN conferences attended <span class="req">*</span></label>
+      <input id="ch-munCount" name="munCount" type="number" min="0" step="1" required placeholder="e.g. 8">
+      <div class="field-error" id="ch-err-munCount">Please enter a number (0 or more).</div>
+    </div>
+
+    <div class="section-heading">MUN experience</div>
+
+    <div class="q-card" id="ch-card-munCertificates">
+      <span class="q-label">Delegate certificates or awards <span class="req">*</span></span>
+      <p class="q-help">Upload certificates from conferences you've attended as a delegate.</p>
+      <div class="upload-box">
+        <input id="ch-munCertificates" name="munCertificates" type="file" multiple required>
+        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint, video or audio</small>
+      </div>
+      <div class="field-error" id="ch-err-munCertificates">Please upload at least one file.</div>
+    </div>
+    <div class="q-card" id="ch-card-chairCount">
+      <label class="q-label" for="ch-chairCount">Committees chaired <span class="req">*</span></label>
+      <input id="ch-chairCount" name="chairCount" type="number" min="0" step="1" required placeholder="e.g. 3">
+      <div class="field-error" id="ch-err-chairCount">Please enter a number (0 or more).</div>
+    </div>
+    <div class="q-card" id="ch-card-chairCertificates">
+      <span class="q-label">Chairing certificates or awards <span class="req">*</span></span>
+      <p class="q-help">Upload certificates from conferences you've chaired.</p>
+      <div class="upload-box">
+        <input id="ch-chairCertificates" name="chairCertificates" type="file" multiple required>
+        <small>Up to 5 files · 100 MB each · PDF, image, Word, PowerPoint, video or audio</small>
+      </div>
+      <div class="field-error" id="ch-err-chairCertificates">Please upload at least one file.</div>
+    </div>
+    <div class="q-card" id="ch-card-resume">
+      <span class="q-label">Résumé <span class="opt">Optional</span></span>
+      <div class="upload-box">
+        <input id="ch-resume" name="resume" type="file">
+        <small>1 file · up to 100 MB · PDF, Word, image</small>
+      </div>
+      <div class="field-error" id="ch-err-resume"></div>
+    </div>
+    <div class="q-card" id="ch-card-lor">
+      <span class="q-label">Letter of recommendation <span class="opt">Optional</span></span>
+      <div class="upload-box">
+        <input id="ch-lor" name="lor" type="file">
+        <small>1 file · up to 100 MB · PDF, Word, image</small>
+      </div>
+      <div class="field-error" id="ch-err-lor"></div>
+    </div>
+
+    <div class="section-heading">Committee preferences</div>
+
+    <div class="q-card" id="ch-card-firstPreference">
+      <span class="q-label">First-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ch-firstPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+      </div>
+      <div class="field-error" id="ch-err-firstPreference">Please select your first-choice committee.</div>
+    </div>
+    <div class="q-card" id="ch-card-secondPreference">
+      <span class="q-label">Second-choice committee <span class="req">*</span></span>
+      <div class="choices">
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="WHO (Junior Committee — 6-8th Grade)" required> WHO <small>Junior committee · 6th–8th grade</small></label>
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNHRC (Intermediate)"> UNHRC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNODC (Intermediate)"> UNODC <small>Intermediate</small></label>
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="UNCTAD (Advanced)"> UNCTAD <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="INTERPOL (Advanced)"> INTERPOL <small>Advanced</small></label>
+        <label class="choice-label"><input type="radio" name="ch-secondPref" value="DISEC (Beginner)"> DISEC <small>Beginner</small></label>
+      </div>
+      <div class="field-error" id="ch-err-secondPreference">Your second choice must differ from your first.</div>
+    </div>
+    <div class="q-card" id="ch-card-whyFirst">
+      <label class="q-label" for="ch-whyFirst">Why does your first-choice committee suit you? <span class="req">*</span></label>
+      <textarea id="ch-whyFirst" name="whyFirst" required placeholder="Describe your interest and relevant background..."></textarea>
+      <div class="field-error" id="ch-err-whyFirst">Please write a response.</div>
+    </div>
+    <div class="q-card" id="ch-card-whyPace">
+      <label class="q-label" for="ch-whyPace">Why would you like to attend PaceMUN II? <span class="req">*</span></label>
+      <textarea id="ch-whyPace" name="whyPace" required placeholder="Tell us what draws you to this conference..."></textarea>
+      <div class="field-error" id="ch-err-whyPace">Please write a response.</div>
+    </div>
+
+    <div class="section-heading">Contact &amp; preferences</div>
+
+    <div class="q-card" id="ch-card-email">
+      <label class="q-label" for="ch-email">Email address <span class="req">*</span></label>
+      <p class="q-help">We'll send your selection results here.</p>
+      <input id="ch-email" name="email" type="email" required placeholder="you@example.com" autocomplete="email">
+      <div class="field-error" id="ch-err-email">Please enter a valid email address.</div>
+    </div>
+    <div class="q-card" id="ch-card-phone">
+      <label class="q-label" for="ch-phone">Your WhatsApp number <span class="req">*</span></label>
+      <input id="ch-phone" name="phone" type="tel" required placeholder="+971 5X XXX XXXX" autocomplete="tel">
+      <div class="field-error" id="ch-err-phone">Please enter your WhatsApp number.</div>
+    </div>
+    <div class="q-card" id="ch-card-coordinatorPhone">
+      <label class="q-label" for="ch-coordinatorPhone">MUN coordinator's WhatsApp number <span class="req">*</span></label>
+      <input id="ch-coordinatorPhone" name="coordinatorPhone" type="tel" required placeholder="+971 5X XXX XXXX">
+      <div class="field-error" id="ch-err-coordinatorPhone">Please enter your coordinator's number.</div>
+    </div>
+    <div class="q-card" id="ch-card-food">
+      <span class="q-label">Food preference <span class="req">*</span></span>
+      <div class="choices two-col">
+        <label class="choice-label"><input type="radio" name="ch-food" value="Veg" required> Vegetarian</label>
+        <label class="choice-label"><input type="radio" name="ch-food" value="Non Veg"> Non-vegetarian</label>
+      </div>
+      <div class="field-error" id="ch-err-food">Please select a food preference.</div>
+    </div>
+    <div class="q-card" id="ch-card-allergies">
+      <label class="q-label" for="ch-allergies">Food allergies <span class="opt">Optional</span></label>
+      <p class="q-help">Write "None" if you don't have any.</p>
+      <textarea id="ch-allergies" name="allergies" placeholder="None" style="min-height:80px"></textarea>
+    </div>
+
+    <div class="submit-area">
+      <label class="confirm-label">
+        <input type="checkbox" id="ch-confirmation" required>
+        <span>I confirm that all information provided is accurate, and I'm willing to fulfil the responsibilities of this role — including attending training and any required sessions.</span>
+      </label>
+      <div class="field-error" id="ch-err-confirmation" style="margin-bottom:14px">Please accept the declaration to submit.</div>
+      <button type="submit" class="btn-submit" id="ch-submitBtn">Submit application</button>
+      <p class="form-notice">Submissions are stored in a private database. Uploaded documents are kept in a private storage bucket and are not shared publicly.</p>
+      <div class="result-banner" id="ch-resultBanner"></div>
+    </div>
+  </form>
+  <footer style="margin-top:28px">PaceMUN II &nbsp;·&nbsp; PACE International School, Sharjah</footer>
+</div>
+
+</div><!-- /page -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+/* ── Supabase ── */
 const SUPABASE_URL = "https://whwilpuynwudlddbxmwk.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* ---------------- file validation ---------------- */
-const MAX = 100 * 1024 * 1024;
-const allowed = new Set([
-  "application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-  "application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  "application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  "application/pdf","image/*","video/*","audio/*"
-]);
-function validFile(file){
-  if(file.size > MAX) return "Each file must be 100 MB or smaller.";
-  if(allowed.has(file.type) || [...allowed].some(x => x.endsWith("/*") && file.type.startsWith(x.slice(0,-1)))) return "";
-  return "This file type isn't supported.";
-}
-function validateUpload(id, maxFiles){
-  const input=document.getElementById(id), error=document.getElementById(id+"Error");
-  error.style.display="none"; error.textContent="";
-  if(input.required && input.files.length===0){
-    error.textContent="Please upload at least one file."; error.style.display="block"; return false;
-  }
-  if(input.files.length>maxFiles){
-    error.textContent=`You can upload a maximum of ${maxFiles} file${maxFiles>1?"s":""}.`; error.style.display="block"; return false;
-  }
-  for(const file of input.files){
-    const msg=validFile(file);
-    if(msg){error.textContent=msg;error.style.display="block";return false;}
-  }
-  return true;
-}
-["munCertificates","chairCertificates","resume","lor"].forEach(id=>{
-  document.getElementById(id).addEventListener("change",()=>{
-    validateUpload(id, id.includes("Certificates") ? 5 : 1);
-  });
-});
-
-/* ---------------- date of birth ---------------- */
-const dobDay = document.getElementById("dobDay");
-const dobMonth = document.getElementById("dobMonth");
-const dobYear = document.getElementById("dobYear");
-const dobHidden = document.getElementById("dob");
-const dobError = document.getElementById("dobError");
-
-for(let d=1; d<=31; d++){
-  const o=document.createElement("option");
-  o.value=String(d).padStart(2,"0"); o.textContent=d;
-  dobDay.appendChild(o);
-}
-const currentYear = new Date().getFullYear();
-for(let y=currentYear; y>=1980; y--){
-  const o=document.createElement("option");
-  o.value=y; o.textContent=y;
-  dobYear.appendChild(o);
-}
-function syncDOB(){
-  if(dobDay.value && dobMonth.value && dobYear.value){
-    const candidate = `${dobYear.value}-${dobMonth.value}-${dobDay.value}`;
-    const check = new Date(`${candidate}T00:00:00`);
-    if(check.getFullYear() === Number(dobYear.value) && check.getMonth()+1 === Number(dobMonth.value) && check.getDate() === Number(dobDay.value)){
-      dobHidden.value=candidate;
-      return true;
-    }
-  }
-  dobHidden.value="";
-  return false;
-}
-[dobDay,dobMonth,dobYear].forEach(el=>el.addEventListener("change",()=>{ dobError.style.display="none"; syncDOB(); }));
-
-/* ---------------- committee preferences ---------------- */
-const secondPrefError = document.getElementById("secondPreferenceError");
-function preferencesConflict(){
-  const first = document.querySelector('input[name="firstPreference"]:checked');
-  const second = document.querySelector('input[name="secondPreference"]:checked');
-  return !!(first && second && first.value === second.value);
-}
-document.querySelectorAll('input[name="firstPreference"],input[name="secondPreference"]').forEach(el=>{
-  el.addEventListener("change",()=>{ secondPrefError.style.display="none"; });
-});
-
-/* ---------------- step wizard ---------------- */
-const steps = Array.from(document.querySelectorAll(".step"));
-const totalQuestions = steps.length - 1; // exclude intro
-const railFill = document.getElementById("railFill");
-const stepCount = document.getElementById("stepCount");
-let current = 0;
-
-function paint(){
-  steps.forEach(s => s.classList.toggle("active", Number(s.dataset.step) === current));
-  const pct = current === 0 ? 0 : (current/totalQuestions)*100;
-  railFill.style.width = pct + "%";
-  stepCount.textContent = current === 0 ? "" : `${current} / ${totalQuestions}`;
-  const activeStep = steps.find(s => Number(s.dataset.step) === current);
-  const firstField = activeStep && activeStep.querySelector("input:not([type=hidden]),textarea,select");
-  if(firstField) setTimeout(() => firstField.focus({preventScroll:true}), 60);
+/* ── Screen navigation ── */
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  const target = document.getElementById(id);
+  target.classList.add("active");
   window.scrollTo({top:0, behavior:"instant"});
 }
 
-function validateStep(stepEl){
-  const id = Number(stepEl.dataset.step);
+document.getElementById("btnDelegate").addEventListener("click", () => showScreen("screenDelegateType"));
+document.getElementById("btnChair").addEventListener("click",    () => showScreen("screenChair"));
+document.getElementById("btnIndividual").addEventListener("click",() => showScreen("screenDelegateIndividual"));
+document.getElementById("btnSchool").addEventListener("click",   () => showScreen("screenDelegateSchool"));
 
-  if(id === 4){
-    const ok = syncDOB();
-    dobError.style.display = ok ? "none" : "block";
-    return ok;
-  }
-  if(id === 6) return validateUpload("munCertificates", 5);
-  if(id === 8) return validateUpload("chairCertificates", 5);
-  if(id === 9) return validateUpload("resume", 1);
-  if(id === 10) return validateUpload("lor", 1);
+document.querySelectorAll("[data-back-to]").forEach(btn => {
+  btn.addEventListener("click", () => showScreen(btn.dataset.backTo));
+});
 
-  const fields = stepEl.querySelectorAll("input,textarea,select");
-  for(const field of fields){
-    if(field.type === "hidden") continue;
-    if(field.type === "radio" || field.type === "checkbox"){
-      const group = stepEl.querySelectorAll(`input[name="${field.name}"]`);
-      const checked = Array.from(group).some(g => g.checked);
-      if(field.required && !checked){ field.reportValidity(); return false; }
-    } else if(!field.checkValidity()){
-      field.reportValidity();
-      return false;
-    }
+/* ── DOB helpers ── */
+function buildDOBDropdowns(prefix){
+  const dayEl   = document.getElementById(prefix+"-dobDay");
+  const yearEl  = document.getElementById(prefix+"-dobYear");
+  const hiddenEl= document.getElementById(prefix+"-dob");
+  for(let d=1;d<=31;d++){
+    const o=document.createElement("option");
+    o.value=String(d).padStart(2,"0");o.textContent=d;dayEl.appendChild(o);
   }
-
-  if(id === 12){
-    if(preferencesConflict()){
-      secondPrefError.style.display = "block";
-      return false;
-    }
-    secondPrefError.style.display = "none";
+  const cur=new Date().getFullYear();
+  for(let y=cur;y>=1980;y--){
+    const o=document.createElement("option");
+    o.value=y;o.textContent=y;yearEl.appendChild(o);
   }
-  return true;
+  function sync(){
+    const d=dayEl.value, m=document.getElementById(prefix+"-dobMonth").value, y=yearEl.value;
+    if(!d||!m||!y){hiddenEl.value="";return false;}
+    const candidate=`${y}-${m}-${d}`;
+    const dt=new Date(candidate+"T00:00:00");
+    const valid=dt.getFullYear()===Number(y)&&dt.getMonth()+1===Number(m)&&dt.getDate()===Number(d);
+    hiddenEl.value=valid?candidate:"";
+    return valid;
+  }
+  [dayEl, document.getElementById(prefix+"-dobMonth"), yearEl].forEach(el=>el.addEventListener("change",()=>{sync();clearError(prefix,"dob");}));
+  return sync;
 }
+const syncDI = buildDOBDropdowns("di");
+const syncDS = buildDOBDropdowns("ds");
+const syncCH = buildDOBDropdowns("ch");
 
-document.querySelectorAll("[data-next]").forEach(btn=>{
-  btn.addEventListener("click", () => {
-    const activeStep = steps.find(s => Number(s.dataset.step) === current);
-    if(current > 0 && !validateStep(activeStep)) return;
-    if(current < steps.length - 1){ current++; paint(); }
+/* ── File validation ── */
+const MAX_SIZE=100*1024*1024;
+const ALLOWED_TYPES=["application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation"];
+function fileOk(file){
+  if(file.size>MAX_SIZE)return"Each file must be 100 MB or smaller.";
+  if(ALLOWED_TYPES.includes(file.type))return"";
+  if(file.type.startsWith("image/")||file.type.startsWith("video/")||file.type.startsWith("audio/"))return"";
+  return"Unsupported file type.";
+}
+function validateFileInput(id,maxFiles){
+  const input=document.getElementById(id);
+  if(!input)return"";
+  if(input.required&&input.files.length===0)return"Please upload at least one file.";
+  if(input.files.length>maxFiles)return`Maximum ${maxFiles} file${maxFiles>1?"s":""} allowed.`;
+  for(const f of input.files){const msg=fileOk(f);if(msg)return msg;}
+  return"";
+}
+["ch-munCertificates","ch-chairCertificates","ch-resume","ch-lor"].forEach(id=>{
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.addEventListener("change",()=>{
+    const isMulti=id.includes("Certificates");
+    const msg=validateFileInput(id,isMulti?5:1);
+    const key=id.replace("ch-","");
+    if(msg)showError("ch",key,msg);else clearError("ch",key);
   });
 });
-document.querySelectorAll("[data-back]").forEach(btn=>{
-  btn.addEventListener("click", () => { if(current > 0){ current--; paint(); } });
-});
 
-document.getElementById("chairForm").addEventListener("keydown", e=>{
-  if(e.key === "Enter" && e.target.tagName !== "TEXTAREA" && e.target.tagName !== "BUTTON"){
-    e.preventDefault();
-    const activeStep = steps.find(s => Number(s.dataset.step) === current);
-    const nextBtn = activeStep.querySelector("[data-next]");
-    if(nextBtn) nextBtn.click();
-  }
-});
-
-paint();
-
-/* ---------------- registration path (role + type) ---------------- */
-const gate = document.getElementById("gate");
-const chairForm = document.getElementById("chairForm");
-const gateRole = document.getElementById("gateRole");
-const gateType = document.getElementById("gateType");
-let registrationRole = "";
-let registrationType = "";
-
-function showGate(screen, focusFirst){
-  gateRole.classList.toggle("active", screen === gateRole);
-  gateType.classList.toggle("active", screen === gateType);
-  if(focusFirst) setTimeout(() => screen.querySelector(".gate-choice").focus({preventScroll:true}), 60);
-  window.scrollTo({top:0, behavior:"instant"});
+/* ── Error helpers ── */
+function showError(prefix,key,msg){
+  const err=document.getElementById(`${prefix}-err-${key}`);
+  const card=document.getElementById(`${prefix}-card-${key}`);
+  if(!err)return;
+  if(msg)err.textContent=msg;
+  err.classList.add("visible");
+  if(card)card.classList.add("has-error");
 }
-function markSelected(container, attr, value){
-  container.querySelectorAll(".gate-choice").forEach(b => b.classList.toggle("is-selected", b.dataset[attr] === value));
+function clearError(prefix,key){
+  const err=document.getElementById(`${prefix}-err-${key}`);
+  const card=document.getElementById(`${prefix}-card-${key}`);
+  if(err)err.classList.remove("visible");
+  if(card)card.classList.remove("has-error");
 }
 
-gateRole.querySelectorAll("[data-role]").forEach(btn=>{
-  btn.addEventListener("click", () => {
-    registrationRole = btn.dataset.role;
-    markSelected(gateRole, "role", registrationRole);
-    showGate(gateType, true);
+/* auto-clear on interaction */
+document.querySelectorAll("input,textarea,select").forEach(el=>{
+  const ev=(el.type==="radio"||el.type==="checkbox")?"change":"input";
+  el.addEventListener(ev,()=>{
+    const card=el.closest(".q-card");
+    if(!card)return;
+    const id=card.id; // e.g. "ch-card-fullName"
+    const parts=id.split("-card-");
+    if(parts.length===2) clearError(parts[0],parts[1]);
   });
-});
-gateType.querySelectorAll("[data-type]").forEach(btn=>{
-  btn.addEventListener("click", () => {
-    registrationType = btn.dataset.type;
-    markSelected(gateType, "type", registrationType);
-    gate.hidden = true;
-    chairForm.hidden = false;
-    paint();
-  });
-});
-gateType.querySelector("[data-gate-back]").addEventListener("click", () => showGate(gateRole, true));
-document.querySelector("[data-gate-exit]").addEventListener("click", () => {
-  chairForm.hidden = true;
-  gate.hidden = false;
-  showGate(gateType, true);
 });
 
-/* ---------------- upload + submit ---------------- */
-async function uploadFiles(files, folder, applicationId) {
-  const paths = [];
-  for (const file of files) {
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const path = `${applicationId}/${folder}/${crypto.randomUUID()}-${safeName}`;
-    const { error } = await supabaseClient.storage
-      .from("chair-applications")
-      .upload(path, file, { upsert: false });
-    if (error) throw new Error(`${file.name}: ${error.message}`);
+/* ── Validation factories ── */
+function checkText(prefix,key,label){
+  const val=document.getElementById(`${prefix}-${key}`)?.value.trim()||"";
+  if(!val){showError(prefix,key,`Please enter ${label}.`);return false;}
+  clearError(prefix,key);return true;
+}
+function checkEmail(prefix,key){
+  const val=document.getElementById(`${prefix}-${key}`)?.value.trim()||"";
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){showError(prefix,key,"Please enter a valid email address.");return false;}
+  clearError(prefix,key);return true;
+}
+function checkRadio(prefix,key,name,msg){
+  const checked=document.querySelector(`input[name="${name}"]:checked`);
+  if(!checked){showError(prefix,key,msg);return false;}
+  clearError(prefix,key);return true;
+}
+function checkCheckbox(prefix,key,id,msg){
+  if(!document.getElementById(id)?.checked){showError(prefix,key,msg);return false;}
+  clearError(prefix,key);return true;
+}
+function checkNum(prefix,key){
+  const val=document.getElementById(`${prefix}-${key}`)?.value;
+  if(val===""||Number(val)<0){showError(prefix,key,"Please enter a number (0 or more).");return false;}
+  clearError(prefix,key);return true;
+}
+function checkPrefs(prefix,fName,sName){
+  const first=document.querySelector(`input[name="${fName}"]:checked`);
+  const second=document.querySelector(`input[name="${sName}"]:checked`);
+  let ok=true;
+  if(!first){showError(prefix,"firstPreference","Please select your first-choice committee.");ok=false;}
+  else clearError(prefix,"firstPreference");
+  if(!second){showError(prefix,"secondPreference","Please select your second-choice committee.");ok=false;}
+  else if(first&&first.value===second.value){showError(prefix,"secondPreference","Your second choice must differ from your first.");ok=false;}
+  else clearError(prefix,"secondPreference");
+  return ok;
+}
+
+/* ── Upload helper ── */
+async function uploadFiles(files,folder,appId){
+  const paths=[];
+  for(const file of files){
+    const safeName=file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
+    const path=`${appId}/${folder}/${crypto.randomUUID()}-${safeName}`;
+    const{error}=await sb.storage.from("chair-applications").upload(path,file,{upsert:false});
+    if(error)throw new Error(`${file.name}: ${error.message}`);
     paths.push(path);
   }
   return paths;
 }
 
-let submitted = false;
+/* ── Submit helpers ── */
+function setSubmitting(btnId,bannerId,submitting){
+  const btn=document.getElementById(btnId);
+  const banner=document.getElementById(bannerId);
+  btn.disabled=submitting;
+  btn.textContent=submitting?"Submitting…":"Submit registration";
+  banner.className="result-banner";
+  banner.textContent="";
+}
+function showResult(btnId,bannerId,success,msg){
+  const btn=document.getElementById(btnId);
+  const banner=document.getElementById(bannerId);
+  if(success){btn.textContent="Submitted ✓";}
+  else{btn.disabled=false;btn.textContent="Submit registration";}
+  banner.textContent=msg;
+  banner.className="result-banner "+(success?"success":"error");
+  banner.scrollIntoView({behavior:"smooth",block:"center"});
+}
 
-document.getElementById("chairForm").addEventListener("submit", async e=>{
+/* ── Delegate Individual ── */
+let diSubmitted=false;
+document.getElementById("formDelegateIndividual").addEventListener("submit",async e=>{
   e.preventDefault();
-  if(submitted) return;
+  if(diSubmitted)return;
+  const p="di";
+  let ok=true;
+  ok=checkText(p,"fullName","your full name")&&ok;
+  ok=checkText(p,"school","your school or university")&&ok;
+  ok=checkRadio(p,"gender","di-gender","Please select your gender.")&&ok;
+  if(!syncDI()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
+  ok=checkPrefs(p,"di-firstPref","di-secondPref")&&ok;
+  ok=checkEmail(p,"email")&&ok;
+  ok=checkText(p,"phone","your WhatsApp number")&&ok;
+  ok=checkRadio(p,"food","di-food","Please select a food preference.")&&ok;
+  ok=checkCheckbox(p,"confirmation","di-confirmation","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
 
-  const f=e.target;
-  const submitButton=document.getElementById("submitBtn");
-  const success=document.getElementById("success");
-
-  const lastStep = steps[steps.length-1];
-  if(!validateStep(lastStep)) return;
-
-  // Committee choices can be edited after step 12, so re-check before uploading anything.
-  if(preferencesConflict()){
-    current = 12;
-    paint();
-    secondPrefError.style.display = "block";
-    return;
-  }
-
-  submitButton.disabled=true;
-  submitButton.textContent="Submitting…";
-  success.style.display="none";
-
-  try {
-    const applicationId = crypto.randomUUID();
-    const munCertificates = await uploadFiles(document.getElementById("munCertificates").files, "participation-certificates", applicationId);
-    const chairCertificates = await uploadFiles(document.getElementById("chairCertificates").files, "chair-certificates", applicationId);
-    const resume = await uploadFiles(document.getElementById("resume").files, "resume", applicationId);
-    const lor = await uploadFiles(document.getElementById("lor").files, "lor", applicationId);
-
-    const gender = f.querySelector('input[name="gender"]:checked')?.value || "";
-    const firstPreference = f.querySelector('input[name="firstPreference"]:checked')?.value || "";
-    const secondPreference = f.querySelector('input[name="secondPreference"]:checked')?.value || "";
-    const food = f.querySelector('input[name="food"]:checked')?.value || "";
-
-    const { error } = await supabaseClient.from("chair_applications").insert({
-      id: applicationId,
-      full_name: f.fullName.value.trim(),
-      school: f.school.value.trim(),
-      gender: gender,
-      date_of_birth: f.dateOfBirth.value,
-      mun_count: Number(f.munCount.value),
-      mun_certificates: munCertificates,
-      chair_count: Number(f.chairCount.value),
-      chair_certificates: chairCertificates,
-      resume_path: resume[0] || null,
-      lor_path: lor[0] || null,
-      first_preference: firstPreference,
-      second_preference: secondPreference,
-      why_first: f.whyFirst.value.trim(),
-      why_pace: f.whyPace.value.trim(),
-      email: f.email.value.trim(),
-      phone: f.phone.value.trim(),
-      coordinator_phone: f.coordinatorPhone.value.trim(),
-      food_preference: food,
-      food_allergies: f.allergies.value.trim(),
-      confirmed: f.confirmation.checked,
-      registration_role: registrationRole,
-      registration_type: registrationType
+  setSubmitting("di-submitBtn","di-resultBanner",true);
+  try{
+    const appId=crypto.randomUUID();
+    const{error}=await sb.from("delegate_registrations").insert({
+      id:appId,
+      registration_type:"Individual",
+      full_name:document.getElementById("di-fullName").value.trim(),
+      school:document.getElementById("di-school").value.trim(),
+      gender:document.querySelector('input[name="di-gender"]:checked')?.value||"",
+      date_of_birth:document.getElementById("di-dob").value,
+      first_preference:document.querySelector('input[name="di-firstPref"]:checked')?.value||"",
+      second_preference:document.querySelector('input[name="di-secondPref"]:checked')?.value||"",
+      email:document.getElementById("di-email").value.trim(),
+      phone:document.getElementById("di-phone").value.trim(),
+      food_preference:document.querySelector('input[name="di-food"]:checked')?.value||"",
+      food_allergies:document.getElementById("di-allergies").value.trim(),
+      confirmed:document.getElementById("di-confirmation").checked,
     });
+    if(error)throw error;
+    diSubmitted=true;
+    showResult("di-submitBtn","di-resultBanner",true,"Registration submitted — you'll hear back at the email address you provided.");
+  }catch(err){
+    console.error(err);
+    showResult("di-submitBtn","di-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
+  }
+});
 
-    if (error) throw error;
+/* ── Delegate School ── */
+let dsSubmitted=false;
+document.getElementById("formDelegateSchool").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(dsSubmitted)return;
+  const p="ds";
+  let ok=true;
+  ok=checkText(p,"fullName","your full name")&&ok;
+  ok=checkText(p,"school","your school name")&&ok;
+  ok=checkRadio(p,"gender","ds-gender","Please select your gender.")&&ok;
+  if(!syncDS()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
+  ok=checkText(p,"coordinatorName","your coordinator's name")&&ok;
+  ok=checkText(p,"coordinatorPhone","your coordinator's number")&&ok;
+  ok=checkPrefs(p,"ds-firstPref","ds-secondPref")&&ok;
+  ok=checkEmail(p,"email")&&ok;
+  ok=checkText(p,"phone","your WhatsApp number")&&ok;
+  ok=checkRadio(p,"food","ds-food","Please select a food preference.")&&ok;
+  ok=checkCheckbox(p,"confirmation","ds-confirmation","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
 
-    submitted = true;
-    success.style.borderColor="";
-    success.style.background="";
-    success.textContent="Application submitted. You'll hear back at the email address you provided.";
-    success.style.display="block";
-  } catch (error) {
-    console.error(error);
-    success.textContent="Submission failed: " + (error.message || "Unknown error") + ". Please try again.";
-    success.style.display="block";
-    success.style.borderColor="rgba(226,104,95,.35)";
-    success.style.background="rgba(226,104,95,.08)";
-  } finally {
-    if(submitted){
-      submitButton.textContent="Submitted";
-    } else {
-      submitButton.disabled=false;
-      submitButton.textContent="Submit application";
-    }
+  setSubmitting("ds-submitBtn","ds-resultBanner",true);
+  try{
+    const appId=crypto.randomUUID();
+    const{error}=await sb.from("delegate_registrations").insert({
+      id:appId,
+      registration_type:"School",
+      full_name:document.getElementById("ds-fullName").value.trim(),
+      school:document.getElementById("ds-school").value.trim(),
+      gender:document.querySelector('input[name="ds-gender"]:checked')?.value||"",
+      date_of_birth:document.getElementById("ds-dob").value,
+      coordinator_name:document.getElementById("ds-coordinatorName").value.trim(),
+      coordinator_phone:document.getElementById("ds-coordinatorPhone").value.trim(),
+      first_preference:document.querySelector('input[name="ds-firstPref"]:checked')?.value||"",
+      second_preference:document.querySelector('input[name="ds-secondPref"]:checked')?.value||"",
+      email:document.getElementById("ds-email").value.trim(),
+      phone:document.getElementById("ds-phone").value.trim(),
+      food_preference:document.querySelector('input[name="ds-food"]:checked')?.value||"",
+      food_allergies:document.getElementById("ds-allergies").value.trim(),
+      confirmed:document.getElementById("ds-confirmation").checked,
+    });
+    if(error)throw error;
+    dsSubmitted=true;
+    showResult("ds-submitBtn","ds-resultBanner",true,"Registration submitted — your coordinator will be contacted to confirm your spot.");
+  }catch(err){
+    console.error(err);
+    showResult("ds-submitBtn","ds-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
+  }
+});
+
+/* ── Chair ── */
+let chSubmitted=false;
+document.getElementById("formChair").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(chSubmitted)return;
+  const p="ch";
+  let ok=true;
+  ok=checkText(p,"fullName","your full name")&&ok;
+  ok=checkText(p,"school","your school or university")&&ok;
+  ok=checkRadio(p,"gender","ch-gender","Please select your gender.")&&ok;
+  if(!syncCH()){showError(p,"dob","Please select a valid date of birth.");ok=false;}else clearError(p,"dob");
+  ok=checkNum(p,"munCount")&&ok;
+  const munCertMsg=validateFileInput("ch-munCertificates",5);
+  if(munCertMsg){showError(p,"munCertificates",munCertMsg);ok=false;}else clearError(p,"munCertificates");
+  ok=checkNum(p,"chairCount")&&ok;
+  const chairCertMsg=validateFileInput("ch-chairCertificates",5);
+  if(chairCertMsg){showError(p,"chairCertificates",chairCertMsg);ok=false;}else clearError(p,"chairCertificates");
+  const resumeMsg=validateFileInput("ch-resume",1);
+  if(resumeMsg&&document.getElementById("ch-resume").files.length>0){showError(p,"resume",resumeMsg);ok=false;}
+  const lorMsg=validateFileInput("ch-lor",1);
+  if(lorMsg&&document.getElementById("ch-lor").files.length>0){showError(p,"lor",lorMsg);ok=false;}
+  ok=checkPrefs(p,"ch-firstPref","ch-secondPref")&&ok;
+  ok=checkText(p,"whyFirst","a response")&&ok;
+  ok=checkText(p,"whyPace","a response")&&ok;
+  ok=checkEmail(p,"email")&&ok;
+  ok=checkText(p,"phone","your WhatsApp number")&&ok;
+  ok=checkText(p,"coordinatorPhone","your coordinator's number")&&ok;
+  ok=checkRadio(p,"food","ch-food","Please select a food preference.")&&ok;
+  ok=checkCheckbox(p,"confirmation","ch-confirmation","Please accept the declaration to submit.")&&ok;
+  if(!ok){document.querySelector(".has-error")?.scrollIntoView({behavior:"smooth",block:"center"});return;}
+
+  setSubmitting("ch-submitBtn","ch-resultBanner",true);
+  try{
+    const appId=crypto.randomUUID();
+    const[munCerts,chairCerts,resumePaths,lorPaths]=await Promise.all([
+      uploadFiles(document.getElementById("ch-munCertificates").files,"participation-certificates",appId),
+      uploadFiles(document.getElementById("ch-chairCertificates").files,"chair-certificates",appId),
+      uploadFiles(document.getElementById("ch-resume").files,"resume",appId),
+      uploadFiles(document.getElementById("ch-lor").files,"lor",appId),
+    ]);
+    const{error}=await sb.from("chair_applications").insert({
+      id:appId,
+      full_name:document.getElementById("ch-fullName").value.trim(),
+      school:document.getElementById("ch-school").value.trim(),
+      gender:document.querySelector('input[name="ch-gender"]:checked')?.value||"",
+      date_of_birth:document.getElementById("ch-dob").value,
+      mun_count:Number(document.getElementById("ch-munCount").value),
+      mun_certificates:munCerts,
+      chair_count:Number(document.getElementById("ch-chairCount").value),
+      chair_certificates:chairCerts,
+      resume_path:resumePaths[0]||null,
+      lor_path:lorPaths[0]||null,
+      first_preference:document.querySelector('input[name="ch-firstPref"]:checked')?.value||"",
+      second_preference:document.querySelector('input[name="ch-secondPref"]:checked')?.value||"",
+      why_first:document.getElementById("ch-whyFirst").value.trim(),
+      why_pace:document.getElementById("ch-whyPace").value.trim(),
+      email:document.getElementById("ch-email").value.trim(),
+      phone:document.getElementById("ch-phone").value.trim(),
+      coordinator_phone:document.getElementById("ch-coordinatorPhone").value.trim(),
+      food_preference:document.querySelector('input[name="ch-food"]:checked')?.value||"",
+      food_allergies:document.getElementById("ch-allergies").value.trim(),
+      confirmed:document.getElementById("ch-confirmation").checked,
+    });
+    if(error)throw error;
+    chSubmitted=true;
+    showResult("ch-submitBtn","ch-resultBanner",true,"Application submitted — you'll hear back at the email address you provided.");
+  }catch(err){
+    console.error(err);
+    showResult("ch-submitBtn","ch-resultBanner",false,"Submission failed: "+(err.message||"Unknown error")+". Please try again.");
   }
 });
 </script>
