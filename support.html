@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Support Center</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --primary: #111827;
+      --primary-soft: #f3f4f6;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --background: #f8fafc;
+      --card: #ffffff;
+      --border: #e5e7eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --success: #15803d;
+      --danger: #dc2626;
+      --radius: 18px;
+      --shadow: 0 10px 35px rgba(15, 23, 42, 0.07);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    .hero {
+      background: var(--primary);
+      color: white;
+      padding: 72px 24px 100px;
+    }
+
+    .hero-inner {
+      max-width: 1080px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      padding: 7px 13px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(36px, 6vw, 58px);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 20px auto 0;
+      color: #cbd5e1;
+      font-size: 18px;
+    }
+
+    .search {
+      max-width: 680px;
+      margin: 34px auto 0;
+      position: relative;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 19px 22px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.1);
+      outline: none;
+      font-size: 16px;
+      background: white;
+      color: var(--text);
+      box-shadow: 0 15px 40px rgba(0,0,0,.2);
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: -45px auto 80px;
+      padding: 0 24px;
+      position: relative;
+    }
+
+    .section {
+      margin-top: 60px;
+    }
+
+    .section-header {
+      margin-bottom: 22px;
+    }
+
+    .section-header h2 {
+      font-size: 28px;
+      margin: 0 0 5px;
+      letter-spacing: -0.025em;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+    }
+
+    .category {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      cursor: pointer;
+      transition: .2s ease;
+      box-shadow: var(--shadow);
+    }
+
+    .category:hover {
+      transform: translateY(-3px);
+      border-color: #cbd5e1;
+    }
+
+    .category-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      margin-bottom: 15px;
+      font-size: 19px;
+    }
+
+    .category h3 {
+      font-size: 15px;
+      margin: 0 0 5px;
+    }
+
+    .category p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .faq-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .faq {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .faq button {
+      width: 100%;
+      background: none;
+      border: 0;
+      text-align: left;
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 20px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .faq.open .faq-answer {
+      display: block;
+    }
+
+    .faq-icon {
+      color: var(--muted);
+      font-size: 20px;
+    }
+
+    .support-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 34px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 11px;
+      padding: 13px 14px;
+      background: white;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .submit {
+      border: 0;
+      background: var(--accent);
+      color: white;
+      padding: 13px 22px;
+      border-radius: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .submit:hover {
+      background: var(--accent-hover);
+    }
+
+    .submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 11px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .message.success {
+      display: block;
+      color: var(--success);
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      display: block;
+      color: var(--danger);
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+    }
+
+    .success-state {
+      text-align: center;
+      padding: 30px 10px;
+      display: none;
+    }
+
+    .success-icon {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: var(--success);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      font-weight: bold;
+    }
+
+    .ticket-number {
+      font-size: 22px;
+      font-weight: 800;
+      margin: 8px 0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 35px 20px;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 900px) {
+      .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .faq-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        padding: 55px 20px 85px;
+      }
+
+      .container {
+        padding: 0 16px;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .support-card {
+        padding: 22px;
+      }
+
+      .form-footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .submit {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+
+      <div class="badge">
+        ● Support Center
+      </div>
+
+      <h1>How can we help?</h1>
+
+      <p>
+        Find answers, explore common questions, or contact our support team.
+        We're here to help.
+      </p>
+
+      <div class="search">
+        <input
+          id="faqSearch"
+          type="search"
+          placeholder="Search for answers..."
+          autocomplete="off"
+        />
+      </div>
+
+    </div>
+  </header>
+
+
+  <main class="container">
+
+    <!-- CATEGORIES -->
+    <section class="section">
+
+      <div class="section-header">
+        <h2>What can we help with?</h2>
+        <p>Choose a topic to get started.</p>
+      </div>
+
+      <div id="categories" class="category-grid">
+        <!-- Loaded from Supabase -->
+      </div>
+
+    </section>
+
+
+    <!-- FAQ -->
+    <section class="section">
+
+      <div class="section-header">
+        <h2>Frequently asked questions</h2>
+        <p>Quick answers to common questions.</p>
+      </div>
+
+      <div id="faqList" class="faq-layout">
+        <!-- Loaded from Supabase -->
+      </div>
+
+    </section>
+
+
+    <!-- SUPPORT FORM -->
+    <section class="section" id="contact">
+
+      <div class="section-header">
+        <h2>Contact support</h2>
+        <p>
+          Can't find what you're looking for?
+          Send us a message and we'll get back to you.
+        </p>
+      </div>
+
+      <div class="support-card">
+
+        <div id="formMessage" class="message"></div>
+
+        <form id="supportForm">
+
+          <div class="form-grid">
+
+            <div class="field">
+              <label for="name">Name</label>
+
+              <input
+                id="name"
+                type="text"
+                maxlength="100"
+                placeholder="Your name"
+                required
+              />
+            </div>
+
+
+            <div class="field">
+              <label for="email">Email address</label>
+
+              <input
+                id="email"
+                type="email"
+                maxlength="320"
+                placeholder="you@example.com"
+                required
+              />
+            </div>
+
+
+            <div class="field">
+              <label for="category">Category</label>
+
+              <select id="category" required>
+                <option value="">Select a category</option>
+              </select>
+            </div>
+
+
+            <div class="field">
+              <label for="priority">Priority</label>
+
+              <select id="priority">
+                <option value="low">Low</option>
+                <option value="normal" selected>Normal</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+
+
+            <div class="field full">
+              <label for="subject">Subject</label>
+
+              <input
+                id="subject"
+                type="text"
+                maxlength="200"
+                placeholder="Briefly describe your issue"
+                required
+              />
+            </div>
+
+
+            <div class="field full">
+              <label for="message">How can we help?</label>
+
+              <textarea
+                id="message"
+                maxlength="10000"
+                placeholder="Tell us what happened and include any relevant details..."
+                required
+              ></textarea>
+            </div>
+
+          </div>
+
+
+          <div class="form-footer">
+
+            <div class="hint">
+              Please don't include passwords or sensitive payment information.
+            </div>
+
+            <button
+              class="submit"
+              id="submitButton"
+              type="submit"
+            >
+              Send request
+            </button>
+
+          </div>
+
+        </form>
+
+
+        <!-- SUCCESS -->
+        <div id="successState" class="success-state">
+
+          <div class="success-icon">✓</div>
+
+          <h2>Request received</h2>
+
+          <p>
+            Thanks for contacting us. Your support request has been submitted.
+          </p>
+
+          <div class="ticket-number" id="ticketNumber"></div>
+
+          <p class="hint">
+            Keep this number for future reference.
+          </p>
+
+          <button
+            class="submit"
+            onclick="resetSupportForm()"
+          >
+            Submit another request
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <footer>
+    © <span id="year"></span> Support Center. All rights reserved.
+  </footer>
+
+
+  <script>
+
+    /* ==========================================================
+       SUPABASE CONFIGURATION
+       ========================================================== */
+
+    const SUPABASE_URL =
+      "https://whwilpuynwudlddbxmwk.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    /* ==========================================================
+       STATE
+       ========================================================== */
+
+    let categories = [];
+    let faqs = [];
+
+
+    /* ==========================================================
+       INITIALIZE
+       ========================================================== */
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    document.addEventListener("DOMContentLoaded", async () => {
+
+      await loadCategories();
+      await loadFAQs();
+
+      document
+        .getElementById("supportForm")
+        .addEventListener("submit", submitTicket);
+
+      document
+        .getElementById("faqSearch")
+        .addEventListener("input", filterFAQs);
+
+    });
+
+
+    /* ==========================================================
+       LOAD CATEGORIES
+       ========================================================== */
+
+    async function loadCategories() {
+
+      const { data, error } =
+        await supabaseClient
+          .from("support_categories")
+          .select("*")
+          .eq("is_active", true)
+          .order("sort_order", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      categories = data || [];
+
+      renderCategories();
+      populateCategorySelect();
+    }
+
+
+    /* ==========================================================
+       RENDER CATEGORIES
+       ========================================================== */
+
+    function renderCategories() {
+
+      const container =
+        document.getElementById("categories");
+
+      const icons = {
+        "user": "👤",
+        "credit-card": "💳",
+        "settings": "⚙",
+        "package": "📦",
+        "help-circle": "?"
+      };
+
+      container.innerHTML =
+        categories.map(category => `
+
+          <div
+            class="category"
+            onclick="selectCategory('${category.id}')"
+          >
+
+            <div class="category-icon">
+              ${icons[category.icon] || "?"}
+            </div>
+
+            <h3>
+              ${escapeHTML(category.name)}
+            </h3>
+
+            <p>
+              ${escapeHTML(category.description || "")}
+            </p>
+
+          </div>
+
+        `).join("");
+    }
+
+
+    /* ==========================================================
+       CATEGORY SELECT
+       ========================================================== */
+
+    function populateCategorySelect() {
+
+      const select =
+        document.getElementById("category");
+
+      categories.forEach(category => {
+
+        const option =
+          document.createElement("option");
+
+        option.value = category.id;
+        option.textContent = category.name;
+
+        select.appendChild(option);
+      });
+    }
+
+
+    function selectCategory(id) {
+
+      document.getElementById("category").value = id;
+
+      document
+        .getElementById("contact")
+        .scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+    }
+
+
+    /* ==========================================================
+       LOAD FAQS
+       ========================================================== */
+
+    async function loadFAQs() {
+
+      const { data, error } =
+        await supabaseClient
+          .from("support_faqs")
+          .select("*")
+          .eq("is_published", true)
+          .order("sort_order", { ascending: true });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      faqs = data || [];
+
+      renderFAQs(faqs);
+    }
+
+
+    /* ==========================================================
+       RENDER FAQS
+       ========================================================== */
+
+    function renderFAQs(items) {
+
+      const container =
+        document.getElementById("faqList");
+
+      if (!items.length) {
+
+        container.innerHTML = `
+          <div class="faq">
+            <div style="padding:20px;color:#6b7280;">
+              No matching questions found.
+            </div>
+          </div>
+        `;
+
+        return;
+      }
+
+      container.innerHTML =
+        items.map((faq, index) => `
+
+          <div class="faq">
+
+            <button
+              type="button"
+              onclick="toggleFAQ(this)"
+            >
+
+              <span>
+                ${escapeHTML(faq.question)}
+              </span>
+
+              <span class="faq-icon">
+                +
+              </span>
+
+            </button>
+
+            <div class="faq-answer">
+              ${escapeHTML(faq.answer)}
+            </div>
+
+          </div>
+
+        `).join("");
+    }
+
+
+    /* ==========================================================
+       FAQ TOGGLE
+       ========================================================== */
+
+    function toggleFAQ(button) {
+
+      const faq =
+        button.parentElement;
+
+      faq.classList.toggle("open");
+
+      const icon =
+        button.querySelector(".faq-icon");
+
+      icon.textContent =
+        faq.classList.contains("open")
+          ? "−"
+          : "+";
+    }
+
+
+    /* ==========================================================
+       FAQ SEARCH
+       ========================================================== */
+
+    function filterFAQs(event) {
+
+      const query =
+        event.target.value
+          .trim()
+          .toLowerCase();
+
+      if (!query) {
+
+        renderFAQs(faqs);
+
+        return;
+      }
+
+      const filtered =
+        faqs.filter(faq =>
+          faq.question.toLowerCase().includes(query) ||
+          faq.answer.toLowerCase().includes(query)
+        );
+
+      renderFAQs(filtered);
+    }
+
+
+    /* ==========================================================
+       SUBMIT TICKET
+       ========================================================== */
+
+    async function submitTicket(event) {
+
+      event.preventDefault();
+
+      const button =
+        document.getElementById("submitButton");
+
+      const messageBox =
+        document.getElementById("formMessage");
+
+      button.disabled = true;
+      button.textContent = "Sending...";
+
+      messageBox.className = "message";
+      messageBox.textContent = "";
+
+      const name =
+        document.getElementById("name")
+          .value.trim();
+
+      const email =
+        document.getElementById("email")
+          .value.trim();
+
+      const category =
+        document.getElementById("category")
+          .value || null;
+
+      const priority =
+        document.getElementById("priority")
+          .value;
+
+      const subject =
+        document.getElementById("subject")
+          .value.trim();
+
+      const message =
+        document.getElementById("message")
+          .value.trim();
+
+
+      const { data, error } =
+        await supabaseClient
+          .from("support_tickets")
+          .insert({
+            customer_name: name,
+            customer_email: email,
+            category_id: category,
+            subject: subject,
+            message: message,
+            priority: priority
+          })
+          .select("id,ticket_number")
+          .single();
+
+
+      if (error) {
+
+        console.error(error);
+
+        messageBox.className =
+          "message error";
+
+        messageBox.textContent =
+          "We couldn't submit your request. Please try again.";
+
+        button.disabled = false;
+        button.textContent = "Send request";
+
+        return;
+      }
+
+
+      document
+        .getElementById("supportForm")
+        .style.display = "none";
+
+      document
+        .getElementById("ticketNumber")
+        .textContent =
+          "Ticket #" + data.ticket_number;
+
+      document
+        .getElementById("successState")
+        .style.display = "block";
+    }
+
+
+    /* ==========================================================
+       RESET FORM
+       ========================================================== */
+
+    function resetSupportForm() {
+
+      document
+        .getElementById("supportForm")
+        .reset();
+
+      document
+        .getElementById("supportForm")
+        .style.display = "block";
+
+      document
+        .getElementById("successState")
+        .style.display = "none";
+
+      document
+        .getElementById("submitButton")
+        .disabled = false;
+
+      document
+        .getElementById("submitButton")
+        .textContent = "Send request";
+
+      window.scrollTo({
+        top: document.getElementById("contact").offsetTop - 30,
+        behavior: "smooth"
+      });
+    }
+
+
+    /* ==========================================================
+       HTML ESCAPE
+       ========================================================== */
+
+    function escapeHTML(value) {
+
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+  </script>
+
+</body>
+</html>
