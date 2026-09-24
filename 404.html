@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head><script src="/.nekoweb-api/static/site.js" defer></script>
+    <meta charset="UTF-8">
+    <title>Too Many Requests</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #d3d3d3;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 14px;
+            line-height: 1.3;
+            padding: 20px;
+            margin: 0;
+            overflow-x: hidden;
+            cursor: text;
+        }
+
+        #terminal-content {
+            max-width: 1100px;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        .highlight { color: #fff; font-weight: bold; }
+        .code-red { color: #ff5555; }
+        
+        .blink {
+            animation: blinker 1s step-start infinite;
+            background-color: #d3d3d3;
+            color: #000;
+            padding: 0 2px;
+        }
+
+        @keyframes blinker { 50% { opacity: 0; } }
+
+        /* Style for the injected errors */
+        .error-line {
+            display: block;
+            margin: 2px 0;
+        }
+    </style>
+</head>
+<body onclick="document.getElementById('hidden-input').focus();">
+
+<div id="terminal-content">
+    <?php
+    function genHex($len = 8) { return bin2hex(random_bytes($len / 2)); }
+    $ts = number_format(microtime(true), 6, '.', '');
+    ?>
+[<?php echo $ts; ?>] <span class="highlight">CRITICAL: HTTP 500 - INTERNAL SERVER ERROR</span>
+[<?php echo $ts + 0.01; ?>] CPU 0: Machine Check Exception: 0000000000000004
+[<?php echo $ts + 0.02; ?>] Modules: php<?php echo phpversion(); ?>, mysqli_driver, pdo_sql, rapier_physics_ext
+[<?php echo $ts + 0.03; ?>] <span class="highlight">Pid: <?php echo rand(1000, 9999); ?>, comm: php-fpm Tainted: G</span>
+RIP: 0010:[&lt;ffffffff<?php echo genHex(8); ?>&gt;] _stack_segment_fault+0x42
+RSP: 0018:ffff<?php echo genHex(12); ?>
+
+<span class="highlight">Call Trace:</span>
+[&lt;ffffffff<?php echo genHex(8); ?>&gt;] ? pdo_mysql_execute+0x42/0x90
+[&lt;ffffffff<?php echo genHex(8); ?>&gt;] ? vfs_read_packet+0x2c/0x15e
+[&lt;ffffffff<?php echo genHex(8); ?>&gt;] ? sys_handle_500_error+0x11/0x30
+---[ end trace <?php echo genHex(16); ?> ]---
+
+<div id="log-history"></div><span id="current-typing"></span><span class="blink" id="cursor">&nbsp;</span>
+</div>
+
+<input type="text" id="hidden-input" style="position: absolute; opacity: 0; pointer-events: none;" autofocus autocomplete="off">
+
+<script>
+    const inputField = document.getElementById('hidden-input');
+    const logHistory = document.getElementById('log-history');
+    const currentTyping = document.getElementById('current-typing');
+
+    function getTimestamp() {
+        return (performance.now() / 1000).toFixed(6);
+    }
+
+    function getHex(len) {
+        return Math.floor(Math.random() * 16**len).toString(16).padStart(len, '0');
+    }
+
+    inputField.addEventListener('input', (e) => {
+        currentTyping.textContent = e.target.value;
+    });
+
+    inputField.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const cmd = inputField.value.trim();
+            
+            if (cmd.length > 0) {
+                // Create the error message line
+                const errorLine = document.createElement('div');
+                errorLine.className = 'error-line';
+                errorLine.innerHTML = `[${getTimestamp()}] <span class="code-red">unknown syntax error</span> : [<span class="highlight">${cmd}</span>] is not known as a PHP command (at 0x${getHex(8)})`;
+                
+                logHistory.appendChild(errorLine);
+            } else {
+                // If they just hit enter, just add a newline
+                logHistory.appendChild(document.createElement('br'));
+            }
+
+            // Reset
+            inputField.value = '';
+            currentTyping.textContent = '';
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    });
+
+    // Auto-focus logic
+    window.addEventListener('load', () => inputField.focus());
+    document.addEventListener('click', () => inputField.focus());
+
+    // CRT Flicker
+    setInterval(() => {
+        document.body.style.opacity = Math.random() > 0.98 ? "0.94" : "1";
+    }, 100);
+</script>
+
+</body>
+</html>
