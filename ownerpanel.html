@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PaceMUN II — Owner Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --bg:#070914;--panel:#0d1020;--panel2:#11152a;--panel3:#151a31;
+  --line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.13);
+  --text:#f3f5ff;--muted:#8d95b2;--dim:#59617d;
+  --blue:#5da9ff;--violet:#9b73ff;--pink:#e77cff;--cyan:#55d7ff;
+  --green:#55d99b;--amber:#f2c45c;--red:#ff6e7f;
+  --radius:14px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:
+ radial-gradient(900px 500px at 15% -10%,rgba(93,169,255,.12),transparent 65%),
+ radial-gradient(700px 500px at 95% 0%,rgba(155,115,255,.10),transparent 60%),
+ var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.shell{display:flex;min-height:100vh}
+.side{width:244px;position:sticky;top:0;height:100vh;flex:none;padding:22px 14px;
+ background:rgba(11,14,28,.92);backdrop-filter:blur(18px);border-right:1px solid var(--line);
+ display:flex;flex-direction:column}
+.brand{padding:8px 12px 26px}.brand small{color:var(--cyan);font-size:10px;font-weight:700;letter-spacing:.12em}
+.brand h1{font-size:19px;margin:6px 0 0;letter-spacing:-.03em}.brand p{color:var(--dim);font-size:11px;margin:5px 0}
+.nav{display:grid;gap:5px}.nav button{border:1px solid transparent;background:transparent;color:var(--muted);
+ padding:11px 12px;border-radius:10px;text-align:left;display:flex;align-items:center;gap:11px;font-size:12px}
+.nav button:hover{background:rgba(255,255,255,.035);color:var(--text)}
+.nav button.active{background:linear-gradient(90deg,rgba(93,169,255,.13),rgba(155,115,255,.10));border-color:rgba(93,169,255,.2);color:#fff}
+.nav .count{margin-left:auto;color:var(--dim);font-size:10px}
+.sidefoot{margin-top:auto;border-top:1px solid var(--line);padding:14px 10px;color:var(--dim);font-size:10px}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);margin-right:6px;box-shadow:0 0 12px var(--green)}
+.main{flex:1;min-width:0;padding:28px 30px 50px;max-width:1800px;margin:auto}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:22px}
+.kicker{color:var(--cyan);font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:700}
+h2{font-size:25px;letter-spacing:-.04em;margin:5px 0 4px}.sub{font-size:12px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{background:var(--panel2);border:1px solid var(--line2);color:var(--text);
+ border-radius:9px;padding:9px 12px;font-size:11px}.btn:hover{background:var(--panel3)}
+.btn.primary{border-color:transparent;background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 8px 25px rgba(93,169,255,.15)}
+.btn.danger{color:#ffadb7;border-color:rgba(255,110,127,.2)}
+.page{display:none}.page.active{display:block}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.card{background:linear-gradient(180deg,rgba(19,23,45,.96),rgba(11,14,28,.96));border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.14)}
+.stat{min-height:108px;position:relative;overflow:hidden}.stat:after{content:"";position:absolute;width:100px;height:100px;border-radius:50%;
+ right:-35px;bottom:-45px;background:radial-gradient(circle,rgba(93,169,255,.18),transparent 65%)}
+.stat .label{font-size:10px;color:var(--muted)}.stat .num{font-size:28px;font-weight:700;letter-spacing:-.05em;margin-top:9px}
+.stat .delta{font-size:10px;color:var(--green);margin-top:7px}.stat .delta.bad{color:var(--red)}
+.two{display:grid;grid-template-columns:1.6fr 1fr;gap:12px;margin-bottom:12px}.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.cardhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.cardhead h3{font-size:13px;margin:0}.cardhead span{font-size:10px;color:var(--dim)}
+.chart{height:275px}.chart.small{height:220px}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.input,.select{background:var(--panel2);border:1px solid var(--line2);color:var(--text);
+ border-radius:9px;padding:9px 11px;font-size:11px;outline:none}.input{min-width:230px}.select{min-width:145px}
+.tablebox{overflow:hidden;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px;font-size:11px}
+th{text-align:left;color:var(--muted);font-size:9px;text-transform:uppercase;letter-spacing:.08em;background:var(--panel3);padding:11px 13px;border-bottom:1px solid var(--line);position:sticky;top:0}
+td{padding:11px 13px;border-bottom:1px solid var(--line);color:#d9dded;white-space:nowrap;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+tr:hover td{background:rgba(255,255,255,.018)}.mono{font-family:"JetBrains Mono",monospace;font-size:10px}
+.pill{display:inline-flex;padding:4px 8px;border-radius:20px;font-size:9px;font-weight:700}.open{background:rgba(155,115,255,.13);color:#ba9eff}
+.pending{background:rgba(242,196,92,.12);color:var(--amber)}.resolved{background:rgba(85,217,155,.11);color:var(--green)}
+.error{background:rgba(255,110,127,.11);color:#ff9ca8}.info{background:rgba(93,169,255,.12);color:#8bc6ff}
+.list{display:grid;gap:8px}.listrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.listrow:last-child{border:0}.school{font-size:11px}.school small{display:block;color:var(--dim);margin-top:3px;font-size:9px}.value{font-weight:700;font-size:12px}
+.bars{display:grid;gap:10px}.barline{display:grid;grid-template-columns:140px 1fr 45px;align-items:center;gap:9px;font-size:10px}.bar{height:7px;background:#1a1f38;border-radius:20px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:20px}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.formgrid .full{grid-column:1/-1}.field label{display:block;color:var(--muted);font-size:10px;margin:0 0 5px}.field input,.field select,.field textarea{width:100%;background:#0a0d1b;border:1px solid var(--line2);border-radius:9px;color:var(--text);padding:10px;font-size:11px;outline:none}.field textarea{min-height:90px;resize:vertical}
+.storage{display:grid;grid-template-columns:230px 1fr;gap:12px}.bucket{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px}.bucket button{width:100%;text-align:left;background:transparent;color:var(--muted);border:0;padding:9px;border-radius:7px;font-size:10px}.bucket button.active,.bucket button:hover{background:rgba(93,169,255,.1);color:#fff}
+.filegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px}.file{border:1px solid var(--line);background:var(--panel);border-radius:11px;overflow:hidden}.thumb{height:110px;background:#080b16;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:10px}.thumb img{width:100%;height:100%;object-fit:cover}.filebody{padding:9px}.filename{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.filemeta{font-size:8px;color:var(--dim);margin:4px 0 8px}.fileactions{display:flex;gap:5px}.fileactions button{font-size:9px;padding:6px 7px;border-radius:6px;background:var(--panel3);border:1px solid var(--line);color:var(--muted)}
+.modalback{position:fixed;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modalback.open{display:flex}.modal{width:min(680px,100%);max-height:90vh;overflow:auto;background:#10142a;border:1px solid var(--line2);border-radius:15px;padding:18px;box-shadow:0 30px 100px rgba(0,0,0,.45)}
+.toast{position:fixed;right:18px;bottom:18px;background:#11162b;border:1px solid var(--line2);padding:11px 14px;border-radius:9px;font-size:11px;opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:50}.toast.show{opacity:1;transform:none}
+.empty{padding:40px;text-align:center;color:var(--dim);font-size:11px}
+@media(max-width:1100px){.grid4{grid-template-columns:repeat(2,1fr)}.two,.three{grid-template-columns:1fr}.storage{grid-template-columns:1fr}}
+@media(max-width:760px){.shell{display:block}.side{position:relative;width:100%;height:auto}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.main{padding:20px 14px}.top{display:block}.actions{margin-top:12px}.formgrid{grid-template-columns:1fr}.formgrid .full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+  <div class="brand"><small>PACEMUN II</small><h1>Owner Control</h1><p>Registration operations</p></div>
+  <nav class="nav">
+    <button class="active" data-page="overview">◈ <span>Overview</span></button>
+    <button data-page="registrations">▦ <span>Registrations</span><b class="count" id="navRegs">—</b></button>
+    <button data-page="schools">⌂ <span>Schools</span><b class="count" id="navSchools">—</b></button>
+    <button data-page="support">◌ <span>Support</span><b class="count" id="navSupport">—</b></button>
+    <button data-page="errors">⌁ <span>Errors & attempts</span><b class="count" id="navErrors">—</b></button>
+    <button data-page="storage">□ <span>Storage</span></button>
+    <button data-page="manual">＋ <span>Add registration</span></button>
+  </nav>
+  <div class="sidefoot"><span class="live"></span><span id="conn">Connecting to Supabase…</span><br><span id="lastRefresh">Not refreshed yet</span></div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div><div class="kicker">Owner / live operations</div><h2 id="title">Registration overview</h2><div class="sub" id="subtitle">A live view of PACEMUN II registrations, support and application health.</div></div>
+  <div class="actions"><button class="btn" id="refresh">↻ Refresh</button><button class="btn" id="export">⇩ Export current</button></div>
+</header>
+
+<section class="page active" id="page-overview">
+  <div class="grid4">
+    <div class="card stat"><div class="label">Total registrations</div><div class="num" id="sTotal">—</div><div class="delta" id="sTotalSub">all delegate + school records</div></div>
+    <div class="card stat"><div class="label">Schools registered</div><div class="num" id="sSchools">—</div><div class="delta">school delegation records</div></div>
+    <div class="card stat"><div class="label">Support tickets</div><div class="num" id="sTickets">—</div><div class="delta" id="sOpen">— open</div></div>
+    <div class="card stat"><div class="label">Failed attempts</div><div class="num" id="sFails">—</div><div class="delta bad" id="sFailsSub">requires telemetry table</div></div>
+  </div>
+  <div class="two">
+    <div class="card"><div class="cardhead"><h3>Registrations by day</h3><span>last 30 days</span></div><div class="chart"><canvas id="regChart"></canvas></div></div>
+    <div class="card"><div class="cardhead"><h3>Gender split</h3><span>individual + chair records</span></div><div class="chart small"><canvas id="genderChart"></canvas></div></div>
+  </div>
+  <div class="three">
+    <div class="card"><div class="cardhead"><h3>Top schools</h3><span>by registrations</span></div><div class="bars" id="schoolBars"></div></div>
+    <div class="card"><div class="cardhead"><h3>Support status</h3><span>current</span></div><div class="list" id="supportList"></div></div>
+    <div class="card"><div class="cardhead"><h3>Application health</h3><span>telemetry</span></div><div class="list" id="healthList"></div></div>
+  </div>
+</section>
+
+<section class="page" id="page-registrations">
+  <div class="grid4">
+    <div class="card stat"><div class="label">Individual delegates</div><div class="num" id="rIndividuals">—</div></div>
+    <div class="card stat"><div class="label">School delegations</div><div class="num" id="rSchools">—</div></div>
+    <div class="card stat"><div class="label">Chair applications</div><div class="num" id="rChairs">—</div></div>
+    <div class="card stat"><div class="label">Female / Male</div><div class="num" id="rGender">—</div></div>
+  </div>
+  <div class="filters"><input class="input" id="regSearch" placeholder="Search name, school, email…"><select class="select" id="regType"><option value="">All registration types</option><option value="delegate">Individual</option><option value="school">School</option><option value="chair">Chair</option></select></div>
+  <div class="tablebox"><div class="scroll"><table><thead><tr><th>Name / school</th><th>Type</th><th>Gender</th><th>Email</th><th>Committee</th><th>Submitted</th><th></th></tr></thead><tbody id="regRows"></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-schools">
+  <div class="grid4"><div class="card stat"><div class="label">Schools</div><div class="num" id="schoolTotal">—</div></div><div class="card stat"><div class="label">Delegates across schools</div><div class="num" id="schoolDelegates">—</div></div><div class="card stat"><div class="label">Largest school</div><div class="num" id="largestSchool">—</div></div><div class="card stat"><div class="label">Schools with 10+ delegates</div><div class="num" id="school10">—</div></div></div>
+  <div class="card"><div class="cardhead"><h3>Registered schools</h3><span>click a row for full record</span></div><div class="tablebox"><div class="scroll"><table><thead><tr><th>School</th><th>Coordinator</th><th>Delegates</th><th>Coordinator email</th><th>Submitted</th></tr></thead><tbody id="schoolRows"></tbody></table></div></div></div>
+</section>
+
+<section class="page" id="page-support">
+  <div class="grid4"><div class="card stat"><div class="label">All tickets</div><div class="num" id="tAll">—</div></div><div class="card stat"><div class="label">Open</div><div class="num" id="tOpen">—</div></div><div class="card stat"><div class="label">Pending</div><div class="num" id="tPending">—</div></div><div class="card stat"><div class="label">Resolved</div><div class="num" id="tResolved">—</div></div></div>
+  <div class="filters"><input class="input" id="ticketSearch" placeholder="Search tickets…"><select class="select" id="ticketStatus"><option value="">All statuses</option><option>open</option><option>pending</option><option>resolved</option></select></div>
+  <div class="tablebox"><div class="scroll"><table><thead><tr><th>Name</th><th>Subject</th><th>Email</th><th>Status</th><th>Received</th><th></th></tr></thead><tbody id="ticketRows"></tbody></table></div></div>
+</section>
+
+<section class="page" id="page-errors">
+  <div class="grid4"><div class="card stat"><div class="label">JS errors</div><div class="num" id="eJs">—</div></div><div class="card stat"><div class="label">Register errors</div><div class="num" id="eReg">—</div></div><div class="card stat"><div class="label">Index errors</div><div class="num" id="eIndex">—</div></div><div class="card stat"><div class="label">Failed submissions</div><div class="num" id="eFail">—</div></div></div>
+  <div class="two">
+    <div class="card"><div class="cardhead"><h3>Recent application errors</h3><span>index.html / register.html</span></div><div class="tablebox"><div class="scroll"><table><thead><tr><th>Page</th><th>Error</th><th>Message</th><th>Time</th></tr></thead><tbody id="errorRows"></tbody></table></div></div></div>
+    <div class="card"><div class="cardhead"><h3>Failed registration attempts</h3><span>client-side telemetry</span></div><div class="tablebox"><div class="scroll"><table><thead><tr><th>Page</th><th>Reason</th><th>Time</th></tr></thead><tbody id="attemptRows"></tbody></table></div></div></div>
+  </div>
+  <div class="card"><div class="cardhead"><h3>Telemetry setup</h3><span>one-time integration</span></div><p class="sub">This dashboard cannot know what happened inside index.html or register.html unless those pages send errors/failed attempts to Supabase. The SQL below creates the telemetry table; add the small capture snippet to both pages.</p></div>
+</section>
+
+<section class="page" id="page-storage">
+  <div class="storage">
+    <div class="bucket"><div class="cardhead"><h3>Buckets</h3></div><div id="bucketList"><button class="active">chair-applications</button></div><div style="margin-top:10px"><button class="btn primary" id="uploadBtn">＋ Upload file</button><input id="fileInput" type="file" hidden multiple></div></div>
+    <div>
+      <div class="card"><div class="cardhead"><h3 id="bucketTitle">chair-applications</h3><span id="storagePath">root</span></div><div class="filters"><input class="input" id="fileSearch" placeholder="Search files…"><button class="btn" id="upBtn">↑ Up</button></div><div class="filegrid" id="fileGrid"></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="page-manual">
+  <div class="card">
+    <div class="cardhead"><h3>Manually add registration</h3><span>owner-only operation</span></div>
+    <form id="manualForm">
+      <div class="formgrid">
+        <div class="field"><label>Registration type</label><select id="mType"><option value="delegate">Individual delegate</option><option value="chair">Chair application</option></select></div>
+        <div class="field"><label>Full name</label><input id="mName" required></div>
+        <div class="field"><label>School</label><input id="mSchool" required></div>
+        <div class="field"><label>Gender</label><select id="mGender"><option>Female</option><option>Male</option><option>Other</option><option>Prefer not to say</option></select></div>
+        <div class="field"><label>Email</label><input id="mEmail" type="email"></div>
+        <div class="field"><label>Phone</label><input id="mPhone"></div>
+        <div class="field"><label>Preference 1</label><input id="mPref1" placeholder="e.g. UNHRC (Grades 9–12)"></div>
+        <div class="field"><label>Preference 2</label><input id="mPref2"></div>
+        <div class="field"><label>Food preference</label><select id="mFood"><option>Non-vegetarian</option><option>Vegetarian</option><option>Vegan</option><option>Halal</option><option>Other</option></select></div>
+        <div class="field"><label>Conferences attended</label><input id="mMun" type="number" min="0" value="0"></div>
+        <div class="field"><label>Date of birth</label><input id="mDob" type="date"></div>
+        <div class="field"><label>Allergies</label><input id="mAllergy"></div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary">Create registration</button></div>
+    </form>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="modalback" id="modal"><div class="modal" id="modalBody"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = "https://whwilpuynwudlddbxmwk.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
+const sb = supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const BUCKET="chair-applications";
+const tables={delegate:"delegate_registrations",school:"school_delegations",chair:"chair_applications",support:"support_contacts"};
+let data={delegate:[],school:[],chair:[],support:[],errors:[],attempts:[]};
+let charts={}, currentPage="overview", currentPath="";
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dt=v=>v?new Date(v).toLocaleString(undefined,{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"—";
+const delegatesOf=r=>Array.isArray(r.delegates)?r.delegates.filter(x=>x&&x.name):[];
+const toast=(m)=>{const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove("show"),2800)};
+function pill(v){const s=(v||"open").toLowerCase();return `<span class="pill ${s}">${esc(s)}</span>`}
+function setPage(p){
+  currentPage=p;document.querySelectorAll(".page").forEach(x=>x.classList.toggle("active",x.id==="page-"+p));
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("active",x.dataset.page===p));
+  const titles={overview:["Registration overview","A live view of PACEMUN II registrations, support and application health."],registrations:["Registrations","Every individual, school and chair application in one place."],schools:["Schools","School delegation registrations and delegate counts."],support:["Support desk","Tickets received from the support/contact system."],errors:["Errors & attempts","Client-side errors and failed registration attempts."],storage:["Storage manager","Browse, upload, preview, replace and delete bucket files."],manual:["Manual registration","Create a registration directly from the owner dashboard."]};
+  $("title").textContent=titles[p][0];$("subtitle").textContent=titles[p][1];
+  if(p==="storage")loadFiles(); if(p==="overview")renderOverview(); if(p==="registrations")renderRegistrations(); if(p==="schools")renderSchools(); if(p==="support")renderSupport(); if(p==="errors")renderErrors();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>setPage(b.dataset.page));
+$("refresh").onclick=loadAll;$("export").onclick=exportCurrent;
+
+async function loadAll(){
+  $("conn").textContent="Refreshing…";
+  const jobs=Object.entries(tables).map(async([k,t])=>{
+    const {data:d,error}=await sb.from(t).select("*").order("created_at",{ascending:false});
+    if(!error)data[k]=d||[]; else console.warn(t,error);
+  });
+  await Promise.all(jobs);
+  const [er,at]=await Promise.all([
+    sb.from("admin_error_logs").select("*").order("created_at",{ascending:false}).limit(100),
+    sb.from("registration_attempts").select("*").order("created_at",{ascending:false}).limit(100)
+  ]);
+  data.errors=er.error?[]:(er.data||[]);data.attempts=at.error?[]:(at.data||[]);
+  $("conn").innerHTML='<span class="live"></span>Connected to Supabase';
+  $("lastRefresh").textContent="Updated "+new Date().toLocaleTimeString();
+  updateNav();renderAll();
+}
+function updateNav(){
+  $("navRegs").textContent=data.delegate.length+data.school.length+data.chair.length;
+  $("navSchools").textContent=data.school.length;$("navSupport").textContent=data.support.length;
+  $("navErrors").textContent=data.errors.length+data.attempts.filter(x=>x.success===false).length;
+}
+function renderAll(){renderOverview();renderRegistrations();renderSchools();renderSupport();renderErrors()}
+
+function registrationSeries(){
+  const days=[], map={};for(let i=29;i>=0;i--){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);const k=d.toISOString().slice(0,10);days.push(k);map[k]=0}
+  [...data.delegate,...data.chair].forEach(r=>{const k=(r.created_at||"").slice(0,10);if(map[k]!=null)map[k]++});
+  data.school.forEach(r=>{const k=(r.created_at||"").slice(0,10);if(map[k]!=null)map[k]+=delegatesOf(r).length||1});
+  return {labels:days.map(x=>new Date(x+"T00:00:00").toLocaleDateString(undefined,{day:"numeric",month:"short"})),values:days.map(x=>map[x])}
+}
+function chartBase(){return {responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{color:"rgba(255,255,255,.04)"},ticks:{color:"#59617d",font:{size:9}}},y:{grid:{color:"rgba(255,255,255,.04)"},ticks:{color:"#59617d",font:{size:9}}}}}}
+function renderOverview(){
+ const total=data.delegate.length+data.school.length+data.chair.length, open=data.support.filter(x=>(x.status||"open")==="open").length;
+ $("sTotal").textContent=total;$("sSchools").textContent=data.school.length;$("sTickets").textContent=data.support.length;$("sFails").textContent=data.attempts.filter(x=>x.success===false).length;
+ $("sOpen").textContent=open+" open";$("sFailsSub").textContent=data.attempts.length?"from registration telemetry":"requires telemetry table";
+ const rs=registrationSeries();
+ if(charts.reg)charts.reg.destroy();charts.reg=new Chart($("regChart"),{type:"line",data:{labels:rs.labels,datasets:[{data:rs.values,borderColor:"#5da9ff",backgroundColor:"rgba(93,169,255,.10)",fill:true,tension:.42,pointRadius:2,borderWidth:2}]},options:chartBase()});
+ const genders={Female:0,Male:0,Other:0,"Prefer not to say":0};
+ [...data.delegate,...data.chair].forEach(r=>{if(genders[r.gender]!=null)genders[r.gender]++});
+ data.school.forEach(r=>delegatesOf(r).forEach(d=>{if(genders[d.gender]!=null)genders[d.gender]++}));
+ if(charts.gender)charts.gender.destroy();charts.gender=new Chart($("genderChart"),{type:"doughnut",data:{labels:Object.keys(genders),datasets:[{data:Object.values(genders),backgroundColor:["#e77cff","#5da9ff","#55d7ff","#59617d"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"68%",plugins:{legend:{position:"bottom",labels:{color:"#8d95b2",font:{size:9},boxWidth:9}}}}});
+ const schools={};data.delegate.forEach(r=>schools[r.school||"Unknown"]=(schools[r.school||"Unknown"]||0)+1);data.chair.forEach(r=>schools[r.school||"Unknown"]=(schools[r.school||"Unknown"]||0)+1);data.school.forEach(r=>schools[r.school||"Unknown"]=(schools[r.school||"Unknown"]||0)+delegatesOf(r).length);
+ const top=Object.entries(schools).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=top[0]?.[1]||1;
+ $("schoolBars").innerHTML=top.length?top.map(([n,v])=>`<div class="barline"><span title="${esc(n)}">${esc(n)}</span><div class="bar"><i style="width:${v/mx*100}%"></i></div><b>${v}</b></div>`).join(""):'<div class="empty">No school data.</div>';
+ const c={open:0,pending:0,resolved:0};data.support.forEach(x=>c[(x.status||"open").toLowerCase()]++);$("supportList").innerHTML=Object.entries(c).map(([k,v])=>`<div class="listrow"><span>${pill(k)}</span><span class="value">${v}</span></div>`).join("");
+ $("healthList").innerHTML=[["index.html errors",data.errors.filter(x=>x.page==="index.html").length],["register.html errors",data.errors.filter(x=>x.page==="register.html").length],["failed attempts",data.attempts.filter(x=>x.success===false).length]].map(x=>`<div class="listrow"><span>${x[0]}</span><span class="value">${x[1]}</span></div>`).join("");
+}
+function renderRegistrations(){
+ $("rIndividuals").textContent=data.delegate.length;$("rSchools").textContent=data.school.length;$("rChairs").textContent=data.chair.length;
+ const all=[...data.delegate.map(r=>({...r,_type:"delegate",_name:r.full_name})),...data.chair.map(r=>({...r,_type:"chair",_name:r.full_name})),...data.school.map(r=>({...r,_type:"school",_name:r.school,_gender:"—",_email:r.coord_email}))];
+ const g={Female:0,Male:0};data.delegate.concat(data.chair).forEach(r=>{if(g[r.gender]!=null)g[r.gender]++});$("rGender").textContent=g.Female+" / "+g.Male;
+ const q=($("regSearch").value||"").toLowerCase(),type=$("regType").value;const rows=all.filter(r=>(!type||r._type===type)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+ $("regRows").innerHTML=rows.length?rows.map(r=>`<tr><td>${esc(r._name||"—")}</td><td>${pill(r._type)}</td><td>${esc(r.gender||r._gender||"—")}</td><td>${esc(r.email||r._email||r.coord_email||"—")}</td><td>${esc(r.first_preference||"—")}</td><td>${dt(r.created_at)}</td><td><button class="btn" onclick='showRecord(${JSON.stringify(r._type)},${JSON.stringify(r.id)})'>View</button></td></tr>`).join(""):'<tr><td colspan="7" class="empty">No matching records.</td></tr>';
+}
+$("regSearch").oninput=renderRegistrations;$("regType").onchange=renderRegistrations;
+function renderSchools(){
+ const rows=data.school, counts=rows.map(r=>delegatesOf(r).length), total=counts.reduce((a,b)=>a+b,0),max=Math.max(0,...counts);
+ $("schoolTotal").textContent=rows.length;$("schoolDelegates").textContent=total;$("largestSchool").textContent=max;$("school10").textContent=counts.filter(x=>x>=10).length;
+ $("schoolRows").innerHTML=rows.length?rows.map(r=>`<tr onclick='showRecord("school",${JSON.stringify(r.id)})'><td>${esc(r.school)}</td><td>${esc(r.coord_name)}</td><td>${delegatesOf(r).length}/12</td><td>${esc(r.coord_email)}</td><td>${dt(r.created_at)}</td></tr>`).join(""):'<tr><td colspan="5" class="empty">No school registrations.</td></tr>';
+}
+function renderSupport(){
+ const c={open:0,pending:0,resolved:0};data.support.forEach(x=>c[(x.status||"open").toLowerCase()]++);$("tAll").textContent=data.support.length;$("tOpen").textContent=c.open;$("tPending").textContent=c.pending;$("tResolved").textContent=c.resolved;
+ const q=($("ticketSearch").value||"").toLowerCase(),s=$("ticketStatus").value;
+ const rows=data.support.filter(r=>(!s||(r.status||"open")===s)&&(!q||JSON.stringify(r).toLowerCase().includes(q)));
+ $("ticketRows").innerHTML=rows.length?rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.subject)}</td><td>${esc(r.email)}</td><td>${pill(r.status)}</td><td>${dt(r.created_at)}</td><td><button class="btn" onclick='showRecord("support",${JSON.stringify(r.id)})'>View</button></td></tr>`).join(""):'<tr><td colspan="6" class="empty">No tickets.</td></tr>';
+}
+$("ticketSearch").oninput=renderSupport;$("ticketStatus").onchange=renderSupport;
+function renderErrors(){
+ $("eJs").textContent=data.errors.filter(x=>x.type==="js"||!x.type).length;$("eReg").textContent=data.errors.filter(x=>x.page==="register.html").length;$("eIndex").textContent=data.errors.filter(x=>x.page==="index.html").length;$("eFail").textContent=data.attempts.filter(x=>x.success===false).length;
+ $("errorRows").innerHTML=data.errors.length?data.errors.slice(0,40).map(r=>`<tr><td>${esc(r.page)}</td><td>${esc(r.type||"error")}</td><td title="${esc(r.message)}">${esc(r.message)}</td><td>${dt(r.created_at)}</td></tr>`).join(""):'<tr><td colspan="4" class="empty">No telemetry rows. Add the capture snippet to index.html and register.html.</td></tr>';
+ $("attemptRows").innerHTML=data.attempts.length?data.attempts.slice(0,40).map(r=>`<tr><td>${esc(r.page)}</td><td>${esc(r.reason||r.error_message||"Unknown")}</td><td>${dt(r.created_at)}</td></tr>`).join(""):'<tr><td colspan="3" class="empty">No attempts recorded.</td></tr>';
+}
+function showRecord(type,id){
+ const arr=data[type];const r=arr.find(x=>String(x.id)===String(id));if(!r)return;
+ $("modalBody").innerHTML=`<div class="cardhead"><h3>${esc(r.full_name||r.school||r.name||"Record")}</h3><button class="btn" onclick='closeModal()'>Close</button></div><pre style="white-space:pre-wrap;color:#b9c0d8;font-size:10px;line-height:1.7">${esc(JSON.stringify(r,null,2))}</pre><div style="display:flex;justify-content:flex-end"><button class="btn danger" onclick='deleteRecord(${JSON.stringify(type)},${JSON.stringify(id)})'>Delete record</button></div>`;
+ $("modal").classList.add("open");
+}
+function closeModal(){$("modal").classList.remove("open")}
+$("modal").onclick=e=>{if(e.target.id==="modal")closeModal()};
+async function deleteRecord(type,id){if(!confirm("Delete this record permanently?"))return;const table=tables[type];const {error}=await sb.from(table).delete().eq("id",id);if(error)return toast(error.message);closeModal();await loadAll();toast("Record deleted")}
+async function exportCurrent(){
+ const rows=currentPage==="support"?data.support:currentPage==="schools"?data.school:currentPage==="errors"?data.errors:data.delegate;
+ if(!rows.length)return toast("Nothing to export");const cols=Object.keys(rows[0]).filter(k=>!["mun_certificates","chair_certificates","resume_path","delegates"].includes(k));
+ const csv=[cols.join(","),...rows.map(r=>cols.map(k=>{let v=r[k]??"";if(typeof v==="object")v=JSON.stringify(v);v=String(v).replace(/"/g,'""');return /[",\n]/.test(v)?`"${v}"`:v}).join(","))].join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=`pacemun-${currentPage}-${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(a.href)
+}
+
+async function loadFiles(){
+ const {data,error}=await sb.storage.from(BUCKET).list(currentPath,{limit:200,sortBy:{column:"name",order:"asc"}});
+ if(error){$("fileGrid").innerHTML=`<div class="empty">${esc(error.message)}<br>Check your Storage policies.</div>`;return}
+ $("storagePath").textContent=currentPath||"root";
+ const q=($("fileSearch").value||"").toLowerCase();const files=(data||[]).filter(x=>x.name.toLowerCase().includes(q));
+ $("fileGrid").innerHTML=files.length?files.map(f=>{
+   const path=currentPath?currentPath+"/"+f.name:f.name, isDir=!f.id;
+   if(isDir)return `<div class="file"><div class="thumb">FOLDER</div><div class="filebody"><div class="filename">${esc(f.name)}</div><div class="filemeta">folder</div><div class="fileactions"><button onclick='openFolder(${JSON.stringify(path)})'>Open</button></div></div></div>`;
+   const image=/\.(png|jpe?g|gif|webp|svg|avif)$/i.test(f.name);
+   return `<div class="file"><div class="thumb">${image?`<img src="${sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl}">`:"FILE"}</div><div class="filebody"><div class="filename" title="${esc(f.name)}">${esc(f.name)}</div><div class="filemeta">${f.metadata?.size?Math.round(f.metadata.size/1024)+" KB":"file"}</div><div class="fileactions"><button onclick='previewFile(${JSON.stringify(path)},${JSON.stringify(f.name)})'>View</button>${/\.(txt|csv|json|html|css|js|md|xml)$/i.test(f.name)?`<button onclick='editFile(${JSON.stringify(path)},${JSON.stringify(f.name)})'>Edit</button>`:""}<button onclick='replaceFile(${JSON.stringify(path)})'>Replace</button><button onclick='removeFile(${JSON.stringify(path)})'>Delete</button></div></div></div>`
+ }).join(""):'<div class="empty">No files here.</div>';
+}
+$("fileSearch").oninput=loadFiles;$("upBtn").onclick=()=>{currentPath=currentPath.split("/").slice(0,-1).join("/");loadFiles()};$("uploadBtn").onclick=()=>$("fileInput").click();$("fileInput").onchange=uploadFiles;
+async function uploadFiles(){for(const f of $("fileInput").files){const path=currentPath?currentPath+"/"+f.name:f.name;const {error}=await sb.storage.from(BUCKET).upload(path,f,{upsert:true});if(error)toast(error.message)}$("fileInput").value="";loadFiles();toast("Upload complete")}
+function openFolder(p){currentPath=p;loadFiles()}
+async function previewFile(path,name){const {data,error}=await sb.storage.from(BUCKET).createSignedUrl(path,3600);if(error)return toast(error.message);window.open(data.signedUrl,"_blank","noopener")}
+async function editFile(path,name){
+  const {data,error}=await sb.storage.from(BUCKET).download(path);
+  if(error)return toast(error.message);
+  const text=await data.text();
+  $("modalBody").innerHTML=`<div class="cardhead"><h3>Edit ${esc(name)}</h3><button class="btn" onclick='closeModal()'>Close</button></div><div class="field"><label>File contents</label><textarea id="fileEditor" style="width:100%;min-height:420px;background:#080b16;color:#dfe5ff;border:1px solid var(--line2);border-radius:9px;padding:12px;font-family:"JetBrains Mono",monospace;font-size:10px;line-height:1.6;resize:vertical"></textarea></div><div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px"><button class="btn" onclick='closeModal()'>Cancel</button><button class="btn primary" onclick='saveEditedFile(${JSON.stringify(path)},${JSON.stringify(name)})'>Save changes</button></div>`;
+  $("fileEditor").value=text;$("modal").classList.add("open");
+}
+async function saveEditedFile(path,name){
+  const text=$("fileEditor").value;
+  const {error}=await sb.storage.from(BUCKET).upload(path,new Blob([text],{type:"text/plain"}),{upsert:true,contentType:"text/plain"});
+  if(error)return toast(error.message);
+  closeModal();loadFiles();toast("File saved");
+}
+async function replaceFile(path){$("fileInput").dataset.replace=path;$("fileInput").click()}
+$("fileInput").addEventListener("change",async function(){const old=this.dataset.replace;if(!old)return;const f=this.files[0];if(f){const {error}=await sb.storage.from(BUCKET).upload(old,f,{upsert:true});if(error)toast(error.message);else toast("File replaced")}delete this.dataset.replace;this.value="";loadFiles()})
+async function removeFile(path){if(!confirm("Delete this file permanently?"))return;const {error}=await sb.storage.from(BUCKET).remove([path]);if(error)return toast(error.message);loadFiles();toast("File deleted")}
+
+$("manualForm").onsubmit=async e=>{
+ e.preventDefault();const type=$("mType").value, table=tables[type];
+ const row={full_name:$("mName").value.trim(),school:$("mSchool").value.trim(),gender:$("mGender").value,email:$("mEmail").value.trim()||null,phone:$("mPhone").value.trim()||null,first_preference:$("mPref1").value.trim()||null,second_preference:$("mPref2").value.trim()||null,food_preference:$("mFood").value,mun_count:Number($("mMun").value)||0,date_of_birth:$("mDob").value||null,food_allergies:$("mAllergy").value.trim()||null};
+ if(type==="chair")row.chair_experience=0;
+ const {error}=await sb.from(table).insert(row);if(error)return toast(error.message);e.target.reset();toast("Registration created");await loadAll()
+};
+
+loadAll();
+</script>
+</body>
+</html>
