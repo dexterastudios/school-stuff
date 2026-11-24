@@ -15,7 +15,7 @@ const CONFIG = {
 
     // Change these after inspecting your model.
     spawnX: 0,
-    spawnZ: 0,
+    spawnZ: 5,
 
     playerHeight: 0.2,
     playerRadius: 0.05,
