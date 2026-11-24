@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaceMUN Applications</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        min-height: 100vh;
+        background: #050505;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    /* Subtle gold glow */
+    body::before {
+        content: "";
+        position: fixed;
+        width: 500px;
+        height: 500px;
+        background: rgba(212, 175, 55, 0.08);
+        border-radius: 50%;
+        filter: blur(100px);
+        top: -180px;
+        left: -150px;
+        pointer-events: none;
+    }
+
+    body::after {
+        content: "";
+        position: fixed;
+        width: 450px;
+        height: 450px;
+        background: rgba(212, 175, 55, 0.06);
+        border-radius: 50%;
+        filter: blur(100px);
+        bottom: -180px;
+        right: -150px;
+        pointer-events: none;
+    }
+
+    .container {
+        width: min(900px, 92%);
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    .top-line {
+        width: 70px;
+        height: 3px;
+        background: #d4af37;
+        margin: 0 auto 28px;
+    }
+
+    .eyebrow {
+        color: #d4af37;
+        letter-spacing: 5px;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+    }
+
+    h1 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(42px, 7vw, 72px);
+        font-weight: 500;
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+    }
+
+    h1 span {
+        color: #d4af37;
+    }
+
+    .subtitle {
+        color: #a9a9a9;
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 0 auto 48px;
+        max-width: 580px;
+    }
+
+    .choices {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 22px;
+    }
+
+    .choice {
+        position: relative;
+        text-decoration: none;
+        color: white;
+        background: #0b0b0b;
+        border: 1px solid #292929;
+        padding: 42px 30px;
+        min-height: 230px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .choice::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: #d4af37;
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease;
+    }
+
+    .choice:hover {
+        border-color: #d4af37;
+        transform: translateY(-6px);
+        box-shadow: 0 15px 45px rgba(212, 175, 55, 0.12);
+    }
+
+    .choice:hover::before {
+        transform: scaleX(1);
+    }
+
+    .number {
+        color: #d4af37;
+        font-size: 12px;
+        letter-spacing: 3px;
+        margin-bottom: 18px;
+    }
+
+    .choice h2 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 32px;
+        font-weight: 500;
+        margin-bottom: 12px;
+    }
+
+    .choice p {
+        color: #888;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .arrow {
+        color: #d4af37;
+        font-size: 22px;
+        margin-top: 22px;
+        transition: transform 0.3s ease;
+    }
+
+    .choice:hover .arrow {
+        transform: translateX(7px);
+    }
+
+    .footer {
+        margin-top: 42px;
+        color: #555;
+        font-size: 11px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    @media (max-width: 650px) {
+        .choices {
+            grid-template-columns: 1fr;
+        }
+
+        .choice {
+            min-height: 190px;
+            padding: 30px;
+        }
+
+        .subtitle {
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            margin-top: 25px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="top-line"></div>
+
+    <div class="eyebrow">PaceMUN</div>
+
+    <h1>Choose Your <span>Application</span></h1>
+
+    <p class="subtitle">
+        Select the application that applies to you.
+        You will be redirected to the appropriate registration form.
+    </p>
+
+    <div class="choices">
+
+        <!-- Delegate -->
+        <a
+            class="choice"
+            href="https://forms.gle/n1iecatgrBBTmeEN6"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <div class="number">01</div>
+            <h2>Delegate</h2>
+            <p>Apply to participate as a delegate at PaceMUN.</p>
+            <div class="arrow">→</div>
+        </a>
+
+        <!-- Chair -->
+        <a
+            class="choice"
+            href="https://forms.gle/xFNpAtGetSSabhfD9"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            <div class="number">02</div>
+            <h2>Chair</h2>
+            <p>Apply to join the conference team as a committee Chair.</p>
+            <div class="arrow">→</div>
+        </a>
+
+    </div>
+
+    <div class="footer">
+        PaceMUN · Applications
+    </div>
+
+</div>
+
+</body>
+</html>
+

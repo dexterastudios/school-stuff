@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PACEMUN II | Support</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 22px 7%;
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    header p {
+      margin-top: 5px;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 45px auto;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 35px;
+    }
+
+    .hero h2 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #64748b;
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(15, 23, 42, 0.07);
+    }
+
+    .card h3 {
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .event-info {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .info-item {
+      padding: 16px;
+      background: #f8fafc;
+      border-radius: 10px;
+    }
+
+    .info-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 5px;
+    }
+
+    .info-value {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .description {
+      margin-top: 20px;
+      line-height: 1.6;
+      color: #475569;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid #dbe2ea;
+      border-radius: 9px;
+      padding: 12px 13px;
+      font-size: 15px;
+      outline: none;
+      font-family: inherit;
+      margin-bottom: 16px;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #64748b;
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 9px;
+      padding: 13px;
+      background: #111827;
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1f2937;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .message {
+      display: none;
+      padding: 13px;
+      border-radius: 9px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .loading {
+      color: #64748b;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    @media (max-width: 750px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h2 {
+        font-size: 28px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>PACEMUN II</h1>
+    <p>Event Support</p>
+  </header>
+
+  <main class="container">
+
+    <section class="hero">
+      <h2>Welcome to PACEMUN II</h2>
+      <p>Need help? Contact the event support team below.</p>
+    </section>
+
+    <div class="grid">
+
+      <!-- EVENT DETAILS -->
+      <section class="card">
+        <h3>Event Details</h3>
+
+        <div id="eventLoading" class="loading">
+          Loading event details...
+        </div>
+
+        <div id="eventDetails" class="event-info" style="display:none;">
+
+          <div class="info-item">
+            <div class="info-label">Event</div>
+            <div id="eventTitle" class="info-value"></div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">Date & Time</div>
+            <div id="eventDate" class="info-value"></div>
+          </div>
+
+          <div class="info-item">
+            <div class="info-label">Location</div>
+            <div id="eventLocation" class="info-value"></div>
+          </div>
+
+          <div id="eventDescription" class="description"></div>
+
+        </div>
+      </section>
+
+
+      <!-- CONTACT SUPPORT -->
+      <section class="card">
+        <h3>Contact Support</h3>
+
+        <div id="successMessage" class="message success">
+          Your message has been sent successfully. Our team will review it.
+        </div>
+
+        <div id="errorMessage" class="message error"></div>
+
+        <form id="supportForm">
+
+          <label for="name">Full Name</label>
+          <input
+            id="name"
+            type="text"
+            placeholder="Your full name"
+            required
+          />
+
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            required
+          />
+
+          <label for="phone">Phone</label>
+          <input
+            id="phone"
+            type="tel"
+            placeholder="Your phone number"
+          />
+
+          <label for="subject">Subject</label>
+          <input
+            id="subject"
+            type="text"
+            placeholder="How can we help?"
+          />
+
+          <label for="message">Message</label>
+          <textarea
+            id="message"
+            placeholder="Tell us what you need help with..."
+            required
+          ></textarea>
+
+          <button id="submitButton" type="submit">
+            Send Message
+          </button>
+
+        </form>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer>
+    PACEMUN II · Event Support
+  </footer>
+
+
+  <script>
+    const SUPABASE_URL =
+      "https://whwilpuynwudlddbxmwk.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_iTuvrnFtnRTPtsd8JWqFTg_dTB2yTzr";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // -----------------------------
+    // LOAD EVENT
+    // -----------------------------
+
+    async function loadEvent() {
+
+      const loading =
+        document.getElementById("eventLoading");
+
+      const details =
+        document.getElementById("eventDetails");
+
+      try {
+
+        const { data, error } =
+          await supabaseClient
+            .from("events")
+            .select("*")
+            .eq("is_active", true)
+            .order("event_date", { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+        if (error) throw error;
+
+        if (!data) {
+          loading.textContent =
+            "No active event is currently available.";
+          return;
+        }
+
+        document.getElementById("eventTitle").textContent =
+          data.title;
+
+        document.getElementById("eventDate").textContent =
+          formatDate(data.event_date);
+
+        document.getElementById("eventLocation").textContent =
+          data.location || "Location to be announced";
+
+        document.getElementById("eventDescription").textContent =
+          data.description || "";
+
+        loading.style.display = "none";
+        details.style.display = "flex";
+
+      } catch (error) {
+
+        console.error(error);
+
+        loading.textContent =
+          "Unable to load event details.";
+      }
+    }
+
+
+    function formatDate(dateString) {
+
+      const date = new Date(dateString);
+
+      return date.toLocaleString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+
+    // -----------------------------
+    // CONTACT SUPPORT
+    // -----------------------------
+
+    document
+      .getElementById("supportForm")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const button =
+          document.getElementById("submitButton");
+
+        const success =
+          document.getElementById("successMessage");
+
+        const errorBox =
+          document.getElementById("errorMessage");
+
+        success.style.display = "none";
+        errorBox.style.display = "none";
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+
+        const name =
+          document.getElementById("name").value.trim();
+
+        const email =
+          document.getElementById("email").value.trim();
+
+        const phone =
+          document.getElementById("phone").value.trim();
+
+        const subject =
+          document.getElementById("subject").value.trim();
+
+        const message =
+          document.getElementById("message").value.trim();
+
+
+        try {
+
+          const { error } =
+            await supabaseClient
+              .from("support_contacts")
+              .insert({
+                name,
+                email,
+                phone,
+                subject,
+                message
+              });
+
+          if (error) throw error;
+
+
+          success.style.display = "block";
+
+          document
+            .getElementById("supportForm")
+            .reset();
+
+        } catch (error) {
+
+          console.error(error);
+
+          errorBox.textContent =
+            "We couldn't send your message. Please try again.";
+
+          errorBox.style.display = "block";
+
+        } finally {
+
+          button.disabled = false;
+          button.textContent = "Send Message";
+        }
+
+      });
+
+
+    loadEvent();
+  </script>
+
+</body>
+</html>
