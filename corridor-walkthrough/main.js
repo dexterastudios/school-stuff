@@ -17,12 +17,12 @@ const CONFIG = {
     spawnX: 0,
     spawnZ: 0,
 
-    playerHeight: 0.4,
-    playerRadius: 0.1,
+    playerHeight: 0.2,
+    playerRadius: 0.05,
 
-    walkSpeed: 4,
-    gravity: 18,
-    jumpSpeed: 7,
+    walkSpeed: 1,
+    gravity: 20,
+    jumpSpeed: 3,
 
     mouseSensitivity: 0.002
 };
