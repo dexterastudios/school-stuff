@@ -11,7 +11,7 @@ import { Capsule } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm
 // ==========================================
 
 const CONFIG = {
-    modelPath: 'free_fire_burmuda_map_the_circuit_3d_model (1).glb',
+    modelPath: 'free_loft_17_interior_floors_view_of_the_city..glb',
 
     // Change these after inspecting your model.
     spawnX: 0,
