@@ -11,7 +11,7 @@ import { Capsule } from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm
 // ==========================================
 
 const CONFIG = {
-    modelPath: './assets/corridor.glb',
+    modelPath: 'corridor-walkthrough/assets/corridor.glb',
 
     // Change these after inspecting your model.
     spawnX: 0,
